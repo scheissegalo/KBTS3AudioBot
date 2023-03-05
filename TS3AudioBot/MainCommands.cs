@@ -493,14 +493,17 @@ namespace TS3AudioBot
 		public static string CommandHelp(CallerInfo callerInfo)
 		{
 			var tmb = new TextModBuilder(callerInfo.IsColor);
-			tmb.AppendLine("TS3AudioBot at your service!");
-			tmb.AppendLine("To get some basic help on how to get started use one of the following commands:");
-			tmb.Append("!help play", HelpCommand).AppendLine(" : basics for playing songs");
-			tmb.Append("!help playlists", HelpCommand).AppendLine(" : how to manage playlists");
-			tmb.Append("!help history", HelpCommand).AppendLine(" : viewing and accesing the play history");
-			tmb.Append("!help bot", HelpCommand).AppendLine(" : useful features to configure your bot");
-			tmb.Append("!help all", HelpCommand).AppendLine(" : show all commands");
-			tmb.Append("!help command", HelpCommand).Append(" <command path>", HelpCommandParam).AppendLine(" : help text of a specific command");
+			tmb.AppendLine("KBAudioBot zu deinen Diensten!");
+			tmb.AppendLine("Um los zu legen benutze einer der folgenden Befehle:");
+			tmb.Append("!help play", HelpCommand).AppendLine(" : Grundlage für direkte Wiedergabe");
+			tmb.Append("!help add", HelpCommand).AppendLine(" : Grundlage für wiedergabe mit Playliste");
+			tmb.Append("!help playlists", HelpCommand).AppendLine(" : Playlisten verwalten");
+			tmb.Append("!help history", HelpCommand).AppendLine(" : Grundlagen Verlauf");
+			tmb.Append("!help bot", HelpCommand).AppendLine(" : Administrationswerkzeuge des Bots");
+			tmb.Append("!help all", HelpCommand).AppendLine(" : Zeige alle Befehle");
+			tmb.Append("!help command", HelpCommand).Append(" <Befehls Pfad>", HelpCommandParam).AppendLine(" : Hilfe eines bestimmten Befehls");
+			tmb.Append("!next", HelpCommand).AppendLine(" : Spielt den nächsten song in der Playliste");
+			tmb.Append("!stop", HelpCommand).AppendLine(" : Stoppt die Wiedergabe");
 			var str = tmb.ToString();
 			return str;
 		}
@@ -570,9 +573,29 @@ namespace TS3AudioBot
 		}
 
 		[Command("help play", "_undocumented")]
-		public static string CommandHelpPlay()
+		public static string CommandHelpPlay(CallerInfo callerInfo)
 		{
-			return "";
+			var tmb = new TextModBuilder(callerInfo.IsColor);
+			tmb.AppendLine("KBAudioBot zu deinen Diensten!");
+			tmb.AppendLine("[b]!play <url>[/b] - Spielt den stream von Youtube, Soundcloud etc");
+			tmb.AppendLine("Achtung [b]!play[/b] überschreibt die aktuelle wiedergabe!!!");
+			tmb.AppendLine("Wenn du statdessen den Song in die Playliste hinzufügen möchtest benutze bitte [b]!add <url>[/b]");
+
+			var str = tmb.ToString();
+			return str;
+		}
+
+		[Command("help add", "_undocumented")]
+		public static string CommandHelpAdd(CallerInfo callerInfo)
+		{
+			var tmb = new TextModBuilder(callerInfo.IsColor);
+			tmb.AppendLine("KBAudioBot zu deinen Diensten!");
+			tmb.AppendLine("[b]!add <url>[/b] - Spielt den stream von Youtube, Soundcloud etc");
+			tmb.AppendLine("Wenn bereits ein Song abgespielt wird dann wird der Song automatisch an die Playliste angehangen und anschließend abgespielt.");
+			tmb.AppendLine("Wenn du statdessen den Song direkt abspielen möchtest benutze bitte [b]!play <url>[/b]");
+
+			var str = tmb.ToString();
+			return str;
 		}
 
 		[Command("history add")]
@@ -1189,6 +1212,14 @@ namespace TS3AudioBot
 			else
 				playerConnection.Paused = false;
 		}
+
+		[Command("yt")]
+		public static async Task CommandYt(PlayManager playManager, InvokerData invoker, string url, params string[] attributes)
+	=> await playManager.Play(invoker, url, meta: PlayManager.ParseAttributes(attributes));
+
+		[Command("yt")]
+		public static async Task CommandYt(PlayManager playManager, InvokerData invoker, IAudioResourceResult rsc, params string[] attributes)
+			=> await playManager.Play(invoker, rsc.AudioResource, meta: PlayManager.ParseAttributes(attributes));
 
 		[Command("play")]
 		public static async Task CommandPlay(PlayManager playManager, InvokerData invoker, string url, params string[] attributes)
