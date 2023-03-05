@@ -15,7 +15,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using TS3AudioBot.Algorithm;
@@ -70,12 +72,25 @@ namespace TS3AudioBot
 
 		// ReSharper disable UnusedMember.Global
 		[Command("add")]
-		public static async Task CommandAdd(PlayManager playManager, InvokerData invoker, string url, params string[] attributes)
-			=> await playManager.Enqueue(invoker, url, meta: PlayManager.ParseAttributes(attributes));
+		public static async Task<string> CommandAdd(PlayManager playManager, InvokerData invoker, string url, params string[] attributes)
+		{
+			//string returnString = "Empfangen!";
+			await playManager.Enqueue(invoker, url, meta: PlayManager.ParseAttributes(attributes));
+			//invoker.ClientUid
+
+			//string videoUrl = YouTube.GetUrlFromInput(url);
+
+			//returnString = await YouTube.getTitleFromUrl(videoUrl);
+
+			return "In die Playliste hinzugefügt!";
+			// await ts3Client.SendChannelMessage("[b]"+currentTitle + "[/b] wird abgespielt");
+		}
 
 		[Command("add")]
 		public static async Task CommandAdd(PlayManager playManager, InvokerData invoker, IAudioResourceResult rsc, params string[] attributes)
-			=> await playManager.Enqueue(invoker, rsc.AudioResource, meta: PlayManager.ParseAttributes(attributes));
+		{
+			await playManager.Enqueue(invoker, rsc.AudioResource, meta: PlayManager.ParseAttributes(attributes));
+		}
 
 		[Command("alias add")]
 		public static void CommandAliasAdd(CommandManager commandManager, ConfBot confBot, string commandName, string command)
@@ -504,6 +519,7 @@ namespace TS3AudioBot
 			tmb.Append("!help command", HelpCommand).Append(" <Befehls Pfad>", HelpCommandParam).AppendLine(" : Hilfe eines bestimmten Befehls");
 			tmb.Append("!next", HelpCommand).AppendLine(" : Spielt den nächsten song in der Playliste");
 			tmb.Append("!stop", HelpCommand).AppendLine(" : Stoppt die Wiedergabe");
+			tmb.Append("!seek", HelpCommand).AppendLine(" : An stelle springen h/m/s example: !seek 2m - spult 2 min. vor.");
 			var str = tmb.ToString();
 			return str;
 		}
@@ -1941,6 +1957,78 @@ namespace TS3AudioBot
 			if (!info.TryGet<CallerInfo>(out var caller) || caller.CommandComplexityCurrent + count > caller.CommandComplexityMax)
 				throw new CommandException(strings.error_cmd_complexity_reached, CommandExceptionReason.CommandError);
 			caller.CommandComplexityCurrent += count;
+		}
+	}
+
+	internal class YouTube
+	{
+		public static async Task<string> getTitleFromUrl(string videoUrl)
+		{
+			//string videoId = GetVideoIdFromUrl(videoUrl);
+			//string videoPageUrl = $"https://www.youtube.com/watch?v={videoId}";
+			Console.WriteLine("Video URL: " + videoUrl);
+			string returnValue = "Not Found";
+
+
+			string videoId = GetVideoIdFromUrl(videoUrl);
+			string videoPageUrl = $"https://www.youtube.com/watch?v={videoId}";
+
+			using (var client = new HttpClient())
+			{
+				var response = await client.GetAsync(videoPageUrl);
+				var content = await response.Content.ReadAsStringAsync();
+
+				var regex = new Regex("<title>(.*?)</title>");
+				var match = regex.Match(content);
+
+				if (match.Success)
+				{
+					string title = match.Groups[1].Value.Trim();
+					returnValue = title;
+				}
+			}
+
+			return returnValue;
+		}
+
+		public static string GetUrlFromInput(string input)
+		{
+			var regex = new Regex(@"\[URL\](.*?)\[/URL\]");
+			var match = regex.Match(input);
+
+			if (match.Success)
+			{
+				return match.Groups[1].Value;
+			}
+
+			throw new ArgumentException("Invalid input string");
+		}
+
+
+		static string GetVideoIdFromUrl(string url)
+		{
+			var uri = new Uri(url);
+			if (uri.Host.ToLower() == "youtu.be")
+			{
+				var parts = uri.AbsolutePath.Trim('/').Split('/');
+				return parts[parts.Length - 1];
+			}
+			else if (uri.Host.ToLower() == "www.youtube.com")
+			{
+				var query = uri.Query.TrimStart('?');
+				var parameters = query.Split('&');
+
+				foreach (var parameter in parameters)
+				{
+					var parts = parameter.Split('=');
+					if (parts.Length == 2 && parts[0].ToLower() == "v")
+					{
+						return parts[1];
+					}
+				}
+			}
+
+			throw new ArgumentException("Invalid YouTube video URL");
 		}
 	}
 }
