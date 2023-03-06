@@ -10,6 +10,8 @@ using TSLib.Commands;
 using TSLib.Full;
 using TSLib.Messages;
 using TS3AudioBot.Config;
+using System.Collections.Generic;
+using Heijden.DNS;
 
 namespace whatIsPlaying
 {
@@ -19,6 +21,11 @@ namespace whatIsPlaying
 		private PlayManager playManager;
 		private Ts3Client ts3Client;
 		private Connection serverView;
+		private Codec defaultCodec;
+		private int defaultCodecQuality = 6;
+		private Codec MusicCodec;
+		private int MusicCodecQuality = 10;
+		private ChannelId currentChannel;
 		//private readonly ConfBot config;
 
 		// Your dependencies will be injected into the constructor of your class.
@@ -30,15 +37,27 @@ namespace whatIsPlaying
 			this.serverView = serverView;
 		}
 
-		//const string NowPlayingTag = " - Wiedergabe";
-		//string lastName = null;
-
 		// The Initialize method will be called when all modules were successfully injected.
 		public void Initialize()
 		{
+			// Store the default codec type (can be set to a different value)
+			defaultCodec = Codec.OpusVoice;
+			MusicCodec = Codec.OpusMusic;
+
 			playManager.AfterResourceStarted += Start;
 			playManager.PlaybackStopped += Stop;
+			tsFullClient.OnClientMoved += OnBotMoved;
+
 			setChannelCommander();
+			GetCurrentChannelId();
+		}
+
+		private async void GetCurrentChannelId()
+		{
+			var me = await tsFullClient.WhoAmI();
+			ChannelId channelId = new ChannelId(me.Value.ChannelId.Value);
+			currentChannel = channelId;
+			//Console.WriteLine("Current Channel Changed "+ channelId);
 		}
 
 		private async void setChannelCommander()
@@ -48,18 +67,7 @@ namespace whatIsPlaying
 
 		private async Task Start(object sender, EventArgs e)
 		{
-			//Console.WriteLine("Start Playing!");
-			//Console.WriteLine(playManager.CurrentPlayData.SourceLink);
-			//var me = await tsFullClient.WhoAmI();
 			var self = serverView.OwnClient;
-			//self.Value
-			//ts3Client.GetClientInfoById()
-			//var myself = await tsFullClient.ClientInfo(tsFullClient.ClientId);
-			//var self = serverView.OwnClient;
-			//if (self == null) return;
-			//lastName = "Mr. Music";
-			
-			//await ts3Client.ChangeName(lastName.EndsWith(NowPlayingTag) ? lastName : lastName + NowPlayingTag);
 			string currentTitle = await YouTube.getTitleFromUrl(playManager.CurrentPlayData.SourceLink);
 			await ts3Client.SendChannelMessage("[b]"+currentTitle + "[/b] wird abgespielt");
 			//await ts3Client.SendChannelMessage("Song wird abgespielt");
@@ -68,6 +76,47 @@ namespace whatIsPlaying
 		private async Task Stop(object sender, EventArgs e)
 		{
 			//if (lastName != null) await ts3Client.ChangeName(lastName);
+		}
+
+		private async void OnBotMoved(object sender, IEnumerable<ClientMoved> clients)
+		{
+			string helpMessage = @"Hallo! Um Musik ab zu spielen einfach mit dem Befehl:
+[b]!play <dein link>[/b] oder [b]!yt <dein link>[/b] - Achtung der Song wird direkt abgespielt!
+Willst du statdessen das der Song an die aktuelle Playliste angehangen wird benutze:
+[b]!add <dein link>[/b]
+
+[b]!help[/b] für eine Ausführliche Hilfe.";
+			try
+			{
+				var me = await tsFullClient.WhoAmI();
+				foreach (var client in clients)
+				{
+					if (client.ClientId == me.Value.ClientId)
+					{
+						if (currentChannel == client.TargetChannelId)
+						{
+							// Same Channel
+						}
+						else
+						{
+							ChannelId channelId = new ChannelId(client.TargetChannelId.Value);
+
+							await tsFullClient.ChannelEdit(currentChannel, codec: defaultCodec, codecQuality: defaultCodecQuality);
+							await tsFullClient.ChannelEdit(channelId, codec: MusicCodec, codecQuality: MusicCodecQuality);
+
+							//Console.WriteLine("Bot was Moved to channel: " + client.TargetChannelId + "/" + channelId);
+
+						}
+						await ts3Client.SendChannelMessage(helpMessage);
+						GetCurrentChannelId();
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Error editing channel properties: " + ex.Message);
+			}
+
 		}
 
 		// You should prefer static methods which get the modules injected via parameter unless
@@ -87,6 +136,7 @@ namespace whatIsPlaying
 			// otherwise your plugin will remain in a zombie state
 			playManager.AfterResourceStarted -= Start;
 			playManager.PlaybackStopped -= Stop;
+			tsFullClient.OnClientMoved -= OnBotMoved;
 		}
 	}
 }

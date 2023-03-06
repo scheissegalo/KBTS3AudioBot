@@ -519,7 +519,8 @@ namespace TS3AudioBot
 			tmb.Append("!help command", HelpCommand).Append(" <Befehls Pfad>", HelpCommandParam).AppendLine(" : Hilfe eines bestimmten Befehls");
 			tmb.Append("!next", HelpCommand).AppendLine(" : Spielt den nächsten song in der Playliste");
 			tmb.Append("!stop", HelpCommand).AppendLine(" : Stoppt die Wiedergabe");
-			tmb.Append("!seek", HelpCommand).AppendLine(" : An stelle springen h/m/s example: !seek 2m - spult 2 min. vor.");
+			tmb.Append("!seek", HelpCommand).AppendLine(" : An stelle springen h/m/s Beispiel: !seek 2m - spult 2 min. vor.");
+			tmb.Append("!volume", HelpCommand).AppendLine(" : Wiedergabe Lautstärke 1-100");
 			var str = tmb.ToString();
 			return str;
 		}
