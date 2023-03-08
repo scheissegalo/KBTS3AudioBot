@@ -12,6 +12,9 @@ using TSLib.Messages;
 using TS3AudioBot.Config;
 using System.Collections.Generic;
 using Heijden.DNS;
+using System.IO;
+using System.Linq;
+using LiteDB;
 
 namespace whatIsPlaying
 {
@@ -26,6 +29,7 @@ namespace whatIsPlaying
 		private Codec MusicCodec;
 		private int MusicCodecQuality = 10;
 		private ChannelId currentChannel;
+		private string msgFoot;
 		//private readonly ConfBot config;
 
 		// Your dependencies will be injected into the constructor of your class.
@@ -50,6 +54,13 @@ namespace whatIsPlaying
 
 			setChannelCommander();
 			GetCurrentChannelId();
+
+			msgFoot = @"
+
+-----------------------------------------
+
+Dein [b][color=#24336b]K[/color][color=#0095db]B[/color][/b] - [color=#24336b]Teamspeak[/color][color=#0095db]Server[/color] Team.
+[URL=https://klabausterbeere.xyz]Home[/URL] | [URL=https://klabausterbeere.xyz/ts-viewer/]TS-Viewer[/URL] | [URL=https://klabausterbeere.xyz/ts-invites/#regeln]Regeln[/URL] | [URL=https://sinusbot.klabausterbeere.xyz/]Sinusbot GUI[/URL] | [URL=https://klabausterbeere.xyz/kb-chat-free/]KB-Chat[/URL] | [URL=https://meet.klabausterbeere.xyz/]KB-Meet[/URL]";
 		}
 
 		private async void GetCurrentChannelId()
@@ -80,12 +91,13 @@ namespace whatIsPlaying
 
 		private async void OnBotMoved(object sender, IEnumerable<ClientMoved> clients)
 		{
-			string helpMessage = @"Hallo! Um Musik ab zu spielen einfach mit dem Befehl:
-[b]!play <dein link>[/b] oder [b]!yt <dein link>[/b] - Achtung der Song wird direkt abgespielt!
-Willst du statdessen das der Song an die aktuelle Playliste angehangen wird benutze:
-[b]!add <dein link>[/b]
+			string helpMessage = @"
+Um Musik ab zu spielen benutze folgende Befehle:
+[b][color=red]!play[/color] [color=blue]<dein link>[/color][/b] oder [b][color=red]!yt [/color][color=blue]<dein link>[/color][/b] - Achtung der Song wird direkt abgespielt!
+[b][color=red]!add [/color][color=blue]<dein link>[/color][/b] Der Song an die aktuelle Playliste angehangen.
+[b][color=red]!search from youtube [/color][color=blue]'dein suchtext'[/color][/b] Um auf YouTube zu suchen. [b][color=green](die '' sind wichtig)!![/color][/b]
 
-[b]!help[/b] für eine Ausführliche Hilfe.";
+[b][color=red]!help[/color][/b] für eine Ausführliche Hilfe." + msgFoot;
 			try
 			{
 				var me = await tsFullClient.WhoAmI();
@@ -118,6 +130,44 @@ Willst du statdessen das der Song an die aktuelle Playliste angehangen wird benu
 			}
 
 		}
+
+
+		[Command("local")]
+		public static async Task<string> CommandLocal(PlayManager playManager, ClientCall invoker, string query)
+		{
+			var file = Directory.GetFiles("mp3", $"*{query}*", SearchOption.TopDirectoryOnly).FirstOrDefault();
+			if (file != null)
+			{
+				var filename = Path.GetFileName(file);
+				Console.WriteLine("File found:"+ filename);
+				await playManager.Play(invoker, filename);
+				return filename+" gefunden und wird abgespielt!";
+			}
+			else
+			{
+				//Ts3Client.SendPrivateMessage(Ts3Client.WhoAmI().UnwrapThrow().Uid, "No matching audio file found.");
+				return "Nichts gefunden!";
+			}
+		}
+
+		[Command("datei")]
+		public static async Task<string> CommandDatei(PlayManager playManager, ClientCall invoker, string query)
+		{
+			var file = Directory.GetFiles("mp3", $"*{query}*", SearchOption.TopDirectoryOnly).FirstOrDefault();
+			if (file != null)
+			{
+				var filename = Path.GetFileName(file);
+				Console.WriteLine("File found:" + filename + " Path: "+ file);
+				await playManager.Play(invoker, filename);
+				return filename + " gefunden und wird abgespielt!";
+			}
+			else
+			{
+				//Ts3Client.SendPrivateMessage(Ts3Client.WhoAmI().UnwrapThrow().Uid, "No matching audio file found.");
+				return "Nichts gefunden!";
+			}
+		}
+
 
 		// You should prefer static methods which get the modules injected via parameter unless
 		// you actually need objects from your plugin in your method.
