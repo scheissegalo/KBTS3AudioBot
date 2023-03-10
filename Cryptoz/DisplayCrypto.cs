@@ -59,7 +59,6 @@ namespace Cryptoz
 				if (update <= 0)
 				{
 					// Timer end
-					//Console.WriteLine("Update time");
 					GetBTC();
 					GetETH();
 					GetGold();

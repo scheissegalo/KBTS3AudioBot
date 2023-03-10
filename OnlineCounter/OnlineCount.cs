@@ -30,6 +30,7 @@ namespace OnlineCounter
 		private readonly List<uint> excludedGroups = new List<uint> { 11, 47, 115 }; // replace with the IDs of the excluded groups
 
 		private List<string> userIDS = new List<string>();
+		private List<string> userNames = new List<string>();
 
 		private readonly object countLock = new object();
 		private uint count = 0;
@@ -119,7 +120,11 @@ namespace OnlineCounter
 						userIDS.Add(fulluser.Value.Uid.ToString());
 						count++;
 						doUpdate = true;
-						if (connected && !containsUserID) { countToday++; }
+						if (connected && !containsUserID)
+						{
+							countToday++;
+							userNames.Add(fulluser.Value.Name);
+						}
 					}
 
 				}
@@ -148,6 +153,7 @@ namespace OnlineCounter
 				count = 0;
 				countToday = 0;
 				lastResetTime = DateTime.UtcNow;
+				userNames.Clear();
 			}
 		}
 
@@ -162,9 +168,22 @@ namespace OnlineCounter
 
 		private async void UpdateChannelName()
 		{
+			string usernameList = "";
 			try
 			{
-				string newChanDis = $"Zuletzt zurückgesetzt: {lastResetTime}";
+				if (userNames.Count <= 0)
+				{
+					// No usernames
+					usernameList = "Keine Benutzer Online";
+				}
+				else
+				{
+					foreach(var user in userNames)
+					{
+						usernameList = usernameList + "- " + user + "\n";
+					}
+				}
+				string newChanDis = $"Zuletzt zurückgesetzt: {lastResetTime}\n\n[b]Benutzerliste:[/b]\n{usernameList}";
 				ChannelId channelId = new ChannelId(channelToUpdateId);
 
 				//await tsFullClient.ChannelEdit(currentChannel, codec: defaultCodec, codecQuality: defaultCodecQuality);
