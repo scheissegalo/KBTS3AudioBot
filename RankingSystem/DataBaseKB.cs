@@ -20,6 +20,7 @@ using TS3AudioBot.Environment;
 using System.IO;
 using Nett;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Org.BouncyCastle.Asn1;
 
 namespace RankingSystem
 {
@@ -100,6 +101,7 @@ namespace RankingSystem
 
 		public void Initialize()
 		{
+			//readAndLoadJson();
 			InitDB();
 			StartLoop();
 		}
@@ -169,10 +171,75 @@ namespace RankingSystem
 			// Retrieve the user's data from the database
 			var db = new LiteDatabase("rank_users.db");
 			var usersCollection = db.GetCollection<User>("users");
-			usersCollection.Delete(Query.All());
+			//usersCollection.Delete(Query.All());
 
 			return "Datenbank Gesäubert";
 			//}
+		}
+
+		public void readAndLoadJson()
+		{
+			string jsonFilePath = "tunausers.json"; // replace with your file path
+			string databaseFolderPath = "oldusers.db"; // replace with your database folder path
+
+			var users = ReadUsersFromJson(jsonFilePath);
+
+			using (var db = new LiteDatabase(databaseFolderPath))
+			{
+				var usersCollection = db.GetCollection<User>("users");
+
+				foreach (var user in users)
+				{
+					Console.WriteLine("User: "+ user.Nickname+" "+user.UserID);
+					usersCollection.Insert(user);
+				}
+			}
+		}
+
+		static List<User> ReadUsersFromJson(string jsonFilePath)
+		{
+			var json = System.IO.File.ReadAllText(jsonFilePath);
+			var jsonObject = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObject>(json);
+
+			var users = new List<User>();
+
+			foreach (var userJson in jsonObject.data)
+			{
+				var user = new User
+				{
+					Id = userJson.uid,
+					UserID = userJson.uid,
+					Name = userJson.name,
+					Nickname = userJson.name,
+					Time = userJson.time,
+					OnlineTime = TimeSpan.FromSeconds(userJson.time),
+					IsAfk = false,
+					IsAlone = false,
+					LastUpdate = DateTime.UtcNow,
+					RankGroupInt = 0,
+					UpdateTime = false,
+				};
+				users.Add(user);
+
+				// check for duplicate keys
+				var existingUser = users.FirstOrDefault(u => u.Id == user.Id);
+				if (existingUser != null)
+				{
+					// update the existing user with the entry that has the highest time value
+					if (user.Time > existingUser.Time)
+					{
+						users.Remove(existingUser);
+						users.Add(user);
+					}
+				}
+				else
+				{
+					users.Add(user);
+				}
+			}
+
+
+			return users;
 		}
 
 		public ServerGroupId GetServerGroup(TimeSpan onlineTime)
@@ -376,6 +443,18 @@ namespace RankingSystem
 									Console.WriteLine("Server Group addet");
 									await tsFullClient.ServerGroupAddClient(GetServerGroup(UpdateUser.OnlineTime), newId.ClientDbId);
 								}
+								//Check if user has group attached
+								bool hasRightGroup = userGroups.Value.Any(g => g.ServerGroupId == GetServerGroup(UpdateUser.OnlineTime));
+								if (hasRightGroup)
+								{
+									Console.WriteLine("User has right group attached "+ GetServerGroup(UpdateUser.OnlineTime));
+								}
+								else
+								{
+									Console.WriteLine("Reattaching group "+ GetServerGroup(UpdateUser.OnlineTime));
+									await tsFullClient.ServerGroupAddClient(GetServerGroup(UpdateUser.OnlineTime), newId.ClientDbId);
+								}
+
 							}
 							else
 							{
@@ -385,7 +464,7 @@ namespace RankingSystem
 							// Update the user's last update time
 							UpdateUser.LastUpdate = DateTime.Now;
 
-							Console.WriteLine(fulluser.Value.Name + " Online Time: " + Math.Round(UpdateUser.OnlineTime.TotalMinutes));
+							Console.WriteLine(fulluser.Value.Name + " Online Time: " + Math.Round(UpdateUser.OnlineTime.TotalDays)+" Tage");
 
 							// Save the user's data to the database
 							DBusers.Update(UpdateUser);
@@ -487,7 +566,7 @@ namespace RankingSystem
 				{
 					// Get a collection (or create it if it doesn't exist)
 					var users = db.GetCollection<User>("users");
-					users.Delete(Query.All());
+					//users.Delete(Query.All());
 
 					foreach (var user in allUsers.Value)
 					{
@@ -548,6 +627,21 @@ namespace RankingSystem
 		public void Dispose()
 		{
 
+		}
+
+		class RootObject
+		{
+			public long time { get; set; }
+			public string type { get; set; }
+			public string description { get; set; }
+			public List<UserJson> data { get; set; }
+		}
+
+		class UserJson
+		{
+			public string name { get; set; }
+			public string uid { get; set; }
+			public int time { get; set; }
 		}
 	}
 	public class User
