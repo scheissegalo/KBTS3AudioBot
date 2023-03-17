@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LiteDB" Version="4.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TS3AudioBot\TS3AudioBot.csproj" />
     <ProjectReference Include="..\TSLib\TSLib.csproj" />
   </ItemGroup>

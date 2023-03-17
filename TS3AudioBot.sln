@@ -24,7 +24,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AloneMode", "AloneMode\Alon
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineCounter", "OnlineCounter\OnlineCounter.csproj", "{B64F20A4-71AF-4A96-BDEA-50F97F42163A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptoz", "Cryptoz\Cryptoz.csproj", "{94A303E7-3BCC-425C-BF3A-F9EA46A1E942}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptoz", "Cryptoz\Cryptoz.csproj", "{94A303E7-3BCC-425C-BF3A-F9EA46A1E942}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RankingSystem", "RankingSystem\RankingSystem.csproj", "{60A7174E-BD43-4966-A80C-65E164A3D1DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,6 +66,10 @@ Global
 		{94A303E7-3BCC-425C-BF3A-F9EA46A1E942}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94A303E7-3BCC-425C-BF3A-F9EA46A1E942}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94A303E7-3BCC-425C-BF3A-F9EA46A1E942}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60A7174E-BD43-4966-A80C-65E164A3D1DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60A7174E-BD43-4966-A80C-65E164A3D1DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60A7174E-BD43-4966-A80C-65E164A3D1DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60A7174E-BD43-4966-A80C-65E164A3D1DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

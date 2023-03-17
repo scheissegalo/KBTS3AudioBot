@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
 using System.Collections;
+//using System.IO;
+//using System.Text.Json;
 
 namespace OnlineCounter
 {
@@ -27,6 +29,7 @@ namespace OnlineCounter
 
 		private readonly ulong channelToUpdateId = 171; // replace with the ID of the channel to update
 		private readonly TimeSpan resetInterval = TimeSpan.FromDays(1);
+		//private readonly TimeSpan resetInterval = TimeSpan.FromMinutes(1);
 		private readonly List<uint> excludedGroups = new List<uint> { 11, 47, 115 }; // replace with the IDs of the excluded groups
 
 		private List<string> userIDS = new List<string>();
@@ -37,6 +40,7 @@ namespace OnlineCounter
 		private uint countToday = 0;
 		private DateTime lastResetTime = DateTime.MinValue;
 		private bool isChecking = false;
+		//private string jsonFilePath = "data.json";
 
 		public OnlineCount(PlayManager playManager, Ts3Client ts3Client, Connection serverView, TsFullClient tsFull)
 		{
@@ -50,8 +54,18 @@ namespace OnlineCounter
 		{
 			tsFullClient.OnClientEnterView += OnUserConnected;
 			tsFullClient.OnClientLeftView += OnUserDisconnected;
-			Task.Run(ResetCountPeriodically);
+			ResetCountPeriodically();
+			lastResetTime = DateTime.UtcNow;
 			CheckOnlineUsers(true);
+
+			//var userData = GetTsUserData();
+			//foreach (TSuserDB data in userData)
+			//{
+			//	Console.WriteLine($"OLD Data Deleted: Id: {data.Id}, Name: {data.Name}, Age: {data.ID}");
+			//}
+			//TSuserDB newData = new TSuserDB();
+			//TSuserDB.DeleteAllData(jsonFilePath);
+			
 		}
 
 		private void OnUserConnected(object sender, IEnumerable<ClientEnterView> clients)
@@ -65,8 +79,8 @@ namespace OnlineCounter
 				}
 				else
 				{
-					DateTime now = DateTime.Now;
-					Console.WriteLine(now + " | " +user.Name + " Query");
+					//DateTime now = DateTime.Now;
+					//Console.WriteLine(now + " | " +user.Name + " Query");
 					continue;
 				}
 			}
@@ -75,6 +89,11 @@ namespace OnlineCounter
 		private void OnUserDisconnected(object sender, IEnumerable<ClientLeftView> clients)
 		{
 			CheckOnlineUsers(false);
+
+			foreach(var client in clients)
+			{
+				//client.
+			}
 		}
 
 		private async void CheckOnlineUsers(bool connected)
@@ -115,15 +134,15 @@ namespace OnlineCounter
 						{
 							continue;
 						}
-
 						//Console.WriteLine(user.Name + " Online and Not a Bot UID:"+ fulluser.Value.Uid);
-						userIDS.Add(fulluser.Value.Uid.ToString());
 						count++;
 						doUpdate = true;
 						if (connected && !containsUserID)
 						{
 							countToday++;
 							userNames.Add(fulluser.Value.Name);
+							userIDS.Add(fulluser.Value.Uid.ToString());
+							//AddTsUserToDB(fulluser.Value.Name);
 						}
 					}
 
@@ -142,6 +161,7 @@ namespace OnlineCounter
 			while (true)
 			{
 				await Task.Delay(resetInterval);
+				Console.WriteLine("Resetting Online Counter!");
 				ResetCount();
 			}
 		}
@@ -154,7 +174,13 @@ namespace OnlineCounter
 				countToday = 0;
 				lastResetTime = DateTime.UtcNow;
 				userNames.Clear();
+				userIDS.Clear();
+				//TSuserDB.DeleteAllData(jsonFilePath);
+				CheckOnlineUsers(true);
+				ts3Client.SendServerMessage("[b][color=red]Online Counter wurde zurückgesetzt![/color][/b]");
 			}
+			//tsFullClient.SendGlobalMessage("[b][color=red]Online Counter wurde zurückgesetzt![/color][/b]");
+			
 		}
 
 		private string GetChannelName()

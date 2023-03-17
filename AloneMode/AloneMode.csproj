@@ -9,4 +9,8 @@
     <ProjectReference Include="..\TSLib\TSLib.csproj" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="del /q &quot;$(SolutionDir)TS3AudioBot\bin\Debug\netcoreapp3.1\Plugins\$(TargetFileName)&quot;&#xD;&#xA;xcopy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)TS3AudioBot\bin\Debug\netcoreapp3.1\Plugins&quot;" />
+  </Target>
+
 </Project>
