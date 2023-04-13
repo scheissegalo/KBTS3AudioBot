@@ -6,12 +6,9 @@ using TS3AudioBot.CommandSystem;
 using TS3AudioBot.Plugins;
 using TSLib.Full.Book;
 using TSLib;
-using TSLib.Commands;
 using TSLib.Full;
 using TSLib.Messages;
-using TS3AudioBot.Config;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 //using System.Threading;
 
 namespace AfkChecker
@@ -24,10 +21,12 @@ namespace AfkChecker
 		private Connection serverView;
 		private bool TimerOn = false;
 		private int AFKTime = 30; // in Minutes
+		private int AmongAFKTime = 60; // in Minutes
 		private int AFKNotice; // in Minutes
-		// replace with the IDs of the excluded groups
-		//ivate int BotServerGroup = 11;
-		//private static Timer timer;
+		private int AmongAFKNotice; // in Minutes
+							   // replace with the IDs of the excluded groups
+							   //ivate int BotServerGroup = 11;
+							   //private static Timer timer;
 
 		//public static Dictionary<ClientId, Client> Clients { get; private set; }
 
@@ -45,6 +44,8 @@ namespace AfkChecker
 		{
 			// (ChannelId)18
 			AFKNotice = AFKTime - 1;
+			AmongAFKNotice = AmongAFKTime - 1;
+
 			//timer2 = new Timer(TimerCallback, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
 			//Timer timer = new Timer();
 			//timer.Interval = 10000; // 10 seconds
@@ -108,36 +109,65 @@ namespace AfkChecker
 								else
 								{
 									TimeSpan ts = ci.ClientIdleTime;
-									//Console.WriteLine(client.Value.Name + " is " + ts.Minutes + " minutes Idle");
-									if (ts.Minutes >= AFKNotice && ts.Minutes <= AFKTime)
-									{
-										Console.WriteLine(client.Value.Name + " is " + ts.Minutes + " minutes Idle");
-										Console.WriteLine("Sending "+ client.Value.Name+" a Notice");
-										// move to afk Channel
-										//ts3Client.
-										//await tsFullClient.ClientMove(client.Value.Id, (ChannelId)18);
-										await tsFullClient.SendPrivateMessage("[b][color=red]!!! Achtung !!![/color][/b] wenn du die nächste minute nichts sagst oder schreibst wirst du in den AFK Kanal gezogen", client.Value.Id);
 
-										//client.Value.Channel = (ChannelId)18;
+									// Check if in Among us channel
+									if (client.Value.Channel.ToString() == "460" || client.Value.Channel.ToString() == "461")
+									{
+										// In Among us channels AmongAFKTime
+										if (ts.Minutes >= AmongAFKNotice && ts.Minutes <= AmongAFKTime)
+										{
+											//Console.WriteLine(client.Value.Name + " is " + ts.Minutes + " minutes Idle");
+											//Console.WriteLine("Sending "+ client.Value.Name+" a Notice");
+											// move to afk Channel
+											//ts3Client.
+											//await tsFullClient.ClientMove(client.Value.Id, (ChannelId)18);
+											await tsFullClient.SendPrivateMessage("[b][color=red]!!! Attention !!![/color][/b] if you don't say or write anything for the next minute you will be pulled into the AFK channel", client.Value.Id);
+
+											//client.Value.Channel = (ChannelId)18;
+										}
+										if (ts.Minutes >= AmongAFKTime)
+										{
+											Console.WriteLine(client.Value.Name + " is " + ts.Minutes + " minutes Idle");
+											Console.WriteLine("Sending " + client.Value.Name + " to AFK Channel");
+											// move to afk Channel
+											//ts3Client.
+											await tsFullClient.ClientMove(client.Value.Id, (ChannelId)18);
+											await tsFullClient.PokeClient("Moved you into the AFK channel because you haven't said anything for more than 60 minutes", client.Value.Id);
+
+											//client.Value.Channel = (ChannelId)18;
+										}
+										//Console.WriteLine("Already in Afk channel");
 									}
-									if (ts.Minutes >= AFKTime)
+									else
 									{
-										Console.WriteLine(client.Value.Name + " is " + ts.Minutes + " minutes Idle");
-										Console.WriteLine("Sending "+ client.Value.Name+" to AFK Channel");
-										// move to afk Channel
-										//ts3Client.
-										await tsFullClient.ClientMove(client.Value.Id, (ChannelId)18);
-										await tsFullClient.PokeClient("Verschiebe dich in den AFK Kanal da du länger als 30 min. nichts gesagt hast", client.Value.Id);
+										//Console.WriteLine(client.Value.Name + " is " + ts.Minutes + " minutes Idle");
+										if (ts.Minutes >= AFKNotice && ts.Minutes <= AFKTime)
+										{
+											//Console.WriteLine(client.Value.Name + " is " + ts.Minutes + " minutes Idle");
+											//Console.WriteLine("Sending "+ client.Value.Name+" a Notice");
+											// move to afk Channel
+											//ts3Client.
+											//await tsFullClient.ClientMove(client.Value.Id, (ChannelId)18);
+											await tsFullClient.SendPrivateMessage("[b][color=red]!!! Attention !!![/color][/b] if you don't say or write anything for the next minute you will be pulled into the AFK channel", client.Value.Id);
 
-										//client.Value.Channel = (ChannelId)18;
+											//client.Value.Channel = (ChannelId)18;
+										}
+										if (ts.Minutes >= AFKTime)
+										{
+											Console.WriteLine(client.Value.Name + " is " + ts.Minutes + " minutes Idle");
+											Console.WriteLine("Sending " + client.Value.Name + " to AFK Channel");
+											// move to afk Channel
+											//ts3Client.
+											await tsFullClient.ClientMove(client.Value.Id, (ChannelId)18);
+											await tsFullClient.PokeClient("Moved you into the AFK channel because you haven't said anything for more than 30 minutes", client.Value.Id);
+
+											//client.Value.Channel = (ChannelId)18;
+										}
 									}
 								}
 							}
-
 						}
 					}
-
-
 				}
 			}
 			catch(Exception e)

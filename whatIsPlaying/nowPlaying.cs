@@ -80,7 +80,7 @@ Dein [b][color=#24336b]K[/color][color=#0095db]B[/color][/b] - [color=#24336b]Te
 		{
 			var self = serverView.OwnClient;
 			string currentTitle = await YouTube.getTitleFromUrl(playManager.CurrentPlayData.SourceLink);
-			await ts3Client.SendChannelMessage("[b]"+currentTitle + "[/b] wird abgespielt");
+			await ts3Client.SendChannelMessage("Playing [b]"+currentTitle + "[/b]");
 			//await ts3Client.SendChannelMessage("Song wird abgespielt");
 		}
 
@@ -92,12 +92,12 @@ Dein [b][color=#24336b]K[/color][color=#0095db]B[/color][/b] - [color=#24336b]Te
 		private async void OnBotMoved(object sender, IEnumerable<ClientMoved> clients)
 		{
 			string helpMessage = @"
-Um Musik ab zu spielen benutze folgende Befehle:
-[b][color=red]!play[/color] [color=blue]<dein link>[/color][/b] oder [b][color=red]!yt [/color][color=blue]<dein link>[/color][/b] - Achtung der Song wird direkt abgespielt!
-[b][color=red]!add [/color][color=blue]<dein link>[/color][/b] Der Song an die aktuelle Playliste angehangen.
-[b][color=red]!search from youtube [/color][color=blue]'dein suchtext'[/color][/b] Um auf YouTube zu suchen. [b][color=green](die '' sind wichtig)!![/color][/b]
+To play music use the following commands:
+[b][color=red]!play[/color] [color=blue]<your link>[/color][/b] or [b][color=red]!yt [/color][color=blue]<your link>[/color][/b] - Attention the song will be played directly!
+[b][color=red]!add [/color][color=blue]<your link>[/color][/b]The song is appended to the current playlist.
+[b][color=red]!yts [/color][color=blue]'your searchtext'[/color][/b] To search on YouTube. [b][color=green](the '' are important)!!![/color][/b]
 
-[b][color=red]!help[/color][/b] für eine Ausführliche Hilfe." + msgFoot;
+[b][color=red]!help[/color][/b] for detailed help." + msgFoot;
 			try
 			{
 				var me = await tsFullClient.WhoAmI();
@@ -139,7 +139,7 @@ Um Musik ab zu spielen benutze folgende Befehle:
 			if (file != null)
 			{
 				var filename = Path.GetFileName(file);
-				Console.WriteLine("File found:"+ filename);
+				//Console.WriteLine("File found:"+ filename);
 				await playManager.Play(invoker, filename);
 				return filename+" gefunden und wird abgespielt!";
 			}

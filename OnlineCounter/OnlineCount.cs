@@ -2,20 +2,13 @@ using System;
 using System.Threading.Tasks;
 using TS3AudioBot;
 using TS3AudioBot.Audio;
-using TS3AudioBot.CommandSystem;
 using TS3AudioBot.Plugins;
 using TSLib.Full.Book;
 using TSLib;
-using TSLib.Commands;
 using TSLib.Full;
 using TSLib.Messages;
-using TS3AudioBot.Config;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Linq;
-using System.Collections;
-//using System.IO;
-//using System.Text.Json;
 
 namespace OnlineCounter
 {
@@ -177,7 +170,7 @@ namespace OnlineCounter
 				userIDS.Clear();
 				//TSuserDB.DeleteAllData(jsonFilePath);
 				CheckOnlineUsers(true);
-				ts3Client.SendServerMessage("[b][color=red]Online Counter wurde zurückgesetzt![/color][/b]");
+				ts3Client.SendServerMessage("[b][color=red]Online Counter Reset![/color][/b]");
 			}
 			//tsFullClient.SendGlobalMessage("[b][color=red]Online Counter wurde zurückgesetzt![/color][/b]");
 			
@@ -187,7 +180,7 @@ namespace OnlineCounter
 		{
 			lock (countLock)
 			{
-				return $"[cspacer73]Heute {count} von {countToday} online";
+				return $"[cspacer73]Today {count} of {countToday} online";
 				//return $"[cspacer73] {count} users online today";
 			}
 		}
@@ -200,7 +193,7 @@ namespace OnlineCounter
 				if (userNames.Count <= 0)
 				{
 					// No usernames
-					usernameList = "Keine Benutzer Online";
+					usernameList = "No user Online";
 				}
 				else
 				{
@@ -209,7 +202,7 @@ namespace OnlineCounter
 						usernameList = usernameList + "- " + user + "\n";
 					}
 				}
-				string newChanDis = $"Zuletzt zurückgesetzt: {lastResetTime}\n\n[b]Benutzerliste:[/b]\n{usernameList}";
+				string newChanDis = $"Last Reset: {lastResetTime}\n\n[b]Userlist:[/b]\n{usernameList}";
 				ChannelId channelId = new ChannelId(channelToUpdateId);
 
 				//await tsFullClient.ChannelEdit(currentChannel, codec: defaultCodec, codecQuality: defaultCodecQuality);

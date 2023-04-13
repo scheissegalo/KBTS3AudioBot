@@ -1,19 +1,12 @@
-using System;
 using System.Threading.Tasks;
 using TS3AudioBot;
 using TS3AudioBot.Audio;
-using TS3AudioBot.CommandSystem;
 using TS3AudioBot.Plugins;
 using TSLib.Full.Book;
 using TSLib;
-using TSLib.Commands;
 using TSLib.Full;
 using TSLib.Messages;
-using TS3AudioBot.Config;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Linq;
-using System.Collections;
 
 namespace NewUserCheck
 {

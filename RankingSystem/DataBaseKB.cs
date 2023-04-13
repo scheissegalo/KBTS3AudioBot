@@ -7,20 +7,11 @@ using TS3AudioBot.CommandSystem;
 using TS3AudioBot.Plugins;
 using TSLib.Full.Book;
 using TSLib;
-using TSLib.Commands;
 using TSLib.Full;
-using TSLib.Messages;
 using LiteDB;
-using Microsoft.VisualBasic;
 using System.Linq;
-using System.Net.Mail;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TS3AudioBot.Environment;
-using System.IO;
-using Nett;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Org.BouncyCastle.Asn1;
 
 namespace RankingSystem
 {
@@ -126,11 +117,11 @@ namespace RankingSystem
 
 				// Update the user's data in the database
 				usersCollection.Update(user);
-				return $"Benutzer {user.Name} aktualisiert. Neue Zeit: {user.OnlineTime.TotalDays} Tage, {user.OnlineTime.Hours} Stunden und {user.OnlineTime.Minutes} Minuten" ;
+				return $"User {user.Name} changed. New time: {user.OnlineTime.TotalDays} Days, {user.OnlineTime.Hours} hours and {user.OnlineTime.Minutes} minutes" ;
 			}
 			else
 			{
-				return "Benutzer nicht gefunden.";
+				return "User not found.";
 			}
 		}
 
@@ -155,11 +146,11 @@ namespace RankingSystem
 				// Update the user's data in the database
 				usersCollection.Update(user);
 
-				return $"Benutzer {user.Name} aktualisiert. Neue Zeit: {user.OnlineTime.TotalDays} Tage, {user.OnlineTime.Hours} Stunden und {user.OnlineTime.Minutes} Minuten";
+				return $"User {user.Name} changed. New time: {user.OnlineTime.TotalDays} Days, {user.OnlineTime.Hours} hours and {user.OnlineTime.Minutes} minutes";
 			}
 			else
 			{
-				return "Benutzer nicht gefunden.";
+				return "User not found.";
 			}
 			//return "Nichts gefunden!";
 			//}
@@ -173,7 +164,7 @@ namespace RankingSystem
 			var usersCollection = db.GetCollection<User>("users");
 			//usersCollection.Delete(Query.All());
 
-			return "Datenbank Gesäubert";
+			return "Database Cleaned";
 			//}
 		}
 
@@ -308,7 +299,7 @@ namespace RankingSystem
 							continue;
 						}
 
-						Console.WriteLine("*********** USER ***********");
+						//Console.WriteLine("*********** USER ***********");
 						//Console.WriteLine("Valid Client");
 
 
@@ -326,7 +317,7 @@ namespace RankingSystem
 
 								DBusers.Update(existingUser);
 								_users.Add(existingUser.UserID, existingUser);
-								Console.WriteLine("Existing user loadet: " + existingUser.Name);
+								//Console.WriteLine("Existing user loadet: " + existingUser.Name);
 							}
 							else
 							{
@@ -350,7 +341,7 @@ namespace RankingSystem
 								_users.Add(NewUser.UserID, NewUser);
 								// Add to DB
 								DBusers.Insert(NewUser);
-								Console.WriteLine("New User Created: " + NewUser.Name);
+								//Console.WriteLine("New User Created: " + NewUser.Name);
 							}
 						}
 
@@ -362,24 +353,24 @@ namespace RankingSystem
 						if (GetUserCountFromChannelId(fulluser.Value.ChannelId) > 1)
 						{
 							UpdateUser.IsAlone = false;
-							Console.WriteLine("User is NOT Alone in Channel");
+							//Console.WriteLine("User is NOT Alone in Channel");
 						}
 						else
 						{
 							UpdateUser.IsAlone = true;
-							Console.WriteLine("User is Alone in Channel");
+							//Console.WriteLine("User is Alone in Channel");
 						}
 
 						// If user is AFK or Span Channel
 						if (fulluser.Value.ChannelId == (ChannelId)18 || fulluser.Value.ChannelId == (ChannelId)1)
 						{
 							UpdateUser.IsAfk = true;
-							Console.WriteLine("User is AFK");
+							//Console.WriteLine("User is AFK");
 						}
 						else
 						{
 							UpdateUser.IsAfk = false;
-							Console.WriteLine("User is NOT AFK");
+							//Console.WriteLine("User is NOT AFK");
 						}
 						var usrStatus = DBusers.FindOne(u => u.UserID == fulluser.Value.Uid.ToString());
 						// Check if the user is in the AFK channel or alone in their channel and skip
@@ -389,7 +380,7 @@ namespace RankingSystem
 							{
 								UpdateUser.OnlineTime = usrStatus.OnlineTime;
 								UpdateUser.UpdateTime = false;
-								await ts3Client.SendServerMessage("[b][color=red]"+UpdateUser.Name+" hat seine Onlinezeit geändert! "+ usrStatus.OnlineTime.TotalDays + " Tage, "+ usrStatus.OnlineTime.Hours + " Sunden und "+ usrStatus.OnlineTime.Minutes + " Minuten[/color][/b]");
+								await ts3Client.SendServerMessage("[b][color=red]"+UpdateUser.Name+" online time changed! "+ usrStatus.OnlineTime.TotalDays + " Days, "+ usrStatus.OnlineTime.Hours + " hours and "+ usrStatus.OnlineTime.Minutes + " minutes[/color][/b]");
 							}
 							else
 							{
@@ -402,7 +393,7 @@ namespace RankingSystem
 
 							// Get current Server Group check if user already has grroup addet
 
-							Console.WriteLine("DB Group: " + UpdateUser.RankGroupInt+" Need group: "+ GetServerGroup(UpdateUser.OnlineTime).Value.ToString());
+							//Console.WriteLine("DB Group: " + UpdateUser.RankGroupInt+" Need group: "+ GetServerGroup(UpdateUser.OnlineTime).Value.ToString());
 
 							//UpdateUser.RankGroupInt = GetServerGroup(UpdateUser.OnlineTime).Value;
 
@@ -419,7 +410,7 @@ namespace RankingSystem
 									hasGroup = userGroups.Value.Any(g => g.ServerGroupId == serverGroupInfo.ServerGroup);
 									if (hasGroup)
 									{
-										Console.WriteLine("Group removed");
+										//Console.WriteLine("Group removed");
 										// if user has Old Group Remove it
 										await tsFullClient.ServerGroupDelClient(serverGroupInfo.ServerGroup, newId.ClientDbId);
 									}
@@ -435,23 +426,23 @@ namespace RankingSystem
 										hasGroup = userGroups.Value.Any(g => g.ServerGroupId == serverGroupInfo.ServerGroup);
 										if (hasGroup)
 										{
-											Console.WriteLine("Group removed");
+											//Console.WriteLine("Group removed");
 											// if user has Old Group Remove it
 											await tsFullClient.ServerGroupDelClient(serverGroupInfo.ServerGroup, newId.ClientDbId);
 										}
 									}
-									Console.WriteLine("Server Group addet");
+									//Console.WriteLine("Server Group addet");
 									await tsFullClient.ServerGroupAddClient(GetServerGroup(UpdateUser.OnlineTime), newId.ClientDbId);
 								}
 								//Check if user has group attached
 								bool hasRightGroup = userGroups.Value.Any(g => g.ServerGroupId == GetServerGroup(UpdateUser.OnlineTime));
 								if (hasRightGroup)
 								{
-									Console.WriteLine("User has right group attached "+ GetServerGroup(UpdateUser.OnlineTime));
+									//Console.WriteLine("User has right group attached "+ GetServerGroup(UpdateUser.OnlineTime));
 								}
 								else
 								{
-									Console.WriteLine("Reattaching group "+ GetServerGroup(UpdateUser.OnlineTime));
+									//Console.WriteLine("Reattaching group "+ GetServerGroup(UpdateUser.OnlineTime));
 									await tsFullClient.ServerGroupAddClient(GetServerGroup(UpdateUser.OnlineTime), newId.ClientDbId);
 								}
 
@@ -464,7 +455,7 @@ namespace RankingSystem
 							// Update the user's last update time
 							UpdateUser.LastUpdate = DateTime.Now;
 
-							Console.WriteLine(fulluser.Value.Name + " Online Time: " + Math.Round(UpdateUser.OnlineTime.TotalDays)+" Tage");
+							//Console.WriteLine(fulluser.Value.Name + " Online Time: " + Math.Round(UpdateUser.OnlineTime.TotalDays)+" Tage");
 
 							// Save the user's data to the database
 							DBusers.Update(UpdateUser);
@@ -473,9 +464,9 @@ namespace RankingSystem
 						}
 						else
 						{
-							Console.WriteLine("Ignoring AFK or Alone User");
+							//Console.WriteLine("Ignoring AFK or Alone User");
 						}
-						Console.WriteLine("*********** USER ***********");
+						//Console.WriteLine("*********** USER ***********");
 
 					}
 
@@ -495,13 +486,13 @@ namespace RankingSystem
 							if (user.IsAfk || user.IsAlone)
 							{
 								deleteClient = true;
-								Console.WriteLine(user.Name + " User AFK Continue");
+								//Console.WriteLine(user.Name + " User AFK Continue");
 								continue;
 
 							}
 							else
 							{
-								Console.WriteLine(user.Name + " User found Continue");
+								//Console.WriteLine(user.Name + " User found Continue");
 								deleteClient = false;
 								break;
 							}
@@ -518,7 +509,7 @@ namespace RankingSystem
 				foreach (var userId in usersToRemove)
 				{
 					_users.Remove(userId);
-					Console.WriteLine(userId + " deleted from _user");
+					//Console.WriteLine(userId + " deleted from _user");
 				}
 			}
 			catch (Exception ex)
@@ -595,7 +586,7 @@ namespace RankingSystem
 							// Get the client uptime (in seconds) for the user
 							TimeSpan conTime = clientOnlineTime.Value.ConnectedTime;
 							//ulong uptime = ts3Client.GetClientUptime(clientId).Value;
-							Console.WriteLine("Connection Time: "+ conTime);
+							//Console.WriteLine("Connection Time: "+ conTime);
 
 							var adduser = new User { Name = user.Name, UserID = user.Uid?.ToString(), Time = 0 };
 							//users.Insert(adduser);
