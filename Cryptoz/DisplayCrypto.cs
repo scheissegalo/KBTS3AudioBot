@@ -44,8 +44,8 @@ namespace Cryptoz
 
 		public void Initialize()
 		{
-			//StartLoop();
-			GetVotes();
+			StartLoop();
+			//GetVotes();
 		}
 
 		private async void StartLoop()
