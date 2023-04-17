@@ -1,20 +1,15 @@
-using System;
 using System.Threading.Tasks;
 using TS3AudioBot;
 using TS3AudioBot.Audio;
-using TS3AudioBot.CommandSystem;
 using TS3AudioBot.Plugins;
 using TSLib.Full.Book;
 using TSLib;
-using TSLib.Commands;
 using TSLib.Full;
-using TSLib.Messages;
-using TS3AudioBot.Config;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Linq;
-using System.Collections;
 using System.Net.Http;
+using System.Net;
+using Newtonsoft.Json;
+using System;
+using Heijden.DNS;
 
 namespace Cryptoz
 {
@@ -35,6 +30,8 @@ namespace Cryptoz
 		private string Gold = "http://north-industries.com/getcry.php?cry=GOLD";
 		private readonly ulong GOLDchannel = 269; // replace with the ID of the channel to update
 
+		private readonly ulong ServerVotesChannel = 466; // 449 local | 466 Remote | replace with the ID of the channel to update
+
 		private readonly int UpdateInterval = 90; //min
 
 		public DisplayCrypto(PlayManager playManager, Ts3Client ts3Client, Connection serverView, TsFullClient tsFull)
@@ -47,7 +44,8 @@ namespace Cryptoz
 
 		public void Initialize()
 		{
-			StartLoop();
+			//StartLoop();
+			GetVotes();
 		}
 
 		private async void StartLoop()
@@ -62,12 +60,49 @@ namespace Cryptoz
 					GetBTC();
 					GetETH();
 					GetGold();
+					GetVotes();
 					update = UpdateInterval;
 				}
 
 				update--;
 				await Task.Delay(60000); // 60000 1 min
 			}
+		}
+
+
+		private async void GetVotes()
+		{
+			using (var client = new WebClient())
+			{
+				string NewChannelName = "";
+				string userVotesList = "";
+				var responseVotes = client.DownloadString("https://teamspeak-servers.org/api/?object=servers&element=detail&key=s5b78c4OcL5UV6pDxTMnDeaMjNEotEUN6iA");
+				dynamic dataVotes = JsonConvert.DeserializeObject(responseVotes);
+				int serverRank = dataVotes.rank;
+				int serverVotes = dataVotes.votes;
+				NewChannelName = "[cspacer1231]Server Rank: "+ serverRank +" | Votes: "+ serverVotes;
+				//Console.WriteLine("Server Rank: {0}, Votes: {1}", serverRank, serverVotes);
+
+				var response = client.DownloadString("https://teamspeak-servers.org/api/?object=servers&element=voters&key=s5b78c4OcL5UV6pDxTMnDeaMjNEotEUN6iA&month=current&format=json");
+				dynamic data = JsonConvert.DeserializeObject(response);
+				var voters = data.voters;
+
+				foreach (var voter in voters)
+				{
+					string nickname = voter.nickname;
+					int votes = voter.votes;
+					//Console.WriteLine("Nickname: {0}, Votes: {1}", nickname, votes);
+					userVotesList = userVotesList + nickname + " = "+ votes+"\n";
+				}
+
+				userVotesList = userVotesList + "\n\n[url=https://teamspeak-servers.org/server/12137/vote/]Vote for US[/url]";
+				//Console.WriteLine(userVotesList);
+				string newChanDis = $"[b]User Vote List:[/b]\n{userVotesList}";
+				ChannelId channelId = new ChannelId(ServerVotesChannel);
+				await tsFullClient.ChannelEdit(channelId, name: NewChannelName, description: newChanDis);
+
+			}
+
 		}
 
 		private async void GetBTC()
@@ -79,6 +114,7 @@ namespace Cryptoz
 
 			await tsFullClient.ChannelEdit(channelId, name: btcData+" USD");
 		}
+
 
 		private async void GetETH()
 		{
