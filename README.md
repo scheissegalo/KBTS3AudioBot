@@ -1,22 +1,22 @@
-# TS3AudioBot
+# KBTS3AudioBot
 
 This is a open-source TeamSpeak3 bot, playing music and much more.  
 
-- **Got questions?** Check out our [Wiki](https://github.com/Splamy/TS3AudioBot/wiki), [FAQ](https://github.com/Splamy/TS3AudioBot/wiki/FAQ), or ask on our [![Join Gitter Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/TS3AudioBot/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
-- **Something's broken or it's complicated?** [Open an issue](https://github.com/Splamy/TS3AudioBot/issues/new/choose)
+- **Got questions?** Check out our [Wiki](https://github.com/scheissegalo/TS3AudioBot/wiki), [FAQ](https://github.com/scheissegalo/TS3AudioBot/wiki/FAQ).
+- **Something's broken or it's complicated?** [Open an issue](https://github.com/scheissegalo/TS3AudioBot/issues/new/choose)
   - Please use and fill out one of the templates we provide unless they are not applicable or you have a good reason not to.  
     This helps us getting through the technical stuff faster
   - Please keep issues in english, this makes it easier for everyone to participate and keeps issues relevant to link to.
 - **Want to support this Project?**
-  - You can discuss and suggest features. However the [backlog](https://github.com/Splamy/TS3AudioBot/projects/2) is large and feature requests will probably take time
+  - You can discuss and suggest features. However the [backlog](https://github.com/scheissegalo/TS3AudioBot/projects/2) is large and feature requests will probably take time
   - You can contribute code. This is always appreciated, please open an issue or contact a maintainer to discuss *before* you start.
-  - You can support me on [![Patreon][patreon-badge]][patreon-link] or [![Paypal][paypal-badge]][paypal-link]
+  - You can support me on [![Paypal][paypal-badge]][paypal-link]
 
 [patreon-badge]: https://img.shields.io/badge/Patreon-Donate!-F96854.svg?logo=patreon&style=flat-square
 [patreon-link]: https://patreon.com/Splamy
 
 [paypal-badge]: https://img.shields.io/badge/Paypal-Donate!-00457C.svg?logo=paypal&style=flat-square
-[paypal-link]: https://paypal.me/Splamy
+[paypal-link]: https://www.paypal.com/donate/?hosted_button_id=XYX2V9GANFJK8
 
 ## Features
 * Play Youtube and Soundcloud songs as well as stream Twitch (extensible with plugins)
@@ -30,13 +30,13 @@ This is a open-source TeamSpeak3 bot, playing music and much more.
 * Localization
 * Low CPU and memory with our self-written headless ts3 client
 
-To see what's planned and in progress take a look into our [Roadmap](https://github.com/Splamy/TS3AudioBot/projects/2).
+To see what's planned and in progress take a look into our [Roadmap](https://github.com/scheissegalo/TS3AudioBot/projects/2).
 
 ## Bot Commands
 The bot is fully operable via chat.  
 To get started write `!help` to the bot.  
 For all commands check out our live [OpenApiV3 generator](http://tab.splamy.de/openapi/index.html).  
-For an in-depth command tutorial see [here in the wiki](https://github.com/Splamy/TS3AudioBot/wiki/CommandSystem).
+For an in-depth command tutorial see [here in the wiki](https://github.com/scheissegalo/TS3AudioBot/wiki/CommandSystem).
 
 ## Install
 
@@ -46,11 +46,7 @@ Pick and download the build for your platform and liking:
 |  | Stable | Experimental |
 | -- | -- | -- |
 | | Versions are mostly considered stable but won't get bigger features as fast. | Will always have the latest and greatest but might not be fully stable or have broken features. |
-| Windows_x64 | [![Download](https://img.shields.io/badge/Download-master-green.svg)](https://splamy.de/api/nightly/ts3ab/master_win_x64/download) | [![Download](https://img.shields.io/badge/Download-develop-green.svg)](https://splamy.de/api/nightly/ts3ab/develop_win_x64/download) |
-| Linux_x64 | [![Download](https://img.shields.io/badge/Download-master-green.svg)](https://splamy.de/api/nightly/ts3ab/master_linux_x64/download) | [![Download](https://img.shields.io/badge/Download-develop-green.svg)](https://splamy.de/api/nightly/ts3ab/develop_linux_x64/download) |
-| Docker | [![Docker](https://img.shields.io/badge/Docker-0.11.0-0db7ed.svg)](https://github.com/getdrunkonmovies-com/TS3AudioBot_docker) (NOTE: This build is community-maintained. It comes with all dependencies as well as youtube-dl preconfigured) | - |
-
-(We have more builds like linux arm/arm64 and .NET framework dependent builds available on our [nightly server](https://splamy.de/Nightly#ts3ab))
+| Source | [![Download](https://img.shields.io/badge/Download-release-green.svg)](https://github.com/scheissegalo/KBTS3AudioBot/releases) | [![Download](https://img.shields.io/badge/Download-develop-green.svg)](https://github.com/scheissegalo/KBTS3AudioBot/releases) |
 
 #### Linux
 Install the required dependencies:
@@ -84,13 +80,13 @@ You can install the [youtube-dl](https://github.com/rg3/youtube-dl/) binary or s
 1. Run the bot with `./TS3AudioBot` (Linux) or `TS3AudioBot.exe` (Windows) and follow the setup instructions.
 1. (Optional) Close the bot and configure your `rights.toml` to your desires.
 You can use the template rules as suggested in the automatically generated file,
-or dive into the rights syntax [here](https://github.com/Splamy/TS3AudioBot/wiki/Rights).
+or dive into the rights syntax [here](https://github.com/scheissegalo/TS3AudioBot/wiki/Rights).
 Then start the bot again.
 1. (Optional, but highly recommended for everything to work properly).
    - Create a privilege key for the ServerAdmin group (or a group which has equivalent rights).
    - Send the bot in a private message `!bot setup <privilege key>`.
 1. Congratz, you're done! Enjoy listening to your favourite music, experimenting with the crazy command system or do whatever you whish to do ;).  
-For further reading check out the [CommandSystem](https://github.com/Splamy/TS3AudioBot/wiki/CommandSystem).
+For further reading check out the [CommandSystem](https://github.com/scheissegalo/TS3AudioBot/wiki/CommandSystem).
 
 ## Building manually
 
@@ -99,13 +95,13 @@ For further reading check out the [CommandSystem](https://github.com/Splamy/TS3A
 |[![Build status](https://ci.appveyor.com/api/projects/status/i7nrhqkbntdhwpxp/branch/master?svg=true)](https://ci.appveyor.com/project/Splamy/ts3audiobot/branch/master)|[![Build status](https://ci.appveyor.com/api/projects/status/i7nrhqkbntdhwpxp/branch/develop?svg=true)](https://ci.appveyor.com/project/Splamy/ts3audiobot/branch/develop)|
 
 ### Download
-Download the git repository with `git clone --recurse-submodules https://github.com/Splamy/TS3AudioBot.git`.
+Download the git repository with `git clone --recurse-submodules https://github.com/scheissegalo/TS3AudioBot.git`.
 
 #### Linux
 1. Get the latest `dotnet core 3.1` version by following [this tutorial](https://docs.microsoft.com/dotnet/core/install/linux-package-managers) and choose your platform
-1. Go into the directory of the repository with `cd TS3AudioBot`
-1. Execute `dotnet build --framework netcoreapp3.1 --configuration Release TS3AudioBot` to build the AudioBot
-1. The binary will be in `./TS3AudioBot/bin/Release/netcoreapp3.1` and can be run with `dotnet TS3AudioBot.dll`
+1. Go into the directory of the repository with `cd KBTS3AudioBot`
+1. Execute `dotnet build --framework netcoreapp3.1 --configuration Release KBTS3AudioBot` to build the AudioBot
+1. The binary will be in `./KBTS3AudioBot/bin/Release/netcoreapp3.1` and can be run with `dotnet KBTS3AudioBot.dll`
 
 #### Windows
 1. Make sure you have `Visual Studio` with the `dotnet core 3.1` development toolchain installed
@@ -127,8 +123,6 @@ Download the git repository with `git clone --recurse-submodules https://github.
 Join us on [Transifex](https://www.transifex.com/respeak/ts3audiobot/) to help translate  
 or in our [Gitter](https://gitter.im/TS3AudioBot/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link) to discuss or ask anything!  
 All help is appreciated :heart:
-
-Translations need to be manually approved and will then be automatically built and deployed to [our nightly server here](https://splamy.de/TS3AudioBot).
 
 ## License
 This project is licensed under [OSL-3.0](https://opensource.org/licenses/OSL-3.0).
