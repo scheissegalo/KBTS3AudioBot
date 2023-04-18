@@ -35,11 +35,11 @@ jobs:
             body: This is the release notes for version ${{ steps.tag.outputs.version }}
             draft: false
             prerelease: false
-        - name: Get the new tag version
-            id: tag
-            uses: mathieudutour/github-tag-action@v5
-            env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                DEFAULT_BUMP: minor
-                TAG_PREFIX: v
-                DRY_RUN: false
+      - name: Get the new tag version
+        id: tag
+        uses: mathieudutour/github-tag-action@v5
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            DEFAULT_BUMP: minor
+            TAG_PREFIX: v
+            DRY_RUN: false
