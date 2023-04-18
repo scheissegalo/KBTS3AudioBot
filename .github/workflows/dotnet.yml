@@ -24,15 +24,15 @@ jobs:
         run: dotnet build --no-restore
       - name: Test
         run: dotnet test --no-build --verbosity normal
-      - name: Configure git
-        run: |
-          git config --global user.email "bkarich@gmail.com"
-          git config --global user.name "Berni Karich"
-      - name: Create tag
-        run: git tag -a ${{ github.sha }} -m "Release ${{ github.sha }}"
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      - name: Push tag
-        run: git push --tags
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v0.0.2 # set the tag name here
+          release_name: Release 0.0.2 # set the release name here
+          body: |
+            This is the release notes for version 0.0.2
+          draft: false
+          prerelease: false
