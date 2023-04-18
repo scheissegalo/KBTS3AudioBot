@@ -28,7 +28,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptoz", "Cryptoz\Cryptoz.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RankingSystem", "RankingSystem\RankingSystem.csproj", "{60A7174E-BD43-4966-A80C-65E164A3D1DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewUserCheck", "NewUserCheck\NewUserCheck.csproj", "{0E5C8233-9685-4B7A-835B-9B829B08C8EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewUserCheck", "NewUserCheck\NewUserCheck.csproj", "{0E5C8233-9685-4B7A-835B-9B829B08C8EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer", "GameServer\GameServer.csproj", "{771A3526-BAEA-4FED-AD94-B09C7F61487F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,6 +78,10 @@ Global
 		{0E5C8233-9685-4B7A-835B-9B829B08C8EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E5C8233-9685-4B7A-835B-9B829B08C8EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E5C8233-9685-4B7A-835B-9B829B08C8EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{771A3526-BAEA-4FED-AD94-B09C7F61487F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{771A3526-BAEA-4FED-AD94-B09C7F61487F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{771A3526-BAEA-4FED-AD94-B09C7F61487F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{771A3526-BAEA-4FED-AD94-B09C7F61487F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
