@@ -511,6 +511,7 @@ namespace TS3AudioBot
 			tmb.AppendLine("KBAudioBot zu deinen Diensten!");
 			tmb.AppendLine("Um los zu legen benutze einer der folgenden Befehle:");
 			tmb.Append("!help play", HelpCommand).AppendLine(" : Grundlage für direkte Wiedergabe");
+			tmb.Append("!help yt", HelpCommand).AppendLine(" : Grundlage für direkte Wiedergabe");
 			tmb.Append("!help add", HelpCommand).AppendLine(" : Grundlage für wiedergabe mit Playliste");
 			tmb.Append("!help playlists", HelpCommand).AppendLine(" : Playlisten verwalten");
 			tmb.Append("!help history", HelpCommand).AppendLine(" : Grundlagen Verlauf");
@@ -595,6 +596,19 @@ namespace TS3AudioBot
 			var tmb = new TextModBuilder(callerInfo.IsColor);
 			tmb.AppendLine("KBAudioBot zu deinen Diensten!");
 			tmb.AppendLine("[b]!play <url>[/b] - Spielt den stream von Youtube, Soundcloud etc");
+			tmb.AppendLine("Achtung [b]!play[/b] überschreibt die aktuelle wiedergabe!!!");
+			tmb.AppendLine("Wenn du statdessen den Song in die Playliste hinzufügen möchtest benutze bitte [b]!add <url>[/b]");
+
+			var str = tmb.ToString();
+			return str;
+		}
+
+		[Command("help yt", "_undocumented")]
+		public static string CommandHelpYt(CallerInfo callerInfo)
+		{
+			var tmb = new TextModBuilder(callerInfo.IsColor);
+			tmb.AppendLine("KBAudioBot zu deinen Diensten!");
+			tmb.AppendLine("[b]!yt <url>[/b] - Spielt den stream von Youtube, Soundcloud etc");
 			tmb.AppendLine("Achtung [b]!play[/b] überschreibt die aktuelle wiedergabe!!!");
 			tmb.AppendLine("Wenn du statdessen den Song in die Playliste hinzufügen möchtest benutze bitte [b]!add <url>[/b]");
 
@@ -1232,7 +1246,7 @@ namespace TS3AudioBot
 
 		[Command("yt")]
 		public static async Task CommandYt(PlayManager playManager, InvokerData invoker, string url, params string[] attributes)
-	=> await playManager.Play(invoker, url, meta: PlayManager.ParseAttributes(attributes));
+			=> await playManager.Play(invoker, url, meta: PlayManager.ParseAttributes(attributes));
 
 		[Command("yt")]
 		public static async Task CommandYt(PlayManager playManager, InvokerData invoker, IAudioResourceResult rsc, params string[] attributes)
