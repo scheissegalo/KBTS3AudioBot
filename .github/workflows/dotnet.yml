@@ -30,9 +30,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
-          tag_name: v0.0.1 # set the tag name here
-          release_name: Release 0.0.1 # set the release name here
-          body: |
-            This is the release notes for version 0.0.1
-          draft: false
-          prerelease: false
+            tag_name: v${{ steps.tag.outputs.version }}
+            release_name: Release ${{ steps.tag.outputs.version }}
+            body: This is the release notes for version ${{ steps.tag.outputs.version }}
+            draft: false
+            prerelease: false
+        - name: Get the new tag version
+            id: tag
+            uses: mathieudutour/github-tag-action@v5
+            env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                DEFAULT_BUMP: minor
+                TAG_PREFIX: v
+                DRY_RUN: false
