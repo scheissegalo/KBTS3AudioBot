@@ -990,4 +990,7 @@ with the id {1}?</value>
   <data name="cmd_jump_help" xml:space="preserve">
     <value>Jumps to the requested index in the current queue and starts playing.</value>
   </data>
+  <data name="cmd_yt_help" xml:space="preserve">
+    <value>Plays the song from the given link</value>
+  </data>
 </root>
