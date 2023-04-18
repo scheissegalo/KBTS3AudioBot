@@ -9,8 +9,14 @@
     <ProjectReference Include="..\TSLib\TSLib.csproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="del /q &quot;$(SolutionDir)TS3AudioBot\bin\Debug\netcoreapp3.1\Plugins\$(TargetFileName)&quot;&#xD;&#xA;xcopy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)TS3AudioBot\bin\Debug\netcoreapp3.1\Plugins&quot;" />
+  <Target Name="CustomAfterBuild" AfterTargets="Build">
+    <Message Text="After party stardet" Importance="high" />
+    <ItemGroup>
+      <PluginFiles Include="$(TargetDir)$(TargetName).dll" />
+    </ItemGroup>
+    <Message Text="Copying @(PluginFiles) to $(SolutionDir)TS3AudioBot\bin\Debug\netcoreapp3.1\Plugins\" Importance="high" />
+    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(SolutionDir)TS3AudioBot\bin\Debug\netcoreapp3.1\Plugins\" />
   </Target>
 
 </Project>
+
