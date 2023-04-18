@@ -25,9 +25,9 @@ jobs:
       - name: Test
         run: dotnet test --no-build --verbosity normal
       - name: Configure git
-          run: |
-            git config --global user.email "bkarich@gmail.com"
-            git config --global user.name "Berni Karich"
+        run: |
+          git config --global user.email "bkarich@gmail.com"
+          git config --global user.name "Berni Karich"
       - name: Create tag
         run: git tag -a ${{ github.sha }} -m "Release ${{ github.sha }}"
         env:
