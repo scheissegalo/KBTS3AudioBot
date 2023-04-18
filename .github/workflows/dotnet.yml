@@ -37,17 +37,17 @@ jobs:
           npm install -g semantic-release @semantic-release/git @semantic-release/changelog
       - name: Analyze commits
         id: analyze_commits
-        uses: semantic-release/commit-analyzer@v7
+        uses: semantic-release/commit-analyzer@v8
         with:
-          preset: "conventionalcommits"
+          config: conventional-changelog-conventionalcommits
       - name: Generate changelog
         id: changelog
-        uses: semantic-release/changelog@v5
+        uses: semantic-release/changelog@v6
         with:
-          preset: "conventionalcommits"
+          config: conventional-changelog-conventionalcommits
       - name: Get the new tag version
         id: tag
-        uses: mathieudutour/github-tag-action@v5
+        uses: mathieudutour/github-tag-action@v7
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
           DEFAULT_BUMP: minor
