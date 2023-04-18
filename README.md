@@ -46,7 +46,7 @@ Pick and download the build for your platform and liking:
 |  | Stable | Experimental |
 | -- | -- | -- |
 | | Versions are mostly considered stable but won't get bigger features as fast. | Will always have the latest and greatest but might not be fully stable or have broken features. |
-| Source | [![Download](https://github.com/scheissegalo/KBTS3AudioBot/releases) | [![Download](https://img.shields.io/badge/Download-develop-green.svg)](https://github.com/scheissegalo/KBTS3AudioBot/releases) |
+| Source | [![Download](https://img.shields.io/badge/Download-release-green.svg)](https://github.com/scheissegalo/KBTS3AudioBot/releases) | [![Download](https://img.shields.io/badge/Download-develop-green.svg)](https://github.com/scheissegalo/KBTS3AudioBot/releases) |
 
 #### Linux
 Install the required dependencies:
