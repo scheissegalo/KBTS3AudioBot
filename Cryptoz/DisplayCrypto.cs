@@ -21,18 +21,22 @@ namespace Cryptoz
 		private Connection serverView;
 
 		// endpoints
-		private string BTC = "http://north-industries.com/getcry.php?cry=BTC";
+		private string BTC = "https://north-industries.com/getcry.php?cry=BTC";
 		private readonly ulong BTCchannel = 267; // replace with the ID of the channel to update
 
-		private string ETH = "http://north-industries.com/getcry.php?cry=ETH";
+		private string ETH = "https://north-industries.com/getcry.php?cry=ETH";
 		private readonly ulong ETHchannel = 268; // replace with the ID of the channel to update
 
-		private string Gold = "http://north-industries.com/getcry.php?cry=GOLD";
-		private readonly ulong GOLDchannel = 269; // replace with the ID of the channel to update
+		private string Gold = "https://north-industries.com/getcry.php?cry=GOLD";
+		private readonly ulong GOLDchannel = 486; // replace with the ID of the channel to update
+
+		private string Silver = "https://north-industries.com/getcry.php?cry=SILVER";
+		private readonly ulong SILVERchannel = 488; // replace with the ID of the channel to update
 
 		private readonly ulong ServerVotesChannel = 466; // 449 local | 466 Remote | replace with the ID of the channel to update
 
 		private readonly int UpdateInterval = 90; //min
+		//private readonly int GoldUpdateInterval = 480; //min
 
 		public DisplayCrypto(PlayManager playManager, Ts3Client ts3Client, Connection serverView, TsFullClient tsFull)
 		{
@@ -45,6 +49,7 @@ namespace Cryptoz
 		public void Initialize()
 		{
 			StartLoop();
+			//StartGoldLoop();
 			//GetVotes();
 		}
 
@@ -60,11 +65,33 @@ namespace Cryptoz
 					GetBTC();
 					GetETH();
 					GetGold();
+					GetSilver();
 					GetVotes();
 					update = UpdateInterval;
 				}
 
 				update--;
+				await Task.Delay(60000); // 60000 1 min
+			}
+		}
+
+		private async void StartGoldLoop()
+		{
+			//int update = GoldUpdateInterval;
+			while (true)
+			{
+				//Console.WriteLine($"Tick: Update:{update}");
+				//if (update <= 0)
+				//{
+					// Timer end
+					//GetBTC();
+					//GetETH();
+					//GetGold();
+					//GetVotes();
+					//update = GoldUpdateInterval;
+				//}
+
+				//update--;
 				await Task.Delay(60000); // 60000 1 min
 			}
 		}
@@ -132,8 +159,20 @@ namespace Cryptoz
 			HttpClient client = new HttpClient();
 
 			string goldData = await client.GetStringAsync(Gold);
+			//string goldData = "0";
 
-			await tsFullClient.ChannelEdit(channelId, name: goldData + " EUR");
+			await tsFullClient.ChannelEdit(channelId, name: goldData + " USD");
+		}
+
+		private async void GetSilver()
+		{
+			ChannelId channelId = new ChannelId(SILVERchannel);
+			HttpClient client = new HttpClient();
+
+			string silverData = await client.GetStringAsync(Silver);
+			//string silverData = "0";
+
+			await tsFullClient.ChannelEdit(channelId, name: silverData + " USD");
 		}
 
 		public void Dispose()

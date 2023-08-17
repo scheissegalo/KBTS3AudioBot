@@ -17,24 +17,20 @@
 				<b-icon icon="robot"></b-icon>
 				<span>Bots</span>
 			</b-navbar-item>
-			<b-navbar-item tag="router-link" :to="{ path: '/openapi' }">
-				<b-icon icon="api"></b-icon>
-				<span>Api</span>
-			</b-navbar-item>
 		</template>
 
 		<template slot="end">
 			<b-tooltip label="Visit our Project" position="is-bottom">
-				<b-navbar-item tag="a" href="https://github.com/Splamy/TS3AudioBot" target="_blank">
+				<b-navbar-item tag="a" href="https://github.com/scheissegalo/KBTS3AudioBot" target="_blank">
 					<b-icon icon="github-circle"></b-icon>
-					<span class="is-hidden-desktop">Visit our Project</span>
+					<span class="is-hidden-desktop">Github</span>
 				</b-navbar-item>
 			</b-tooltip>
 
 			<b-tooltip label="Report a bug" position="is-bottom">
 				<b-navbar-item
 					tag="a"
-					href="https://github.com/Splamy/TS3AudioBot/issues/new/choose"
+					href="https://github.com/scheissegalo/KBTS3AudioBot/issues/new/choose"
 					target="_blank"
 				>
 					<b-icon icon="bug"></b-icon>
@@ -45,18 +41,11 @@
 			<b-tooltip label="Chat or ask for help" position="is-bottom">
 				<b-navbar-item
 					tag="a"
-					href="https://gitter.im/TS3AudioBot/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link"
+					href="https://app.north-industries.com/#/user/@admin:chat.north-industries.com"
 					target="_blank"
 				>
 					<b-icon icon="account-multiple"></b-icon>
 					<span class="is-hidden-desktop">Chat or ask for help</span>
-				</b-navbar-item>
-			</b-tooltip>
-
-			<b-tooltip label="Support this Project" position="is-bottom">
-				<b-navbar-item tag="a" href="https://www.patreon.com/bePatron?u=11604963" target="_blank">
-					<b-icon icon="account-heart"></b-icon>
-					<span class="is-hidden-desktop">Support this Project</span>
 				</b-navbar-item>
 			</b-tooltip>
 

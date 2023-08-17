@@ -3,8 +3,10 @@
 		<section class="hero is-primary" style="margin-top:3em; margin-bottom:5em;">
 			<div class="hero-body">
 				<div class="container">
-					<h1 class="title">TS3Audiobot</h1>
-					<h2 class="subtitle">The selfhosted music bot of your choice!</h2>
+					<h1 class="title">North Industries - TS3Audiobot</h1>
+					<h2 class="subtitle">You can recognize music bots by their orange-colored icon. Not all bots are music bots.
+
+Drag one of the music bots into your channel, and you can post YouTube links that the bot will automatically download and play. To post links, you need at least Member privileges.</h2>
 				</div>
 			</div>
 		</section>
@@ -57,12 +59,6 @@
 					</div>
 				</router-link>
 
-				<router-link to tag="a" class="tile is-parent">
-					<div class="tile is-child notification is-success has-text-centered">
-						<b-icon icon="emoticon-cool-outline" size="is-large"></b-icon>
-						<div class="content">Do something cool...</div>
-					</div>
-				</router-link>
 			</div>
 		</div>
 	</div>

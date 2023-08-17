@@ -59,8 +59,8 @@ namespace whatIsPlaying
 
 -----------------------------------------
 
-Dein [b][color=#24336b]K[/color][color=#0095db]B[/color][/b] - [color=#24336b]Teamspeak[/color][color=#0095db]Server[/color] Team.
-[URL=https://klabausterbeere.xyz]Home[/URL] | [URL=https://klabausterbeere.xyz/ts-viewer/]TS-Viewer[/URL] | [URL=https://klabausterbeere.xyz/ts-invites/#regeln]Regeln[/URL] | [URL=https://sinusbot.klabausterbeere.xyz/]Sinusbot GUI[/URL] | [URL=https://klabausterbeere.xyz/kb-chat-free/]KB-Chat[/URL] | [URL=https://meet.klabausterbeere.xyz/]KB-Meet[/URL]";
+Dein [b][color=#24336b]North[/color][color=#0095db]Industries[/color][/b] - Secure Gaming Services
+[URL=https://north-industries.com]Home[/URL] | [URL=https://north-industries.com/ts-viewer/]TS-Viewer[/URL] | [URL=north-industries.com/ts-invites/#regeln]Guidelines/Help[/URL]";
 		}
 
 		private async void GetCurrentChannelId()

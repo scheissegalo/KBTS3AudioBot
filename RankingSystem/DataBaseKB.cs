@@ -1,6 +1,7 @@
 using System;
 //using System.Data.SqlClient;
 //using MySql.Data.MySqlClient;
+using System.IO;
 using TS3AudioBot;
 using TS3AudioBot.Audio;
 using TS3AudioBot.CommandSystem;
@@ -12,6 +13,7 @@ using LiteDB;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic;
 
 namespace RankingSystem
 {
@@ -21,11 +23,14 @@ namespace RankingSystem
 		private PlayManager playManager;
 		private Ts3Client ts3Client;
 		private Connection serverView;
+		private bool dbInitialized;
 
 		private readonly List<uint> excludedGroups = new List<uint> { 11, 47, 115 }; // replace with the IDs of the excluded groups
 		private readonly int UpdateInterval = 2; //min
 		private Dictionary<string, User> _users;
 		private List<ServerGroupInfo> _serverGroupList;
+
+		string logFilePath = "botlog.txt"; // Change this to your desired log file path
 
 		public DataBaseKB(PlayManager playManager, Ts3Client ts3Client, Connection serverView, TsFullClient tsFull)
 		{
@@ -254,6 +259,7 @@ namespace RankingSystem
 			while (true)
 			{
 				Console.WriteLine($"Tick: Update:{update}");
+				//LogToFile(logFilePath, $"Tick: Update:{update}");
 				if (update <= 0)
 				{
 					// Timer end
@@ -268,6 +274,7 @@ namespace RankingSystem
 
 		private async void InitDB()
 		{
+			dbInitialized = false;
 			Console.WriteLine("Updating Users");
 			var allUsers = await tsFullClient.ClientList();
 
@@ -281,6 +288,17 @@ namespace RankingSystem
 				{
 					var fulluser = await tsFullClient.ClientInfo(user.ClientId);
 					bool skipClient = false;
+
+					if (fulluser)
+					{
+						//Console.WriteLine("Database Fulluser Is not null "+ fulluser.Value.Name.ToString());
+					}
+					else
+					{
+						//Console.WriteLine("Database Fulluser is null!");
+						//LogToFile(logFilePath, "A user was null in Database");
+						continue;
+					}
 
 					if (fulluser.Value.ClientType.Equals(ClientType.Full))
 					{
@@ -472,49 +490,117 @@ namespace RankingSystem
 
 				}
 
-				// Remove any user from _users that was not found in allUsers
+				//// Remove any user from _users that was not found in allUsers
+				//var usersToRemove = new List<string>();
+				//foreach (var user in _users.Values)
+				//{
+				//	bool deleteClient = true;
+				//	foreach (var TSuser in allUsers.Value)
+				//	{
+				//		var fulluser = await tsFullClient.ClientInfo(TSuser.ClientId);
+
+				//		if (fulluser)
+				//		{
+				//			Console.WriteLine("Fulluser is not null! Database " + fulluser.Value.Name.ToString());
+				//		}
+				//		else
+				//		{
+				//			Console.WriteLine("Fulluser is null! Database");
+				//			//LogToFile(logFilePath, "A user was not null in Database");
+				//			return;
+				//		}
+
+				//		if (user.Id == fulluser.Value.Uid.ToString()) // NULL
+				//		{
+				//			if (user.IsAfk || user.IsAlone)
+				//			{
+				//				deleteClient = true;
+				//				//Console.WriteLine(user.Name + " User AFK Continue");
+				//				continue;
+
+				//			}
+				//			else
+				//			{
+				//				//Console.WriteLine(user.Name + " User found Continue");
+				//				deleteClient = false;
+				//				break;
+				//			}
+				//		}
+
+				//	}
+				//	if (deleteClient)
+				//	{
+				//		usersToRemove.Add(user.UserID);
+				//		//_users.Remove(user.UserID);
+
+				//	}
+				//}
+				//foreach (var userId in usersToRemove)
+				//{
+				//	_users.Remove(userId);
+				//	//Console.WriteLine(userId + " deleted from _user");
+				//}
+
 				var usersToRemove = new List<string>();
+
 				foreach (var user in _users.Values)
 				{
-					bool deleteClient = true;
+					bool deleteClient = false;
+
 					foreach (var TSuser in allUsers.Value)
 					{
 						var fulluser = await tsFullClient.ClientInfo(TSuser.ClientId);
 
-						if (user.Id == fulluser.Value.Uid.ToString())
+						if (fulluser)
 						{
-							if (user.IsAfk || user.IsAlone)
-							{
-								deleteClient = true;
-								//Console.WriteLine(user.Name + " User AFK Continue");
-								continue;
+							//Console.WriteLine("Fulluser is not null! Database " + fulluser.Value.Name.ToString());
 
-							}
-							else
+							if (user.Id == fulluser.Value.Uid.ToString())
 							{
-								//Console.WriteLine(user.Name + " User found Continue");
-								deleteClient = false;
-								break;
+								//foundInAllUsers = true;
+
+								if (user.IsAfk || user.IsAlone)
+								{
+									Console.WriteLine(user.Name + " - User AFK Continue");
+									deleteClient = true;
+								}
+								else
+								{
+									Console.WriteLine(user.Name + " - User in Party adding Points");
+									deleteClient = false;
+								}
+
+								break; // No need to continue searching in allUsers if a match is found
 							}
 						}
-
+						else
+						{
+							Console.WriteLine("Fulluser is null! Database");
+							//return;
+						}
 					}
+
 					if (deleteClient)
 					{
 						usersToRemove.Add(user.UserID);
 						//_users.Remove(user.UserID);
-						
+
 					}
 				}
+
 				foreach (var userId in usersToRemove)
 				{
 					_users.Remove(userId);
-					//Console.WriteLine(userId + " deleted from _user");
+					// Console.WriteLine(userId + " deleted from _users");
 				}
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.ToString());
+			}
+			finally
+			{
+				dbInitialized = true;
 			}
 
 		}
@@ -613,6 +699,15 @@ namespace RankingSystem
 				Console.WriteLine(ex.ToString());
 			}
 			
+		}
+
+		static void LogToFile(string filePath, string message)
+		{
+			using (StreamWriter writer = new StreamWriter(filePath, true))
+			{
+				string logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {message}";
+				writer.WriteLine(logEntry);
+			}
 		}
 
 		public void Dispose()

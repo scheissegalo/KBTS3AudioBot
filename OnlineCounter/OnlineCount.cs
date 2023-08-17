@@ -9,6 +9,8 @@ using TSLib.Full;
 using TSLib.Messages;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
+using Microsoft.VisualBasic;
 
 namespace OnlineCounter
 {
@@ -49,7 +51,8 @@ namespace OnlineCounter
 			tsFullClient.OnClientLeftView += OnUserDisconnected;
 			ResetCountPeriodically();
 			lastResetTime = DateTime.UtcNow;
-			CheckOnlineUsers(true);
+			//CheckOnlineUsers(true);
+			CheckOnlineUsersNeu(true);
 
 			//var userData = GetTsUserData();
 			//foreach (TSuserDB data in userData)
@@ -58,35 +61,105 @@ namespace OnlineCounter
 			//}
 			//TSuserDB newData = new TSuserDB();
 			//TSuserDB.DeleteAllData(jsonFilePath);
-			
+
 		}
 
 		private void OnUserConnected(object sender, IEnumerable<ClientEnterView> clients)
 		{
-			foreach (var user in clients)
-			{
-				if (user.ClientType.Equals(ClientType.Full))
-				{
-					//Console.WriteLine(clients);
-					CheckOnlineUsers(true);
-				}
-				else
-				{
-					//DateTime now = DateTime.Now;
-					//Console.WriteLine(now + " | " +user.Name + " Query");
-					continue;
-				}
-			}
+			//foreach (var user in clients)
+			//{
+			//if (user.ClientType.Equals(ClientType.Full))
+			//{
+			//Console.WriteLine("User connected: "+user.Uid.Value);
+			//CheckOnlineUsers(true);
+			//}
+			//else
+			//{
+			//DateTime now = DateTime.Now;
+			//Console.WriteLine(now + " | " +user.Name + " Query");
+			//	continue;
+			//}
+			//}
+			//Console.WriteLine("Connected: "+ clients);
+			CheckOnlineUsersNeu(true);
 		}
 
 		private void OnUserDisconnected(object sender, IEnumerable<ClientLeftView> clients)
 		{
-			CheckOnlineUsers(false);
+			//foreach (var user in clients)
+			//{
+				//if (user.ClientType.Equals(ClientType.Full))
+				//{
+				//var usrClientID = ts3Client.GetClientInfoById(user.ClientId);
+				//var usrClientIDFull = tsFullClient.GetClientUidFromClientId(user.ClientId);
+				//Console.WriteLine("User disconnected: " + user.ClientId);
+				//CheckOnlineUsers(true);
+			//}
+			//Console.WriteLine("Disconnected: " + clients);
+			
+			CheckOnlineUsersNeu(false);
 
-			foreach(var client in clients)
-			{
+			//foreach (var client in clients)
+			//{
 				//client.
+			//}
+		}
+
+		private async void CheckOnlineUsersNeu(bool connected)
+		{
+			if (isChecking) { return; }
+			isChecking = true;
+			//uint oldCount = count;
+
+			await Task.Delay(500); // Add a 500ms delay before starting the method
+
+			count = 0;
+			//int testcount = 0;
+			//bool skipCurrentClient = false;
+			foreach (var oneuser in serverView.Clients)
+			{
+				// Check if is full user
+				if (oneuser.Value.ClientType == ClientType.Full)
+				{
+					//Console.WriteLine("ID: " + oneuser.Value.Id.Value + " | Type: " + oneuser.Value.ClientType);
+
+					//Check if user is in excludet group
+					bool skipCurrentClient = false;
+					foreach (var sg in excludedGroups)
+					{
+						ServerGroupId newSG = (ServerGroupId)sg;
+						if (oneuser.Value.ServerGroups.Contains(newSG))
+						{
+							//Console.WriteLine("Skipping Bot");
+							skipCurrentClient = true;
+							break;
+						}
+					}
+
+					// Skip processing this user and move to the next iteration
+					if (skipCurrentClient)
+						continue;
+					// User is Fulluser and is not a Bot go on
+					bool containsUserID = userIDS.Any(item => item == oneuser.Value.Uid.Value.ToString());
+					count++;
+					if (connected && !containsUserID)
+					{
+						//testcount++;
+						countToday++;
+						userNames.Add(oneuser.Value.Name);
+						userIDS.Add(oneuser.Value.Uid.Value.ToString());
+						//Console.WriteLine("User Added: " + oneuser.Value.Name);
+					}
+
+
+					//Console.WriteLine("Full User ID: " + oneuser.Value.Uid.Value);
+					//Console.WriteLine("Full User Name: " + oneuser.Value.Name);
+
+				}
 			}
+			UpdateChannelName();
+			//Console.WriteLine("Currently "+ count + " users online of "+ countToday + " today");
+			isChecking = false;
 		}
 
 		private async void CheckOnlineUsers(bool connected)
@@ -99,6 +172,17 @@ namespace OnlineCounter
 			count = 0;
 			var allUsers = await tsFullClient.ClientList();
 
+			if (allUsers)
+			{
+				Console.WriteLine("List is not null!");
+			}
+			else
+			{
+				Console.WriteLine("List is null!");
+				return;
+			}
+		
+
 			try
 			{
 				foreach (var user in allUsers.Value)
@@ -106,6 +190,16 @@ namespace OnlineCounter
 
 					//var ServerGroupIDs = await tsFullClient.ServerGroupsByClientDbId(user.DatabaseId);
 					var fulluser = await tsFullClient.ClientInfo(user.ClientId);
+
+					if (fulluser)
+					{
+						Console.WriteLine("Fulluser is not null!");
+					}
+					else
+					{
+						Console.WriteLine("Fulluser is null!");
+						return;
+					}
 					//Valid Full CLient
 					bool skipClient = false;
 					bool containsUserID = userIDS.Any(item => item == fulluser.Value.Uid.ToString());
@@ -169,7 +263,8 @@ namespace OnlineCounter
 				userNames.Clear();
 				userIDS.Clear();
 				//TSuserDB.DeleteAllData(jsonFilePath);
-				CheckOnlineUsers(true);
+				//CheckOnlineUsers(true);
+				CheckOnlineUsersNeu(true);
 				ts3Client.SendServerMessage("[b][color=red]Online Counter Reset![/color][/b]");
 			}
 			//tsFullClient.SendGlobalMessage("[b][color=red]Online Counter wurde zurückgesetzt![/color][/b]");
@@ -203,11 +298,12 @@ namespace OnlineCounter
 					}
 				}
 				string newChanDis = $"Last Reset: {lastResetTime}\n\n[b]Userlist:[/b]\n{usernameList}";
+				string newChanTop = $"Last Reset: {lastResetTime}";
 				ChannelId channelId = new ChannelId(channelToUpdateId);
 
 				//await tsFullClient.ChannelEdit(currentChannel, codec: defaultCodec, codecQuality: defaultCodecQuality);
 				//Console.WriteLine("Channel name: " + GetChannelName());
-				await tsFullClient.ChannelEdit(channelId, name: GetChannelName(), description: newChanDis);
+				await tsFullClient.ChannelEdit(channelId, name: GetChannelName(), description: newChanDis, topic: newChanTop);
 				//$"UPDATE channels SET channel_name='{GetChannelName()}' WHERE channel_id={channelToUpdateId}";
 			}
 			catch (Exception ex)
