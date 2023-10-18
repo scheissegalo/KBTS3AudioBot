@@ -95,7 +95,8 @@ Dein [b][color=#24336b]North[/color][color=#0095db]Industries[/color][/b] - Secu
 To play music use the following commands:
 [b][color=red]!play[/color] [color=blue]<your link>[/color][/b] or [b][color=red]!yt [/color][color=blue]<your link>[/color][/b] - Attention the song will be played directly!
 [b][color=red]!add [/color][color=blue]<your link>[/color][/b]The song is appended to the current playlist.
-[b][color=red]!yts [/color][color=blue]'your searchtext'[/color][/b] To search on YouTube. [b][color=green](the '' are important)!!![/color][/b]
+[b][color=red]!yts [/color][color=blue]'your searchtext'[/color][/b] To search on YouTube. [b][color=green][/color][/b]
+[b][color=red]!ytp [/color][color=blue]'your searchtext'[/color][/b] To search on YouTube and play the first result. [b][color=green][/color][/b]
 
 [b][color=red]!help[/color][/b] for detailed help." + msgFoot;
 			try
