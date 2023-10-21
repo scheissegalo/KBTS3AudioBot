@@ -16,7 +16,7 @@ namespace AfkChecker
 	public class CheckAfk : IBotPlugin
 	{
 		private TsFullClient tsFullClient;
-		private PlayManager playManager;
+		//private PlayManager playManager;
 		private Ts3Client ts3Client;
 		private Connection serverView;
 		private bool TimerOn = false;
@@ -31,9 +31,9 @@ namespace AfkChecker
 		//public static Dictionary<ClientId, Client> Clients { get; private set; }
 
 		// Your dependencies will be injected into the constructor of your class.
-		public CheckAfk(PlayManager playManager, Ts3Client ts3Client, Connection serverView, TsFullClient tsFull)
+		public CheckAfk(Ts3Client ts3Client, Connection serverView, TsFullClient tsFull)
 		{
-			this.playManager = playManager;
+			//this.playManager = playManager;
 			this.ts3Client = ts3Client;
 			this.tsFullClient = tsFull;
 			this.serverView = serverView;

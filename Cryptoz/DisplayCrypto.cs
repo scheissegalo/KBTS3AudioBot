@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using TS3AudioBot;
-using TS3AudioBot.Audio;
 using TS3AudioBot.Plugins;
 using TSLib.Full.Book;
 using TSLib;
@@ -9,20 +8,17 @@ using System.Net.Http;
 using System.Net;
 using Newtonsoft.Json;
 using System;
-using Heijden.DNS;
-using System.Data;
 using System.Data.SQLite;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using TSLib.Messages;
+using TS3AudioBot.CommandSystem;
 
 namespace Cryptoz
 {
 	public class DisplayCrypto : IBotPlugin
 	{
 		private TsFullClient tsFullClient;
-		private PlayManager playManager;
+		//private PlayManager playManager;
 		private Ts3Client ts3Client;
 		private Connection serverView;
 
@@ -67,13 +63,19 @@ namespace Cryptoz
 			ServerGroup = (ServerGroupId)135 // Group A
 		};
 
-		public DisplayCrypto(PlayManager playManager, Ts3Client ts3Client, Connection serverView, TsFullClient tsFull)
+		public DisplayCrypto(Ts3Client ts3Client, Connection serverView, TsFullClient tsFull)
 		{
-			this.playManager = playManager;
+			//this.playManager = playManager;
 			this.ts3Client = ts3Client;
 			this.tsFullClient = tsFull;
 			this.serverView = serverView;
-			//DisplayCrypto displayCrypto = new DisplayCrypto(playManager, ts3Client, serverView, tsFull);
+		}
+
+		[Command("steam")]
+		public static string CommandGreet(InvokerData invoker, string steamid)
+		{
+			string response = AddOrUpdateUserInDatabase(invoker.ClientUid.Value, steamid);
+			return "[b][color=red]This TeamSpeak ID (" + invoker.ClientUid.Value + ") is now added to the given SteamID ("+ steamid +").[/color][/b] - Status: "+ response;
 		}
 
 		public void Initialize()
@@ -107,32 +109,12 @@ namespace Cryptoz
 			}
 		}
 
-		private async void StartGoldLoop()
-		{
-			//int update = GoldUpdateInterval;
-			while (true)
-			{
-				//Console.WriteLine($"Tick: Update:{update}");
-				//if (update <= 0)
-				//{
-					// Timer end
-					//GetBTC();
-					//GetETH();
-					//GetGold();
-					//GetVotes();
-					//update = GoldUpdateInterval;
-				//}
-
-				//update--;
-				await Task.Delay(60000); // 60000 1 min
-			}
-		}
-
 		private async void GetVotesAndGroups()
 		{
 			//Console.WriteLine("Scanning Voters!");
 			// Step 2: Retrieve Data from the API
 			string apiUrl = "https://teamspeak-servers.org/api/?object=servers&element=voters&key=s5b78c4OcL5UV6pDxTMnDeaMjNEotEUN6iA&month=current&format=json&rank=steamid";
+			List<String> voterList = new List<String>();
 
 			using (HttpClient client = new HttpClient())
 			{
@@ -146,6 +128,8 @@ namespace Cryptoz
 					// Step 3: Parse JSON Response
 					var data = JsonConvert.DeserializeObject<ApiResponse>(json);
 
+					
+
 					// Step 4: Use SQLite to store and retrieve data
 					using (var connection = new SQLiteConnection("Data Source=steam_ids.db"))
 					{
@@ -154,6 +138,7 @@ namespace Cryptoz
 
 						// Step 6: Create the database and sample records if it doesn't exist
 						CreateDatabaseIfNotExists(connection);
+
 
 						foreach (var voter in data.voters)
 						{
@@ -165,14 +150,18 @@ namespace Cryptoz
 
 							if (!string.IsNullOrEmpty(teamspeakId))
 							{
+								voterList.Add(teamspeakId);
 								// Step 5: Set Server Groups
 								// Check if a client with the specified UID exists in serverView.Clients.
 								bool isClientOnline = serverView.Clients.Any(client => client.Value.Uid.Value.ToString() == teamspeakId);
 								if (isClientOnline)
 								{
 									//Console.WriteLine("User Online");
+									Uid uid = new Uid(teamspeakId);
 									int votes = int.Parse(voter.votes);
-									SetServerGroupBasedOnVotes(teamspeakId, votes, groupA, groupB, groupC, groupD);
+
+									ClientDbId udbid = await ts3Client.GetClientDbIdByUid(uid);
+									SetServerGroupBasedOnVotes(teamspeakId, votes, udbid, groupA, groupB, groupC, groupD);
 								}
 								else
 								{
@@ -184,13 +173,85 @@ namespace Cryptoz
 								Console.WriteLine("TS ID is Empty: "+ teamspeakId);
 							}
 						}
+
 					}
 				}
 			}
 
+			RemoveVotesFromUsersNotInList(voterList);
 		}
 
-		//serverView.Clients
+
+		private async void RemoveVotesFromUsersNotInList(List<String> UsersInList)
+		{
+			ServerGroupId[] groupIdsToCheck = { groupA.ServerGroup, groupB.ServerGroup, groupC.ServerGroup, groupD.ServerGroup };
+
+			foreach (var usr in serverView.Clients)
+			{
+				if (UsersInList.Contains(usr.Value.Uid.Value.ToString()))
+				{
+					// The user ID is in the list; skip this iteration.
+					continue;
+				}
+
+				var userGroups = await tsFullClient.ServerGroupsByClientDbId(usr.Value.DatabaseId);
+				bool hasAnyGroup = userGroups.Value.Any(g => groupIdsToCheck.Contains(g.ServerGroupId));
+
+				if (hasAnyGroup) // If already has any other vote group - remove then
+				{
+					foreach (var group in userGroups.Value)
+					{
+						if (groupIdsToCheck.Contains(group.ServerGroupId))
+						{
+							// If the user has any of the specified groups, remove it.
+							await tsFullClient.ServerGroupDelClient(group.ServerGroupId, usr.Value.DatabaseId);
+						}
+					}
+				}
+			}
+		}
+
+		static string AddOrUpdateUserInDatabase(string TSID, string SteamID)
+		{
+			string response = "no response";
+			using (var connection = new SQLiteConnection("Data Source=steam_ids.db"))
+			{
+				connection.Open();
+
+				// Check if the user with the given Steam ID already exists
+				using (var checkCmd = new SQLiteCommand("SELECT COUNT(*) FROM SteamIds WHERE steam_id = @steamId;", connection))
+				{
+					checkCmd.Parameters.AddWithValue("@steamId", SteamID);
+					int count = Convert.ToInt32(checkCmd.ExecuteScalar());
+
+					if (count > 0)
+					{
+						// User with Steam ID exists, update the TeamSpeak ID
+						using (var updateCmd = new SQLiteCommand("UPDATE SteamIds SET teamspeak_id = @teamspeakId WHERE steam_id = @steamId;", connection))
+						{
+							updateCmd.Parameters.AddWithValue("@steamId", SteamID);
+							updateCmd.Parameters.AddWithValue("@teamspeakId", TSID);
+							updateCmd.ExecuteNonQuery();
+							response = "user updated";
+						}
+					}
+					else
+					{
+						// User with Steam ID doesn't exist, add a new record
+						using (var insertCmd = new SQLiteCommand("INSERT INTO SteamIds (steam_id, teamspeak_id) VALUES (@steamId, @teamspeakId);", connection))
+						{
+							insertCmd.Parameters.AddWithValue("@steamId", SteamID);
+							insertCmd.Parameters.AddWithValue("@teamspeakId", TSID);
+							insertCmd.ExecuteNonQuery();
+							response = "New user added";
+						}
+					}
+				}
+			}
+
+			return response;
+		}
+
 
 		static void CreateDatabaseIfNotExists(SQLiteConnection connection)
 		{
@@ -236,11 +297,10 @@ namespace Cryptoz
 			return null;
 		}
 
-		private async void SetServerGroupBasedOnVotes(string teamspeakId, int votes, ServerGroupInfo groupA, ServerGroupInfo groupB, ServerGroupInfo groupC, ServerGroupInfo groupD)
+		private async void SetServerGroupBasedOnVotes(string teamspeakId, int votes, ClientDbId userDBID, ServerGroupInfo groupA, ServerGroupInfo groupB, ServerGroupInfo groupC, ServerGroupInfo groupD)
 		{
 			
-			ServerGroupId selectedGroup = (ServerGroupId)133; // Default group if no condition matches
-															  // Define an array or list with the group IDs you want to check (groupA, groupB, groupC, and groupD).
+			ServerGroupId selectedGroup = (ServerGroupId)132; // Default group if no condition matches
 			ServerGroupId[] groupIdsToCheck = { groupA.ServerGroup, groupB.ServerGroup, groupC.ServerGroup, groupD.ServerGroup };
 
 			// Use FirstOrDefault to find a client with the specified UID.
@@ -248,6 +308,16 @@ namespace Cryptoz
 
 			if (user.Value != null)
 			{
+
+				var userGroups = await tsFullClient.ServerGroupsByClientDbId(userDBID);
+
+				// Check if the user has any of the specified groups.
+				bool hasAnyGroup = userGroups.Value.Any(g => groupIdsToCheck.Contains(g.ServerGroupId));
+
+				// Check if the selected group is already in the user's group list.
+				bool hasSelectedGroup = userGroups.Value.Any(g => g.ServerGroupId == selectedGroup);
+
+				// Use Group based on number of votes specified in the on top
 				if (votes >= groupD.VotesCount)
 				{
 					selectedGroup = groupD.ServerGroup;
@@ -263,19 +333,8 @@ namespace Cryptoz
 				else if (votes >= groupA.VotesCount)
 				{
 					selectedGroup = groupA.ServerGroup;
-				}
-				Uid uid = new Uid(teamspeakId);
+				}			
 
-				ClientDbId userDBID = await ts3Client.GetClientDbIdByUid(uid);
-				//ClientDbInfo ts3Clienta = await ts3Client.GetDbClientByDbId(userDBID);
-				//ts3Clienta.
-				var userGroups = await tsFullClient.ServerGroupsByClientDbId(userDBID);
-
-				// Check if the user has any of the specified groups.
-				bool hasAnyGroup = userGroups.Value.Any(g => groupIdsToCheck.Contains(g.ServerGroupId));
-
-				// Check if the selected group is already in the user's group list.
-				bool hasSelectedGroup = userGroups.Value.Any(g => g.ServerGroupId == selectedGroup);
 
 				if (!hasSelectedGroup) // client does not have the current selected group
 				{
@@ -288,34 +347,17 @@ namespace Cryptoz
 								// If the user has any of the specified groups, remove it.
 								await tsFullClient.ServerGroupDelClient(group.ServerGroupId, userDBID);
 							}
+							Console.WriteLine(group.Name.ToString());
 						}
-						// If the user has any of the specified groups, remove it.
-						//await tsFullClient.ServerGroupDelClient(selectedGroup, userDBID);
 					}
-					// If the user has any of the specified groups, and the selected group is not in the list, remove it.
-					//await tsFullClient.ServerGroupDelClient(selectedGroup, userDBID);
+					// Add to Group
 					await tsFullClient.ServerGroupAddClient(selectedGroup, userDBID);
-					Console.WriteLine($"Setting server group for TeamSpeak ID {teamspeakId} to '{selectedGroup}'");
+					Console.WriteLine($"Setting server group for TeamSpeak ID {teamspeakId} to '{selectedGroup}' with DBid: '{userDBID}' votes: {votes}");
 				}
 				else
 				{
-					Console.WriteLine($"Group already set: TeamSpeak ID {teamspeakId} to '{selectedGroup}'");
+					Console.WriteLine($"Group already set: TeamSpeak ID {teamspeakId} to '{selectedGroup}' with DBid: '{userDBID}' votes: {votes}");
 				}
-
-				//var hasGroup = userGroups.Value.Any(g => g.ServerGroupId == selectedGroup);
-				//if (hasGroup)
-				//{
-				//Console.WriteLine("Group removed");
-				// if user has Old Group Remove it
-				//await tsFullClient.ServerGroupDelClient(selectedGroup, userDBID);
-				//}
-
-
-				
-				//user.Value.ServerGroups.Add(selectedGroup);
-
-				//Console.WriteLine($"Setting server group for TeamSpeak ID {teamspeakId} to '{selectedGroup}'");
-
 			}
 		}
 
