@@ -574,6 +574,13 @@ namespace TSLib.Full
 				{ "msg", message },
 			});
 
+		public CmdR ChannelGroupAddClient(ChannelGroupId groupId, ChannelId channelId, ClientDbId clientDbId)
+			=> SendVoid(new TsCommand("setclientchannelgroup") {
+			{ "cgid", groupId },
+			{ "cid", channelId },
+			{ "cldbid", clientDbId },
+				});
+
 		public void SendAudio(in ReadOnlySpan<byte> data, Codec codec)
 		{
 			var ctx = context;

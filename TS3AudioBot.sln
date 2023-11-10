@@ -32,7 +32,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewUserCheck", "NewUserChec
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer", "GameServer\GameServer.csproj", "{771A3526-BAEA-4FED-AD94-B09C7F61487F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalAPI", "ExternalAPI\ExternalAPI.csproj", "{44FC49F4-E40B-4108-8B47-80A25967B65C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExternalAPI", "ExternalAPI\ExternalAPI.csproj", "{44FC49F4-E40B-4108-8B47-80A25967B65C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controls", "Controls\Controls.csproj", "{E948BF53-8181-4B50-9641-7443FADD8C57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +90,10 @@ Global
 		{44FC49F4-E40B-4108-8B47-80A25967B65C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44FC49F4-E40B-4108-8B47-80A25967B65C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44FC49F4-E40B-4108-8B47-80A25967B65C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E948BF53-8181-4B50-9641-7443FADD8C57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E948BF53-8181-4B50-9641-7443FADD8C57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E948BF53-8181-4B50-9641-7443FADD8C57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E948BF53-8181-4B50-9641-7443FADD8C57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
