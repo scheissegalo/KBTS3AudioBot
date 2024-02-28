@@ -1,6 +1,4 @@
 using System;
-//using System.Data.SqlClient;
-//using MySql.Data.MySqlClient;
 using System.IO;
 using TS3AudioBot;
 using TS3AudioBot.Audio;
@@ -13,7 +11,6 @@ using LiteDB;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.VisualBasic;
 
 namespace RankingSystem
 {
@@ -64,7 +61,7 @@ namespace RankingSystem
 				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(270), ServerGroup = (ServerGroupId)42 },//8 Monate
 				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(300), ServerGroup = (ServerGroupId)43 },//9 Monate
 				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(330), ServerGroup = (ServerGroupId)44 },//10 Monate
-				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(365), ServerGroup = (ServerGroupId)45 },//11 Monate
+				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(360), ServerGroup = (ServerGroupId)45 },//11 Monate
 				// Year 2
 				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(395), ServerGroup = (ServerGroupId)46 },//12 Monate
 				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(425), ServerGroup = (ServerGroupId)93 },//13 Monate
@@ -79,18 +76,18 @@ namespace RankingSystem
 				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(695), ServerGroup = (ServerGroupId)102 },//22 Monate
 				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(730), ServerGroup = (ServerGroupId)116 },//23 Monate
 				// Year 3
-				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(395), ServerGroup = (ServerGroupId)117 },//12 Monate
-				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(425), ServerGroup = (ServerGroupId)118 },//13 Monate
-				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(455), ServerGroup = (ServerGroupId)119 },//14 Monate
-				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(485), ServerGroup = (ServerGroupId)120 },//15 Monate
-				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(515), ServerGroup = (ServerGroupId)121 },//16 Monate
-				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(545), ServerGroup = (ServerGroupId)122 },//17 Monate
-				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(575), ServerGroup = (ServerGroupId)123 },//18 Monate
-				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(605), ServerGroup = (ServerGroupId)124 },//19 Monate
-				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(635), ServerGroup = (ServerGroupId)125 },//20 Monate
-				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(665), ServerGroup = (ServerGroupId)126 },//21 Monate
-				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(695), ServerGroup = (ServerGroupId)127 },//22 Monate
-				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(730), ServerGroup = (ServerGroupId)128 },//23 Monate
+				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(760), ServerGroup = (ServerGroupId)117 },//12 Monate
+				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(790), ServerGroup = (ServerGroupId)118 },//13 Monate
+				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(820), ServerGroup = (ServerGroupId)119 },//14 Monate
+				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(850), ServerGroup = (ServerGroupId)120 },//15 Monate
+				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(880), ServerGroup = (ServerGroupId)121 },//16 Monate
+				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(910), ServerGroup = (ServerGroupId)122 },//17 Monate
+				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(940), ServerGroup = (ServerGroupId)123 },//18 Monate
+				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(970), ServerGroup = (ServerGroupId)124 },//19 Monate
+				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(1000), ServerGroup = (ServerGroupId)125 },//20 Monate
+				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(1030), ServerGroup = (ServerGroupId)126 },//21 Monate
+				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(1060), ServerGroup = (ServerGroupId)127 },//22 Monate
+				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(1090), ServerGroup = (ServerGroupId)128 },//23 Monate
 				//new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(755), ServerGroup = (ServerGroupId)129 },//24 Monate
 			};
 		}
@@ -104,13 +101,13 @@ namespace RankingSystem
 
 		[Command("rank")]
 		public static async Task<string> CommandRank(ClientCall invoker, string querystring)
-		{			
+		{
 			// Retrieve the user's data from the database
 			var db = new LiteDatabase("rank_users.db");
 			var usersCollection = db.GetCollection<User>("users");
-			
+
 			var user = usersCollection.FindOne(x => x.UserID == invoker.ClientUid.ToString());
-			Console.WriteLine("Invoker: " + invoker.NickName + " UserInDB: "+ user);
+			Console.WriteLine("Invoker: " + invoker.NickName + " UserInDB: " + user);
 
 			if (user != null)
 			{
@@ -122,7 +119,7 @@ namespace RankingSystem
 
 				// Update the user's data in the database
 				usersCollection.Update(user);
-				return $"User {user.Name} changed. New time: {user.OnlineTime.TotalDays} Days, {user.OnlineTime.Hours} hours and {user.OnlineTime.Minutes} minutes" ;
+				return $"User {user.Name} changed. New time: {user.OnlineTime.TotalDays} Days, {user.OnlineTime.Hours} hours and {user.OnlineTime.Minutes} minutes";
 			}
 			else
 			{
@@ -186,7 +183,7 @@ namespace RankingSystem
 
 				foreach (var user in users)
 				{
-					Console.WriteLine("User: "+ user.Nickname+" "+user.UserID);
+					Console.WriteLine("User: " + user.Nickname + " " + user.UserID);
 					usersCollection.Insert(user);
 				}
 			}
@@ -352,7 +349,7 @@ namespace RankingSystem
 									IsAlone = false,
 									LastUpdate = DateTime.Now,
 									RankGroup = (ServerGroupId)23,
-									RankGroupInt= 23
+									RankGroupInt = 23
 								};
 								var newId = await tsFullClient.GetClientDbIdFromUid((Uid)NewUser.UserID);
 								await tsFullClient.ServerGroupAddClient(GetServerGroup(NewUser.OnlineTime), newId.Value.ClientDbId);
@@ -398,7 +395,7 @@ namespace RankingSystem
 							{
 								UpdateUser.OnlineTime = usrStatus.OnlineTime;
 								UpdateUser.UpdateTime = false;
-								await ts3Client.SendServerMessage("[b][color=red]"+UpdateUser.Name+" online time changed! "+ usrStatus.OnlineTime.TotalDays + " Days, "+ usrStatus.OnlineTime.Hours + " hours and "+ usrStatus.OnlineTime.Minutes + " minutes[/color][/b]");
+								await ts3Client.SendServerMessage("[b][color=red]" + UpdateUser.Name + " online time changed! " + usrStatus.OnlineTime.TotalDays + " Days, " + usrStatus.OnlineTime.Hours + " hours and " + usrStatus.OnlineTime.Minutes + " minutes[/color][/b]");
 							}
 							else
 							{
@@ -407,7 +404,7 @@ namespace RankingSystem
 							}
 							// Update the user's online time with the time since the last update
 
-						
+
 
 							// Get current Server Group check if user already has grroup addet
 
@@ -435,7 +432,7 @@ namespace RankingSystem
 								}
 
 								if (UpdateUser.RankGroupInt != GetServerGroup(UpdateUser.OnlineTime).Value)
-								{								
+								{
 									UpdateUser.RankGroupInt = GetServerGroup(UpdateUser.OnlineTime).Value;
 
 									foreach (var serverGroupInfo in _serverGroupList)
@@ -694,11 +691,12 @@ namespace RankingSystem
 
 				}
 
-			}catch(Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Console.WriteLine(ex.ToString());
 			}
-			
+
 		}
 
 		static void LogToFile(string filePath, string message)

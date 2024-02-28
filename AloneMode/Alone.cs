@@ -30,7 +30,7 @@ namespace AloneMode
 		{
 			string cs = config.Connect.Channel.ToString();
 			int newcs = Int32.Parse(cs.Replace("/", ""));
-			//Console.WriteLine(newcs);
+			Console.WriteLine(newcs);
 			botDefaultChannel = (ulong)newcs;
 			ts3Client.OnAloneChanged += OnAloneChanged;
 		}

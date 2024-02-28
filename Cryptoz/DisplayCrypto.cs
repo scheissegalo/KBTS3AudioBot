@@ -12,6 +12,8 @@ using System.Data.SQLite;
 using System.Collections.Generic;
 using System.Linq;
 using TS3AudioBot.CommandSystem;
+using System.IO;
+using System.Globalization;
 
 namespace Cryptoz
 {
@@ -21,6 +23,9 @@ namespace Cryptoz
 		//private PlayManager playManager;
 		private Ts3Client ts3Client;
 		private Connection serverView;
+
+		bool checkVotes = true;
+		bool enabledDebugs = false;
 
 		// endpoints
 		private string BTC = "https://north-industries.com/getcry.php?cry=BTC";
@@ -35,14 +40,14 @@ namespace Cryptoz
 		private string Silver = "https://north-industries.com/getcry.php?cry=SILVER";
 		private readonly ulong SILVERchannel = 488; // replace with the ID of the channel to update
 
-		private readonly ulong ServerVotesChannel = 466; // 449 local | 466 Remote | replace with the ID of the channel to update
+		private ulong ServerVotesChannel = 466; // 449 local | 466 Remote | replace with the ID of the channel to update
 
 		private readonly int UpdateInterval = 30; //min
 												  //private readonly int GoldUpdateInterval = 480; //min
 		ServerGroupInfo groupA = new ServerGroupInfo
 		{
 			VotesCount = 1,
-			ServerGroup = (ServerGroupId)132 // Group A
+			ServerGroup = (ServerGroupId)132 // 133 local | 132 Remote Group A
 		};
 
 		ServerGroupInfo groupB = new ServerGroupInfo
@@ -78,12 +83,66 @@ namespace Cryptoz
 			return "[b][color=red]This TeamSpeak ID (" + invoker.ClientUid.Value + ") is now added to the given SteamID ("+ steamid +").[/color][/b] - Status: "+ response;
 		}
 
+		[Command("votes")]
+		public string CommandToggleVotes(InvokerData invoker, string command)
+		{
+			if (command == "on")
+			{
+				checkVotes = true;
+				return "[b][color=green]Votes are now enabled![/color][/b]";
+			}
+			else if (command == "off")
+			{
+				checkVotes = false;
+				return "[b][color=red]Votes are now disabled![/color][/b]";
+			}
+			else if (command == "fetch")
+			{
+				checkVotes = true;
+				GetVotesAndGroups();
+				return "[b][color=green]Votes are now enabled and fetched![/color][/b]";
+			}
+			else if (command == "debug")
+			{
+				if (enabledDebugs)
+				{
+					enabledDebugs = false;
+					return "[b][color=red]Debugs are now disabled![/color][/b]";
+				}
+				else
+				{
+					enabledDebugs = true;
+					return "[b][color=green]Debugs are now enabled![/color][/b]";
+				}
+				//return "[b][color=green]Votes are now enabled and fetched![/color][/b]";
+			}
+			else
+			{
+				return "[b][color=red]Invalid command! Valid vote commads: on, off, fetch or debug[/color][/b]";
+			}
+			//string response = AddOrUpdateUserInDatabase(invoker.ClientUid.Value, steamid); enabledDebugs
+			//return "[b][color=red]This TeamSpeak ID (" + invoker.ClientUid.Value + ") is now added to the given SteamID (" + steamid + ").[/color][/b] - Status: " + response;
+		}
+
 		public void Initialize()
 		{
+			string fileName = ".local.txt";
+
+			if (System.IO.File.Exists(fileName))
+			{
+				// Develop version running, changing variables
+				ServerVotesChannel = 449;
+				groupA.ServerGroup = (ServerGroupId)133;
+				groupB.ServerGroup = (ServerGroupId)134;
+				groupC.ServerGroup = (ServerGroupId)135;
+				groupD.ServerGroup = (ServerGroupId)136;
+			}
+
+
 			StartLoop();
-			//StartGoldLoop();
-			//GetVotes();
-			//GetVotesAndGroups();
+			GetVotesAndGroups();
+			//getCSV();
+			//getUsersfromCSV();
 		}
 
 		private async void StartLoop()
@@ -109,9 +168,23 @@ namespace Cryptoz
 			}
 		}
 
+		private async void SendSteamMessage(string message)
+		{
+			//Console.WriteLine("Sending Message!");
+			if (enabledDebugs)
+			{
+				await tsFullClient.SendChannelMessage("Debug: " + message);
+			}
+		}
+
 		private async void GetVotesAndGroups()
 		{
-			//Console.WriteLine("Scanning Voters!");
+			if (!checkVotes)
+			{
+				Console.WriteLine("Votes Disabled, skipping!");
+				return;
+			}
+			Console.WriteLine("Scanning Voters!");
 			// Step 2: Retrieve Data from the API
 			string apiUrl = "https://teamspeak-servers.org/api/?object=servers&element=voters&key=s5b78c4OcL5UV6pDxTMnDeaMjNEotEUN6iA&month=current&format=json&rank=steamid";
 			List<String> voterList = new List<String>();
@@ -144,6 +217,7 @@ namespace Cryptoz
 						{
 							string steamId = voter.steamid;
 							//Console.WriteLine("Voter: "+ voter.nickname + " | SteamID: "+voter.steamid);
+							SendSteamMessage("Voter: " + voter.nickname + " | SteamID: " + voter.steamid);
 
 							// Query the database to get TeamSpeak ID based on Steam ID
 							string teamspeakId = GetTeamSpeakIdFromSQLite(connection, steamId);
@@ -156,6 +230,7 @@ namespace Cryptoz
 								bool isClientOnline = serverView.Clients.Any(client => client.Value.Uid.Value.ToString() == teamspeakId);
 								if (isClientOnline)
 								{
+									SendSteamMessage("User Online");
 									//Console.WriteLine("User Online");
 									Uid uid = new Uid(teamspeakId);
 									int votes = int.Parse(voter.votes);
@@ -165,12 +240,14 @@ namespace Cryptoz
 								}
 								else
 								{
-									Console.WriteLine("Client not online!");
+									//Console.WriteLine("Client not online!");
+									SendSteamMessage("User not Online");
 								}
 							}
 							else
 							{
-								Console.WriteLine("TS ID is Empty: "+ teamspeakId);
+								//Console.WriteLine("TS ID is Empty: "+ teamspeakId);
+								SendSteamMessage("TS ID is Empty: " + teamspeakId);
 							}
 						}
 
@@ -185,12 +262,13 @@ namespace Cryptoz
 		private async void RemoveVotesFromUsersNotInList(List<String> UsersInList)
 		{
 			ServerGroupId[] groupIdsToCheck = { groupA.ServerGroup, groupB.ServerGroup, groupC.ServerGroup, groupD.ServerGroup };
-
+			SendSteamMessage("Removing users not in list");
 			foreach (var usr in serverView.Clients)
 			{
 				if (UsersInList.Contains(usr.Value.Uid.Value.ToString()))
 				{
 					// The user ID is in the list; skip this iteration.
+					SendSteamMessage("The user ID is in the list");
 					continue;
 				}
 
@@ -204,6 +282,7 @@ namespace Cryptoz
 						if (groupIdsToCheck.Contains(group.ServerGroupId))
 						{
 							// If the user has any of the specified groups, remove it.
+							SendSteamMessage("remove group with id: "+ group.ServerGroupId);
 							await tsFullClient.ServerGroupDelClient(group.ServerGroupId, usr.Value.DatabaseId);
 						}
 					}
@@ -299,8 +378,8 @@ namespace Cryptoz
 
 		private async void SetServerGroupBasedOnVotes(string teamspeakId, int votes, ClientDbId userDBID, ServerGroupInfo groupA, ServerGroupInfo groupB, ServerGroupInfo groupC, ServerGroupInfo groupD)
 		{
-			
-			ServerGroupId selectedGroup = (ServerGroupId)132; // Default group if no condition matches
+
+			ServerGroupId selectedGroup = groupA.ServerGroup; // Default group if no condition matches
 			ServerGroupId[] groupIdsToCheck = { groupA.ServerGroup, groupB.ServerGroup, groupC.ServerGroup, groupD.ServerGroup };
 
 			// Use FirstOrDefault to find a client with the specified UID.
@@ -333,30 +412,43 @@ namespace Cryptoz
 				else if (votes >= groupA.VotesCount)
 				{
 					selectedGroup = groupA.ServerGroup;
-				}			
+				}
 
+				//Console.WriteLine("Selected Group: " + selectedGroup.ToString() + " VotesCount: "+ votes);
+				SendSteamMessage(teamspeakId + " Selected Group: " + selectedGroup.ToString() + " VotesCount: " + votes);
 
-				if (!hasSelectedGroup) // client does not have the current selected group
+				if (!userGroups.Value.Any(g => g.ServerGroupId == selectedGroup)) // client does not have the current selected group
 				{
+					//Console.WriteLine("Group not added");
+					SendSteamMessage(teamspeakId + " Group not added");
 					if (hasAnyGroup) // If already has any other vote group - remove then
 					{
+						//Console.WriteLine("Does have another vote group, remove it");
+						SendSteamMessage(teamspeakId + " Does have another vote group, remove it");
 						foreach (var group in userGroups.Value)
 						{
+							//Console.WriteLine("Iterate: "+ group.Name);
+							SendSteamMessage(teamspeakId + " Iterate: " + group.Name);	
 							if (groupIdsToCheck.Contains(group.ServerGroupId))
 							{
+								//Console.WriteLine("Group found and removing: " + group.Name);
+								SendSteamMessage(teamspeakId + " Group found and removing: " + group.Name);
 								// If the user has any of the specified groups, remove it.
 								await tsFullClient.ServerGroupDelClient(group.ServerGroupId, userDBID);
 							}
-							Console.WriteLine(group.Name.ToString());
+							//Console.WriteLine(group.Name.ToString());
+							SendSteamMessage(teamspeakId + " " + group.Name.ToString());
 						}
 					}
 					// Add to Group
 					await tsFullClient.ServerGroupAddClient(selectedGroup, userDBID);
-					Console.WriteLine($"Setting server group for TeamSpeak ID {teamspeakId} to '{selectedGroup}' with DBid: '{userDBID}' votes: {votes}");
+					//Console.WriteLine($"Setting server group for TeamSpeak ID {teamspeakId} to '{selectedGroup}' with DBid: '{userDBID}' votes: {votes}");
+					SendSteamMessage(teamspeakId + " Setting server group to: " + selectedGroup.ToString() + " with DBid: " + userDBID + " votes: " + votes);
 				}
 				else
 				{
-					Console.WriteLine($"Group already set: TeamSpeak ID {teamspeakId} to '{selectedGroup}' with DBid: '{userDBID}' votes: {votes}");
+					//Console.WriteLine($"Group already set: TeamSpeak ID {teamspeakId} to '{selectedGroup}' with DBid: '{userDBID}' votes: {votes}");
+					SendSteamMessage(teamspeakId + " Group already set: " + selectedGroup.ToString() + " with DBid: " + userDBID + " votes: " + votes);
 				}
 			}
 		}

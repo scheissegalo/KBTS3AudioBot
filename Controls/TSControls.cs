@@ -8,6 +8,10 @@ using TSLib;
 using TSLib.Full;
 using TSLib.Messages;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Threading.Channels;
+
 
 namespace Controls
 {
@@ -18,7 +22,8 @@ namespace Controls
 		private Ts3Client ts3Client;
 		private Connection serverView;
 
-		private readonly ulong channelToWatch = 438; // replace with the ID of the channel to update
+		private readonly ulong channelToWatch = 482; // 438 - Local | 482 remote | replace with the ID of the channel to update
+		private readonly ulong channelHome = 11; // replace with the ID of the channel to update
 		private readonly string helptext = @"
 To create a channel use the following commands:
 [b][color=red]!create[/color] [color=blue]<name of the channel>[/color][/b]
@@ -51,15 +56,35 @@ Dein [b][color=#24336b]North[/color][color=#0095db]Industries[/color][/b] - Secu
 			{
 				//var clientID = getUserID(user.ClientId);
 				//var clientID = tsFullClient.GetClientUidFromClientId(user.ClientId);
-				Console.WriteLine("User: "+ user.ClientId + " moved to channel: " + user.TargetChannelId);
+				//Console.WriteLine("User: "+ user.ClientId + " moved to channel: " + user.TargetChannelId);
 				ChannelId channelId = new ChannelId(channelToWatch);
 				
 				if (user.ClientId != tsFullClient.ClientId && user.TargetChannelId == channelId)
 				{
 					// User in "create" channel
-					Console.WriteLine("In Channel");
+					//Console.WriteLine("In Channel");
 					ts3Client.MoveTo(channelId);
 					ts3Client.SendChannelMessage(helptext+msgFoot);
+				}
+
+				CheckIfChannelEmpty(channelId);
+			}
+		}
+
+		private async void CheckIfChannelEmpty(ChannelId channelId)
+		{
+			var clientList = await tsFullClient.ClientList();
+			var clientsInChannel = clientList.Value.Count(client => client.ChannelId.Value == channelId.Value);
+
+			if (clientsInChannel == 1)
+			{
+				var singleClientInChannel = clientList.Value.SingleOrDefault(client => client.ChannelId.Value == channelId.Value);
+
+				if (singleClientInChannel != null)
+				{
+					// Execute your code for the single client in the channel
+					await ts3Client.MoveTo((ChannelId)channelHome);
+					//Console.WriteLine("Client: " + singleClientInChannel.ClientId + " is in channel: " + singleClientInChannel.ChannelId.Value);
 				}
 			}
 
@@ -67,47 +92,35 @@ Dein [b][color=#24336b]North[/color][color=#0095db]Industries[/color][/b] - Secu
 
 		public async void CreateChannelForUser(ClientCall invoker, string channelName, string password)
 		{
-			//var clientID = await tsFullClient.GetClientIds(invoker.ClientUid);
-			//var dbID = await tsFullClient.GetClientDbIdFromUid(invoker.ClientUid);
-			//var fullID = await tsFullClient.GetClientIds(invoker.ClientUid);
-			// Create an instance of Random
-			//ClientId clientId = new ClientId();
-			var response = await tsFullClient.ChannelCreate(channelName, channelName,"Type your topic here", channelName, password, codec: Codec.OpusVoice, parent: (ChannelId)441, type: ChannelType.Permanent);
+			var response = await tsFullClient.ChannelCreate(channelName, channelName,"Type your topic here", channelName, password, codec: Codec.OpusVoice, parent: (ChannelId)68, type: ChannelType.Permanent);
 
 			if (!response.Ok)
 			{
-				Console.WriteLine("error while creating channel: " + response.Error.ErrorFormat());
+				//Console.WriteLine("error while creating channel: " + response.Error.ErrorFormat());
+				await ts3Client.SendChannelMessage("error while creating channel: " + response.Error.ErrorFormat() + msgFoot);
 				return;
 			}
 			else
 			{
-				Console.WriteLine(response.Value);
-			}
-			var chanlist = await tsFullClient.ChannelList();
-			foreach (var channel in chanlist.Value)
-			{
-				if (channel.Name == channelName)
+				var chanlist = await tsFullClient.ChannelList();
+				foreach (var channel in chanlist.Value)
 				{
-					await tsFullClient.ClientMove(invoker.ClientId.Value, channel.ChannelId);
-					ChannelGroupId groupId = new ChannelGroupId(5); // replace with the ID of the channel group to add the client to
-					//ClientId clientId = new ClientId(456); // replace with the ID of the client to add to the channel group
-					//ChannelId channelId = new ChannelId(789); // replace with the ID of the channel to add the client to
+					if (channel.Name == channelName)
+					{
+						await tsFullClient.ClientMove(invoker.ClientId.Value, channel.ChannelId);
+						ChannelGroupId groupId = new ChannelGroupId(5); // replace with the ID of the channel group to add the client to
 
-					await tsFullClient.ChannelGroupAddClient(groupId, channel.ChannelId, invoker.DatabaseId.Value);
-					//await tsFullClient.ServerGroupAddClient((ServerGroupId)5, invoker.DatabaseId.Value);
-					await tsFullClient.PokeClient("Your channel "+ channelName+" is ready. Password: " + password, invoker.ClientId.Value);
-					await tsFullClient.PokeClient("Change by right click on your channel, choose edit channel.", invoker.ClientId.Value);
-					await tsFullClient.PokeClient("Happy Gaming!", invoker.ClientId.Value);
-					//Console.WriteLine("Channel: " + channel.Name + " ID: " + channel.ChannelId);
+						await tsFullClient.ChannelGroupAddClient(groupId, channel.ChannelId, invoker.DatabaseId.Value);
+
+						await tsFullClient.PokeClient("Your channel " + channelName + " is ready. Password: " + password, invoker.ClientId.Value);
+						await tsFullClient.PokeClient("Change by right click on your channel, choose edit channel.", invoker.ClientId.Value);
+						await tsFullClient.PokeClient("Happy Gaming!", invoker.ClientId.Value);
+
+						CheckIfChannelEmpty((ChannelId)channelToWatch);
+					}
 				}
-				//Console.WriteLine("Channel: " + channel.Name + " ID: " + channel.ChannelId);
 			}
-			//await tsFullClient.ChannelCreate(channelName);
-			//tsFullClient
-			//await tsFullClient.ChannelEdit(channelId, codec: MusicCodec, codecQuality: MusicCodecQuality);
-			//ChannelId channelId = new ChannelId(115);
-			//await tsFullClient.ClientMove(invoker.ClientId.Value, channelId);
-			//Console.WriteLine("Create Channel: " + channelName + " for user: " + invoker.NickName + " ClintID: "+ invoker.ClientId+ " DBID:"+ invoker.DatabaseId + " Nick: "+ invoker.NickName);
+
 		}
 
 		[Command("create")]

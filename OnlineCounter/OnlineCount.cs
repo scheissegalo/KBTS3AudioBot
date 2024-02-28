@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using Microsoft.VisualBasic;
+using System.IO;
 
 namespace OnlineCounter
 {
@@ -26,6 +27,7 @@ namespace OnlineCounter
 		private readonly TimeSpan resetInterval = TimeSpan.FromDays(1);
 		//private readonly TimeSpan resetInterval = TimeSpan.FromMinutes(1);
 		private readonly List<uint> excludedGroups = new List<uint> { 11, 47, 115 }; // replace with the IDs of the excluded groups
+		public static string filePath = "badusernames.txt";
 
 		private List<string> userIDS = new List<string>();
 		private List<string> userNames = new List<string>();
@@ -118,6 +120,11 @@ namespace OnlineCounter
 			//bool skipCurrentClient = false;
 			foreach (var oneuser in serverView.Clients)
 			{
+				if (CheckBadUsernames(oneuser.Value.Name))
+				{
+					await tsFullClient.KickClientFromServer(oneuser.Value.Id, "Bad Username!");
+					//Console.WriteLine("Bad Username: " + oneuser.Value.Name);
+				}
 				// Check if is full user
 				if (oneuser.Value.ClientType == ClientType.Full)
 				{
@@ -151,16 +158,14 @@ namespace OnlineCounter
 						//Console.WriteLine("User Added: " + oneuser.Value.Name);
 					}
 
-
-					//Console.WriteLine("Full User ID: " + oneuser.Value.Uid.Value);
-					//Console.WriteLine("Full User Name: " + oneuser.Value.Name);
-
 				}
 			}
 			UpdateChannelName();
 			//Console.WriteLine("Currently "+ count + " users online of "+ countToday + " today");
 			isChecking = false;
 		}
+
+
 
 		private async void CheckOnlineUsers(bool connected)
 		{
@@ -312,10 +317,26 @@ namespace OnlineCounter
 			}
 		}
 
+		public static bool CheckBadUsernames(string inputString)
+		{
+			// Check if the file exists
+			if (!System.IO.File.Exists(filePath))
+			{
+				throw new FileNotFoundException($"File not found: {filePath}");
+			}
+
+			// Read all lines from the file
+			string[] lines = System.IO.File.ReadAllLines(filePath);
+
+			// Check if any line is contained within the username
+			return lines.Any(line => inputString.Contains(line));
+		}
+
 		public void Dispose()
 		{
 			tsFullClient.OnClientEnterView -= OnUserConnected;
 			tsFullClient.OnClientLeftView -= OnUserDisconnected;
 		}
 	}
+
 }
