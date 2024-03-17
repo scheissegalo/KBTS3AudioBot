@@ -5,9 +5,11 @@ name: .NET
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "disabled" ]
+    #branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
+    #branches: [ "master" ]
+    branches: [ "disabled" ]
 
 jobs:
   build-and-release:

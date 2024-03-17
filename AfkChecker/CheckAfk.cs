@@ -9,6 +9,8 @@ using TSLib;
 using TSLib.Full;
 using TSLib.Messages;
 using System.Collections.Generic;
+using System.Linq;
+using Heijden.DNS;
 //using System.Threading;
 
 namespace AfkChecker
@@ -22,11 +24,13 @@ namespace AfkChecker
 		private bool TimerOn = false;
 		private int AFKTime = 60; // in Minutes
 		private int AmongAFKTime = 120; // in Minutes
+		private double AbmahnungSpamTime = 5; // in Minutes
+		private List<AbmahnUser> AbmahnClientIds = new List<AbmahnUser>();
 		private int AFKNotice; // in Minutes
 		private int AmongAFKNotice; // in Minutes
-							   // replace with the IDs of the excluded groups
-							   //ivate int BotServerGroup = 11;
-							   //private static Timer timer;
+									// replace with the IDs of the excluded groups
+									//ivate int BotServerGroup = 11;
+									//private static Timer timer;
 
 		//public static Dictionary<ClientId, Client> Clients { get; private set; }
 
@@ -77,7 +81,8 @@ namespace AfkChecker
 
 		public async void UserIdleCheck()
 		{
-			try { 
+			try
+			{
 				var allConnectedClients = serverView.Clients;
 				foreach (var client in allConnectedClients)
 				{
@@ -90,6 +95,7 @@ namespace AfkChecker
 					}
 					else
 					{
+						CheckIfAbmahnung(client);
 						// If Channel has more that 1 user
 						if (GetUserCountFromChannelId(client.Value.Channel) > 1)
 						{
@@ -165,7 +171,7 @@ namespace AfkChecker
 										await tsFullClient.PokeClient("Moved to AFK: No activity for 1 hour. Join when ready!", client.Value.Id);
 
 										//client.Value.Channel = (ChannelId)18;
-									//}
+										//}
 									}
 								}
 							}
@@ -173,10 +179,141 @@ namespace AfkChecker
 					}
 				}
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
-				Console.WriteLine("Error: "+e.Message);
+				Console.WriteLine("Error: " + e.Message);
 			}
+		}
+
+		private async void CheckIfAbmahnung(KeyValuePair<ClientId, Client> client)
+		{
+			ServerGroupId serverGroupId = (ServerGroupId)111; // Abmahnung 1
+			ServerGroupId serverGroupId1 = (ServerGroupId)112; // Abmahnung 2
+			ServerGroupId serverGroupId2 = (ServerGroupId)113; // Abmahnung 3
+			if (client.Value.ServerGroups.Contains(serverGroupId) || client.Value.ServerGroups.Contains(serverGroupId2) || client.Value.ServerGroups.Contains(serverGroupId1))
+			{
+				//user has abmahnung
+				//Console.WriteLine($"User {client.Value.Name} has Abmahnung");
+
+				var existingUser = AbmahnClientIds.FirstOrDefault(u => u.ClientId == client.Value.Id);
+
+				if (existingUser == null)
+				{
+					//Console.WriteLine($"User {client.Value.Name} Added to list");
+
+					int abmahnTimes = 0;
+
+					if (client.Value.ServerGroups.Contains(serverGroupId))
+					{
+						abmahnTimes = 5;
+					}
+					else if (client.Value.ServerGroups.Contains(serverGroupId1))
+					{
+						abmahnTimes = 15;
+					}
+					else if (client.Value.ServerGroups.Contains(serverGroupId2))
+					{
+						abmahnTimes = 30;
+					}
+					else
+					{
+						abmahnTimes = 5;
+					}
+
+					abmahnTimes--;
+
+					AbmahnUser au = new AbmahnUser
+					{
+						ClientId = client.Value.Id,
+						LastAbmahnung = DateTime.Now,
+						MessagesRecived = abmahnTimes
+					};
+					AbmahnClientIds.Add(au);
+
+					ChooseAndSendAbmahnung(client.Value.Id);
+				}
+				else
+				{
+					var fiveMinutesAgo = DateTime.Now.Subtract(TimeSpan.FromMinutes(AbmahnungSpamTime));
+					if (existingUser.LastAbmahnung < fiveMinutesAgo)
+					{
+						// Do something here
+						ChooseAndSendAbmahnung(client.Value.Id);
+
+						existingUser.LastAbmahnung = DateTime.Now;
+						if (existingUser.MessagesRecived <= 0)
+						{
+							// Finished Sending - Remove Server Group - Final Message
+							AbmahnClientIds.Remove(existingUser);
+
+							var userGroups = await tsFullClient.ServerGroupsByClientDbId(client.Value.DatabaseId);
+							//bool hasGroup = false;
+							// Store server group IDs in a collection for easier management
+							var serverGroupIdsToRemove = new[] { serverGroupId1, serverGroupId2, serverGroupId };
+
+							// Retrieve user groups and check for membership efficiently
+							var hasGroup = userGroups.Value.Any(g => serverGroupIdsToRemove.Contains(g.ServerGroupId));
+
+							if (hasGroup)
+							{
+								// Optimized: Remove only the first matching group to avoid redundant calls
+								await tsFullClient.ServerGroupDelClient(serverGroupIdsToRemove.First(g => userGroups.Value.Any(ug => ug.ServerGroupId == g)), client.Value.DatabaseId);
+
+								SendServerMessage(client.Value.Id, "Abmahnung entfernt, das nächste mal uffpasse!");
+							}
+
+							//SendServerMessage(client.Value.Id, "Abmahnung entfernt, das nächste mal uffpasse!");
+						}
+						else
+						{
+							existingUser.MessagesRecived--;
+						}
+						//Console.WriteLine($"User {client.Value.Name} Abmahnung send {existingUser.MessagesRecived} times");
+
+					}
+					//else
+					//{
+					//	//Console.WriteLine($"User {client.Value.Name} waiting {existingUser.LastAbmahnung.Minute}min. recived {existingUser.MessagesRecived} times");
+					//}
+				}
+			}
+		}
+
+		private void ChooseAndSendAbmahnung(ClientId clientId)
+		{
+			// Choose a random quote
+			var randomQuote = Abmahnungen.Quotes[new Random().Next(Abmahnungen.Quotes.Count)];
+
+			// Send the chosen quote
+			SendServerMessage(clientId, randomQuote);
+		}
+
+		private async void SendServerMessage(ClientId clientId, string message)
+		{
+			const int maxChunkSize = 95; // Poke Message Legth
+
+			// Split the message into chunks
+			var chunks = SplitIntoChunks(message, maxChunkSize);
+
+			// Send each chunk through PokeClient
+			foreach (var chunk in chunks)
+			{
+				await tsFullClient.PokeClient(chunk, clientId);
+			}
+
+			//await tsFullClient.PokeClient("Du hast eine abmahnung", clientId);
+		}
+
+		private static List<string> SplitIntoChunks(string message, int chunkSize)
+		{
+			List<string> chunks = new List<string>();
+			for (int i = 0; i < message.Length; i += chunkSize)
+			{
+				// Adjust end index to avoid exceeding the chunk size
+				int endIndex = Math.Min(i + chunkSize, message.Length);
+				chunks.Add(message.Substring(i, endIndex - i));
+			}
+			return chunks;
 		}
 
 		private async Task<List<int>> GetUsersInChannel(int ChanId)
@@ -237,7 +374,7 @@ namespace AfkChecker
 		{
 			foreach (var client in clients)
 			{
-				Console.WriteLine("Client "+client.InvokerName+" moved to: "+ client.TargetChannelId);
+				Console.WriteLine("Client " + client.InvokerName + " moved to: " + client.TargetChannelId);
 			}
 		}
 
@@ -263,4 +400,31 @@ namespace AfkChecker
 			//playManager.PlaybackStopped -= Stop;
 		}
 	}
+
+	public class AbmahnUser
+	{
+		public ClientId ClientId { get; set; }
+		public DateTime LastAbmahnung { get; set; }
+
+		public int MessagesRecived { get; set; }
+	}
+
+	public class Abmahnungen
+	{
+		public static readonly List<string> Quotes = new List<string>()
+	{
+		"Bitte beachte die Regeln!",
+		"Dein Verhalten ist nicht akzeptabel.",
+		"Denke an die Konsequenzen deines Handelns.",
+		"Es wird erwartet, dass du dich an die Regeln hältst.",
+		"Nimm dir Zeit, um über dein Verhalten nachzudenken.",
+		"Dein Verhalten stört den Spielfluss und beeinträchtigt die Spielerfahrung anderer.",
+		"Es ist wichtig, dass alle Spieler respektvoll miteinander umgehen.",
+		"Bitte lies dir die Regeln noch einmal durch und befolge sie in Zukunft.",
+		"Bei wiederholtem Fehlverhalten kann es zu weiteren Konsequenzen kommen.",
+		"Vielleicht solltest du eine Pause machen und etwas frische Luft schnappen.",
+		"Erwachsen werden ist nicht immer einfach, aber es gehört dazu."
+	};
+	}
+
 }

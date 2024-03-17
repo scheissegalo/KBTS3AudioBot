@@ -38,10 +38,65 @@ namespace Core
 		public async void Initialize()
 		{
 			tsFullClient.OnClientMoved += OnUserMoved;
+			tsFullClient.OnClientEnterView += OnUserJoin;
+			tsFullClient.OnClientLeftView += OnUserLeft;
 			await GetAllUsers();
 			await StartLoop();
 
 			Console.WriteLine("Core Module Loaded");
+		}
+
+		private async void OnUserLeft(object sender, IEnumerable<ClientLeftView> e)
+		{
+			//Fix user not displayed by waiting 500 ms
+			await Task.Delay(500);
+
+			foreach (ClientLeftView view in e)
+			{
+				//if (view.Value.ClientType == ClientType.Full)
+				//{
+				//	view.
+				//}
+			}
+
+
+		}
+		private void OnUserJoin(object sender, IEnumerable<ClientEnterView> e)
+		{
+			foreach (ClientEnterView view in e)
+			{
+				//view.ClientId
+			}
+		}
+
+		private void OnUserMoved(object sender, IEnumerable<ClientMoved> e)
+		{
+			if (!isChecking)
+			{
+				foreach (ClientMoved item in e)
+				{
+					ClientId clientId = item.ClientId;
+					ChannelId channelId = item.TargetChannelId;
+					DateTime joinTime = DateTime.Now; // Capture current UTC time
+
+					// Find the user in the channelUsers list and update their information
+					var userToUpdate = channelUsers.FirstOrDefault(user => user.ClientId == clientId);
+					if (userToUpdate != null)
+					{
+						userToUpdate.ChannelId = channelId;
+						userToUpdate.JoinTime = joinTime;
+						Console.WriteLine($"Client {clientId} moved to channel {channelId}, Join time: {joinTime}");
+					}
+					else
+					{
+						Console.WriteLine($"User with ID {clientId} not found in the user list.");
+					}
+				}
+			}
+			else
+			{
+				Console.WriteLine("Unable to update User, checking locked");
+			}
 		}
 
 		private async Task CheckUsers()
@@ -155,35 +210,7 @@ namespace Core
 			await GetChannelList();
 		}
 
-		private void OnUserMoved(object sender, IEnumerable<ClientMoved> e)
-		{
-			if (!isChecking)
-			{
-				foreach (ClientMoved item in e)
-				{
-					ClientId clientId = item.ClientId;
-					ChannelId channelId = item.TargetChannelId;
-					DateTime joinTime = DateTime.Now; // Capture current UTC time
 
-					// Find the user in the channelUsers list and update their information
-					var userToUpdate = channelUsers.FirstOrDefault(user => user.ClientId == clientId);
-					if (userToUpdate != null)
-					{
-						userToUpdate.ChannelId = channelId;
-						userToUpdate.JoinTime = joinTime;
-						Console.WriteLine($"Client {clientId} moved to channel {channelId}, Join time: {joinTime}");
-					}
-					else
-					{
-						Console.WriteLine($"User with ID {clientId} not found in the user list.");
-					}
-				}
-			}
-			else
-			{
-				Console.WriteLine("Unable to update User, checking locked");
-			}
-		}
 
 		public async Task UpdateChannelDescription(Dictionary<ChannelId, TimeSpan> topFiveChannels)
 		{
@@ -228,6 +255,8 @@ namespace Core
 		public void Dispose()
 		{
 			tsFullClient.OnClientMoved -= OnUserMoved;
+			tsFullClient.OnClientMoved -= OnUserMoved;
+			tsFullClient.OnClientEnterView -= OnUserJoin;
 		}
 
 	}

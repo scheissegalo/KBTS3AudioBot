@@ -68,43 +68,12 @@ namespace OnlineCounter
 
 		private void OnUserConnected(object sender, IEnumerable<ClientEnterView> clients)
 		{
-			//foreach (var user in clients)
-			//{
-			//if (user.ClientType.Equals(ClientType.Full))
-			//{
-			//Console.WriteLine("User connected: "+user.Uid.Value);
-			//CheckOnlineUsers(true);
-			//}
-			//else
-			//{
-			//DateTime now = DateTime.Now;
-			//Console.WriteLine(now + " | " +user.Name + " Query");
-			//	continue;
-			//}
-			//}
-			//Console.WriteLine("Connected: "+ clients);
 			CheckOnlineUsersNeu(true);
 		}
 
 		private void OnUserDisconnected(object sender, IEnumerable<ClientLeftView> clients)
 		{
-			//foreach (var user in clients)
-			//{
-				//if (user.ClientType.Equals(ClientType.Full))
-				//{
-				//var usrClientID = ts3Client.GetClientInfoById(user.ClientId);
-				//var usrClientIDFull = tsFullClient.GetClientUidFromClientId(user.ClientId);
-				//Console.WriteLine("User disconnected: " + user.ClientId);
-				//CheckOnlineUsers(true);
-			//}
-			//Console.WriteLine("Disconnected: " + clients);
-			
 			CheckOnlineUsersNeu(false);
-
-			//foreach (var client in clients)
-			//{
-				//client.
-			//}
 		}
 
 		private async void CheckOnlineUsersNeu(bool connected)
@@ -186,7 +155,7 @@ namespace OnlineCounter
 				Console.WriteLine("List is null!");
 				return;
 			}
-		
+
 
 			try
 			{
@@ -273,7 +242,7 @@ namespace OnlineCounter
 				ts3Client.SendServerMessage("[b][color=red]Online Counter Reset![/color][/b]");
 			}
 			//tsFullClient.SendGlobalMessage("[b][color=red]Online Counter wurde zurückgesetzt![/color][/b]");
-			
+
 		}
 
 		private string GetChannelName()
@@ -297,7 +266,7 @@ namespace OnlineCounter
 				}
 				else
 				{
-					foreach(var user in userNames)
+					foreach (var user in userNames)
 					{
 						usernameList = usernameList + "- " + user + "\n";
 					}
