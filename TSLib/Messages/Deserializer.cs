@@ -99,6 +99,7 @@ namespace TSLib.Messages
 		}
 
 		private bool ParseKeyValueLine(IMessage qm, ReadOnlySpan<byte> line, HashSet<string>? indexing, List<string>? single)
+
 		{
 			if (line.IsEmpty)
 				return true;
@@ -107,14 +108,17 @@ namespace TSLib.Messages
 			ss.First(line, AsciiSpace);
 			var key = ReadOnlySpan<byte>.Empty;
 			var value = ReadOnlySpan<byte>.Empty;
+
 			try
 			{
+				ReadOnlySpan<byte> trimmedSpan;
 				do
 				{
-					var param = ss.Trim(line);
-					var kvpSplitIndex = param.IndexOf(AsciiEquals);
-					key = kvpSplitIndex >= 0 ? param.Slice(0, kvpSplitIndex) : ReadOnlySpan<byte>.Empty;
-					value = kvpSplitIndex <= param.Length - 1 ? param.Slice(kvpSplitIndex + 1) : ReadOnlySpan<byte>.Empty;
+					trimmedSpan = ss.Trim(line);
+
+					var kvpSplitIndex = trimmedSpan.IndexOf(AsciiEquals);
+					key = kvpSplitIndex >= 0 ? trimmedSpan.Slice(0, kvpSplitIndex) : ReadOnlySpan<byte>.Empty;
+					value = kvpSplitIndex <= trimmedSpan.Length - 1 ? trimmedSpan.Slice(kvpSplitIndex + 1) : ReadOnlySpan<byte>.Empty;
 
 					if (!key.IsEmpty)
 					{
@@ -140,7 +144,8 @@ namespace TSLib.Messages
 
 					if (!ss.HasNext)
 						break;
-					line = ss.Next(line);
+					var nextSpan = ss.Next(line);
+					line = nextSpan.Slice(1);
 				} while (line.Length > 0);
 				return true;
 			}

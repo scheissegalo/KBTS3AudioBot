@@ -25,17 +25,33 @@ namespace TSLib.Helper
 			NextIndex = span.IndexOf(split);
 		}
 
+		//[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		//public ReadOnlySpan<T> Next(in ReadOnlySpan<T> current)
+		//{
+		//	if (!HasNext)
+		//		throw new InvalidOperationException("No next element in span split");
+		//	var ret = current.Slice(NextIndex + 1);
+		//	NextIndex = ret.IndexOf(splitchar);
+		//	return ret;
+		//}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public ReadOnlySpan<T> Next(in ReadOnlySpan<T> current)
+		public ReadOnlySpan<T> Next(ReadOnlySpan<T> current)
 		{
 			if (!HasNext)
 				throw new InvalidOperationException("No next element in span split");
-			var ret = current.Slice(NextIndex + 1);
-			NextIndex = ret.IndexOf(splitchar);
-			return ret;
+
+			var nextIndex = NextIndex + 1;
+			var length = current.Length - nextIndex;
+			var nextSpan = current.Slice(nextIndex, length);
+
+			// Reset NextIndex
+			NextIndex = nextSpan.IndexOf(splitchar);
+
+			return nextSpan;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public ReadOnlySpan<T> Trim(in ReadOnlySpan<T> current) => HasNext ? current.Slice(0, NextIndex) : current;
+		public ReadOnlySpan<T> Trim(ReadOnlySpan<T> current) => HasNext ? current.Slice(0, NextIndex) : current;
 	}
 }

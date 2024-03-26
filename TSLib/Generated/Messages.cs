@@ -28,8 +28,8 @@ using TSLib.Commands;
 using TSLib.Helper;
 
 #pragma warning disable CS8019 // Ignore unused imports
-using i8  = System.SByte;
-using u8  = System.Byte;
+using i8 = System.SByte;
+using u8 = System.Byte;
 using i16 = System.Int16;
 using u16 = System.UInt16;
 using i32 = System.Int32;
@@ -60,28 +60,28 @@ namespace TSLib.Messages
 
 	public sealed partial class BanAdd : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.BanAdd;
-		
+
 
 		public str? BanReason { get; set; }
 		public IpAddr? Ip { get; set; }
 		public str? Name { get; set; }
 		public DurationSeconds? Time { get; set; }
 		public Uid? Uid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "banreason": BanReason = (str)TsString.Unescape(value); break;
 			case "ip": Ip = (IpAddr)TsString.Unescape(value); break;
 			case "name": Name = (str)TsString.Unescape(value); break;
-			case "time": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) Time = TimeSpan.FromSeconds(oval); } break;
+			case "time": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) Time = TimeSpan.FromSeconds(oval); } break;
 			case "uid": Uid = (Uid)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -91,14 +91,14 @@ namespace TSLib.Messages
 			var toc = (BanAdd[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "banreason": foreach(var toi in toc) { toi.BanReason = BanReason; } break;
-				case "ip": foreach(var toi in toc) { toi.Ip = Ip; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "time": foreach(var toi in toc) { toi.Time = Time; } break;
-				case "uid": foreach(var toi in toc) { toi.Uid = Uid; } break;
+				case "banreason": foreach (var toi in toc) { toi.BanReason = BanReason; } break;
+				case "ip": foreach (var toi in toc) { toi.Ip = Ip; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "time": foreach (var toi in toc) { toi.Time = Time; } break;
+				case "uid": foreach (var toi in toc) { toi.Uid = Uid; } break;
 				}
 			}
 
@@ -107,24 +107,24 @@ namespace TSLib.Messages
 
 	public sealed partial class BanClient : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.BanClient;
-		
+
 
 		public str? BanReason { get; set; }
 		public ClientId ClientId { get; set; }
 		public DurationSeconds? Time { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "banreason": BanReason = (str)TsString.Unescape(value); break;
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
-			case "time": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) Time = TimeSpan.FromSeconds(oval); } break;
-			
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "time": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) Time = TimeSpan.FromSeconds(oval); } break;
+
 			}
 
 		}
@@ -134,12 +134,12 @@ namespace TSLib.Messages
 			var toc = (BanClient[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "banreason": foreach(var toi in toc) { toi.BanReason = BanReason; } break;
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "time": foreach(var toi in toc) { toi.Time = Time; } break;
+				case "banreason": foreach (var toi in toc) { toi.BanReason = BanReason; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "time": foreach (var toi in toc) { toi.Time = Time; } break;
 				}
 			}
 
@@ -148,20 +148,20 @@ namespace TSLib.Messages
 
 	public sealed partial class BanDel : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.BanDel;
-		
+
 
 		public u32 BanId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "banid": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) BanId = (u32)oval; } break;
-			
+			case "banid": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) BanId = (u32)oval; } break;
+
 			}
 
 		}
@@ -171,10 +171,10 @@ namespace TSLib.Messages
 			var toc = (BanDel[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "banid": foreach(var toi in toc) { toi.BanId = BanId; } break;
+				case "banid": foreach (var toi in toc) { toi.BanId = BanId; } break;
 				}
 			}
 
@@ -183,11 +183,11 @@ namespace TSLib.Messages
 
 	public sealed partial class BanDelAll : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.BanDelAll;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -200,7 +200,7 @@ namespace TSLib.Messages
 
 	public sealed partial class BanList : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.BanList;
 		public string? ReturnCode { get; set; }
 
@@ -217,18 +217,18 @@ namespace TSLib.Messages
 		public str Name { get; set; }
 		public str Reason { get; set; }
 		public Uid Uid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "banid": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) BanId = (u32)oval; } break;
-			case "created": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) Created = Tools.FromUnix(oval); } break;
-			case "duration": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) Duration = TimeSpan.FromSeconds(oval); } break;
-			case "enforcements": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) Enforcements = (u32)oval; } break;
-			case "invokercldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) InvokerDatabaseId = (ClientDbId)oval; } break;
+			case "banid": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) BanId = (u32)oval; } break;
+			case "created": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) Created = Tools.FromUnix(oval); } break;
+			case "duration": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) Duration = TimeSpan.FromSeconds(oval); } break;
+			case "enforcements": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) Enforcements = (u32)oval; } break;
+			case "invokercldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) InvokerDatabaseId = (ClientDbId)oval; } break;
 			case "invokername": InvokerName = (str)TsString.Unescape(value); break;
 			case "invokeruid": InvokerUid = (Uid)TsString.Unescape(value); break;
 			case "ip": Ip = (IpAddr)TsString.Unescape(value); break;
@@ -247,22 +247,22 @@ namespace TSLib.Messages
 			var toc = (BanList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "banid": foreach(var toi in toc) { toi.BanId = BanId; } break;
-				case "created": foreach(var toi in toc) { toi.Created = Created; } break;
-				case "duration": foreach(var toi in toc) { toi.Duration = Duration; } break;
-				case "enforcements": foreach(var toi in toc) { toi.Enforcements = Enforcements; } break;
-				case "invokercldbid": foreach(var toi in toc) { toi.InvokerDatabaseId = InvokerDatabaseId; } break;
-				case "invokername": foreach(var toi in toc) { toi.InvokerName = InvokerName; } break;
-				case "invokeruid": foreach(var toi in toc) { toi.InvokerUid = InvokerUid; } break;
-				case "ip": foreach(var toi in toc) { toi.Ip = Ip; } break;
-				case "lastnickname": foreach(var toi in toc) { toi.LastNickname = LastNickname; } break;
-				case "mytsid": foreach(var toi in toc) { toi.MyTsId = MyTsId; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "reason": foreach(var toi in toc) { toi.Reason = Reason; } break;
-				case "uid": foreach(var toi in toc) { toi.Uid = Uid; } break;
+				case "banid": foreach (var toi in toc) { toi.BanId = BanId; } break;
+				case "created": foreach (var toi in toc) { toi.Created = Created; } break;
+				case "duration": foreach (var toi in toc) { toi.Duration = Duration; } break;
+				case "enforcements": foreach (var toi in toc) { toi.Enforcements = Enforcements; } break;
+				case "invokercldbid": foreach (var toi in toc) { toi.InvokerDatabaseId = InvokerDatabaseId; } break;
+				case "invokername": foreach (var toi in toc) { toi.InvokerName = InvokerName; } break;
+				case "invokeruid": foreach (var toi in toc) { toi.InvokerUid = InvokerUid; } break;
+				case "ip": foreach (var toi in toc) { toi.Ip = Ip; } break;
+				case "lastnickname": foreach (var toi in toc) { toi.LastNickname = LastNickname; } break;
+				case "mytsid": foreach (var toi in toc) { toi.MyTsId = MyTsId; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "reason": foreach (var toi in toc) { toi.Reason = Reason; } break;
+				case "uid": foreach (var toi in toc) { toi.Uid = Uid; } break;
 				}
 			}
 
@@ -271,11 +271,11 @@ namespace TSLib.Messages
 
 	public sealed partial class BanListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.BanListRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -288,20 +288,20 @@ namespace TSLib.Messages
 
 	public sealed partial class BindingList : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.BindingList;
-		
+
 
 		public str? Subsystem { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "subsystem": Subsystem = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -311,10 +311,10 @@ namespace TSLib.Messages
 			var toc = (BindingList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "subsystem": foreach(var toi in toc) { toi.Subsystem = Subsystem; } break;
+				case "subsystem": foreach (var toi in toc) { toi.Subsystem = Subsystem; } break;
 				}
 			}
 
@@ -323,26 +323,26 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelAddPerm : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelAddPerm;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public Ts3Permission? PermissionId { get; set; }
 		public str? PermissionNameId { get; set; }
 		public i32 PermissionValue { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
-			case "permvalue": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
-			
+			case "permvalue": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
+
 			}
 
 		}
@@ -352,13 +352,13 @@ namespace TSLib.Messages
 			var toc = (ChannelAddPerm[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
-				case "permvalue": foreach(var toi in toc) { toi.PermissionValue = PermissionValue; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "permvalue": foreach (var toi in toc) { toi.PermissionValue = PermissionValue; } break;
 				}
 			}
 
@@ -367,20 +367,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelChanged : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelChanged;
-		
+
 
 		public ChannelId ChannelId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+
 			}
 
 		}
@@ -390,10 +390,10 @@ namespace TSLib.Messages
 			var toc = (ChannelChanged[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
 				}
 			}
 
@@ -402,28 +402,28 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelClientAddPerm : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelClientAddPerm;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public ClientDbId ClientDbId { get; set; }
 		public Ts3Permission? PermissionId { get; set; }
 		public str? PermissionNameId { get; set; }
 		public i32 PermissionValue { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
-			case "permvalue": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
-			
+			case "permvalue": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
+
 			}
 
 		}
@@ -433,14 +433,14 @@ namespace TSLib.Messages
 			var toc = (ChannelClientAddPerm[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
-				case "permvalue": foreach(var toi in toc) { toi.PermissionValue = PermissionValue; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "permvalue": foreach (var toi in toc) { toi.PermissionValue = PermissionValue; } break;
 				}
 			}
 
@@ -449,26 +449,26 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelClientDelPerm : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelClientDelPerm;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public ClientDbId ClientDbId { get; set; }
 		public Ts3Permission? PermissionId { get; set; }
 		public str? PermissionNameId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -478,13 +478,13 @@ namespace TSLib.Messages
 			var toc = (ChannelClientDelPerm[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
 				}
 			}
 
@@ -493,7 +493,7 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelClientPermList : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelClientPermList;
 		public string? ReturnCode { get; set; }
 
@@ -504,20 +504,20 @@ namespace TSLib.Messages
 		public bool PermissionNegated { get; set; }
 		public bool PermissionSkip { get; set; }
 		public i32 PermissionValue { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permnegated": PermissionNegated = value.Length > 0 && value[0] != '0'; break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
 			case "permskip": PermissionSkip = value.Length > 0 && value[0] != '0'; break;
-			case "permvalue": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
+			case "permvalue": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -528,16 +528,16 @@ namespace TSLib.Messages
 			var toc = (ChannelClientPermList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permnegated": foreach(var toi in toc) { toi.PermissionNegated = PermissionNegated; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
-				case "permskip": foreach(var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
-				case "permvalue": foreach(var toi in toc) { toi.PermissionValue = PermissionValue; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permnegated": foreach (var toi in toc) { toi.PermissionNegated = PermissionNegated; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "permskip": foreach (var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
+				case "permvalue": foreach (var toi in toc) { toi.PermissionValue = PermissionValue; } break;
 				}
 			}
 
@@ -546,22 +546,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelClientPermListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelClientPermListRequest;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public ClientDbId ClientDbId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+
 			}
 
 		}
@@ -571,11 +571,11 @@ namespace TSLib.Messages
 			var toc = (ChannelClientPermListRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
 				}
 			}
 
@@ -584,9 +584,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelCreate : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelCreate;
-		
+
 
 		public Codec? Codec { get; set; }
 		public u8? CodecQuality { get; set; }
@@ -608,17 +608,17 @@ namespace TSLib.Messages
 		public str? Password { get; set; }
 		public str? PhoneticName { get; set; }
 		public str? Topic { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "channel_codec": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) Codec = (Codec)oval; } break;
+			case "channel_codec": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) Codec = (Codec)oval; } break;
 			case "channel_codec_is_unencrypted": IsUnencrypted = value.Length > 0 && value[0] != '0'; break;
-			case "channel_codec_quality": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) CodecQuality = (u8)oval; } break;
-			case "channel_delete_delay": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) DeleteDelay = TimeSpan.FromSeconds(oval); } break;
+			case "channel_codec_quality": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) CodecQuality = (u8)oval; } break;
+			case "channel_delete_delay": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) DeleteDelay = TimeSpan.FromSeconds(oval); } break;
 			case "channel_description": Description = (str)TsString.Unescape(value); break;
 			case "channel_flag_default": IsDefault = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_maxclients_unlimited": IsMaxClientsUnlimited = value.Length > 0 && value[0] != '0'; break;
@@ -627,15 +627,15 @@ namespace TSLib.Messages
 			case "channel_flag_password": HasPassword = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_permanent": IsPermanent = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_semi_permanent": IsSemiPermanent = value.Length > 0 && value[0] != '0'; break;
-			case "channel_maxclients": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) MaxClients = (i32)oval; } break;
-			case "channel_maxfamilyclients": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) MaxFamilyClients = (i32)oval; } break;
+			case "channel_maxclients": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) MaxClients = (i32)oval; } break;
+			case "channel_maxfamilyclients": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) MaxFamilyClients = (i32)oval; } break;
 			case "channel_name": Name = (str)TsString.Unescape(value); break;
 			case "channel_name_phonetic": PhoneticName = (str)TsString.Unescape(value); break;
-			case "channel_order": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
+			case "channel_order": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
 			case "channel_password": Password = (str)TsString.Unescape(value); break;
 			case "channel_topic": Topic = (str)TsString.Unescape(value); break;
-			case "cpid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ParentId = (ChannelId)oval; } break;
-			
+			case "cpid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ParentId = (ChannelId)oval; } break;
+
 			}
 
 		}
@@ -645,29 +645,29 @@ namespace TSLib.Messages
 			var toc = (ChannelCreate[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "channel_codec": foreach(var toi in toc) { toi.Codec = Codec; } break;
-				case "channel_codec_is_unencrypted": foreach(var toi in toc) { toi.IsUnencrypted = IsUnencrypted; } break;
-				case "channel_codec_quality": foreach(var toi in toc) { toi.CodecQuality = CodecQuality; } break;
-				case "channel_delete_delay": foreach(var toi in toc) { toi.DeleteDelay = DeleteDelay; } break;
-				case "channel_description": foreach(var toi in toc) { toi.Description = Description; } break;
-				case "channel_flag_default": foreach(var toi in toc) { toi.IsDefault = IsDefault; } break;
-				case "channel_flag_maxclients_unlimited": foreach(var toi in toc) { toi.IsMaxClientsUnlimited = IsMaxClientsUnlimited; } break;
-				case "channel_flag_maxfamilyclients_inherited": foreach(var toi in toc) { toi.InheritsMaxFamilyClients = InheritsMaxFamilyClients; } break;
-				case "channel_flag_maxfamilyclients_unlimited": foreach(var toi in toc) { toi.IsMaxFamilyClientsUnlimited = IsMaxFamilyClientsUnlimited; } break;
-				case "channel_flag_password": foreach(var toi in toc) { toi.HasPassword = HasPassword; } break;
-				case "channel_flag_permanent": foreach(var toi in toc) { toi.IsPermanent = IsPermanent; } break;
-				case "channel_flag_semi_permanent": foreach(var toi in toc) { toi.IsSemiPermanent = IsSemiPermanent; } break;
-				case "channel_maxclients": foreach(var toi in toc) { toi.MaxClients = MaxClients; } break;
-				case "channel_maxfamilyclients": foreach(var toi in toc) { toi.MaxFamilyClients = MaxFamilyClients; } break;
-				case "channel_name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "channel_name_phonetic": foreach(var toi in toc) { toi.PhoneticName = PhoneticName; } break;
-				case "channel_order": foreach(var toi in toc) { toi.Order = Order; } break;
-				case "channel_password": foreach(var toi in toc) { toi.Password = Password; } break;
-				case "channel_topic": foreach(var toi in toc) { toi.Topic = Topic; } break;
-				case "cpid": foreach(var toi in toc) { toi.ParentId = ParentId; } break;
+				case "channel_codec": foreach (var toi in toc) { toi.Codec = Codec; } break;
+				case "channel_codec_is_unencrypted": foreach (var toi in toc) { toi.IsUnencrypted = IsUnencrypted; } break;
+				case "channel_codec_quality": foreach (var toi in toc) { toi.CodecQuality = CodecQuality; } break;
+				case "channel_delete_delay": foreach (var toi in toc) { toi.DeleteDelay = DeleteDelay; } break;
+				case "channel_description": foreach (var toi in toc) { toi.Description = Description; } break;
+				case "channel_flag_default": foreach (var toi in toc) { toi.IsDefault = IsDefault; } break;
+				case "channel_flag_maxclients_unlimited": foreach (var toi in toc) { toi.IsMaxClientsUnlimited = IsMaxClientsUnlimited; } break;
+				case "channel_flag_maxfamilyclients_inherited": foreach (var toi in toc) { toi.InheritsMaxFamilyClients = InheritsMaxFamilyClients; } break;
+				case "channel_flag_maxfamilyclients_unlimited": foreach (var toi in toc) { toi.IsMaxFamilyClientsUnlimited = IsMaxFamilyClientsUnlimited; } break;
+				case "channel_flag_password": foreach (var toi in toc) { toi.HasPassword = HasPassword; } break;
+				case "channel_flag_permanent": foreach (var toi in toc) { toi.IsPermanent = IsPermanent; } break;
+				case "channel_flag_semi_permanent": foreach (var toi in toc) { toi.IsSemiPermanent = IsSemiPermanent; } break;
+				case "channel_maxclients": foreach (var toi in toc) { toi.MaxClients = MaxClients; } break;
+				case "channel_maxfamilyclients": foreach (var toi in toc) { toi.MaxFamilyClients = MaxFamilyClients; } break;
+				case "channel_name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "channel_name_phonetic": foreach (var toi in toc) { toi.PhoneticName = PhoneticName; } break;
+				case "channel_order": foreach (var toi in toc) { toi.Order = Order; } break;
+				case "channel_password": foreach (var toi in toc) { toi.Password = Password; } break;
+				case "channel_topic": foreach (var toi in toc) { toi.Topic = Topic; } break;
+				case "cpid": foreach (var toi in toc) { toi.ParentId = ParentId; } break;
 				}
 			}
 
@@ -676,7 +676,7 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelCreated : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelCreated;
 		public string? ReturnCode { get; set; }
 
@@ -705,18 +705,18 @@ namespace TSLib.Messages
 		public ChannelId ParentId { get; set; }
 		public str? PhoneticName { get; set; }
 		public str? Topic { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "channel_codec": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) Codec = (Codec)oval; } break;
+			case "channel_codec": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) Codec = (Codec)oval; } break;
 			case "channel_codec_is_unencrypted": IsUnencrypted = value.Length > 0 && value[0] != '0'; break;
-			case "channel_codec_latency_factor": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) CodecLatencyFactor = (i32)oval; } break;
-			case "channel_codec_quality": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) CodecQuality = (u8)oval; } break;
-			case "channel_delete_delay": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) DeleteDelay = TimeSpan.FromSeconds(oval); } break;
+			case "channel_codec_latency_factor": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) CodecLatencyFactor = (i32)oval; } break;
+			case "channel_codec_quality": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) CodecQuality = (u8)oval; } break;
+			case "channel_delete_delay": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) DeleteDelay = TimeSpan.FromSeconds(oval); } break;
 			case "channel_flag_default": IsDefault = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_maxclients_unlimited": IsMaxClientsUnlimited = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_maxfamilyclients_inherited": InheritsMaxFamilyClients = value.Length > 0 && value[0] != '0'; break;
@@ -724,17 +724,17 @@ namespace TSLib.Messages
 			case "channel_flag_password": HasPassword = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_permanent": IsPermanent = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_semi_permanent": IsSemiPermanent = value.Length > 0 && value[0] != '0'; break;
-			case "channel_icon_id": { if(!value.IsEmpty && value[0] == (u8)'-') { if(Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if(Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
-			case "channel_maxclients": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) MaxClients = (i32)oval; } break;
-			case "channel_maxfamilyclients": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) MaxFamilyClients = (i32)oval; } break;
+			case "channel_icon_id": { if (!value.IsEmpty && value[0] == (u8)'-') { if (Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if (Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
+			case "channel_maxclients": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) MaxClients = (i32)oval; } break;
+			case "channel_maxfamilyclients": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) MaxFamilyClients = (i32)oval; } break;
 			case "channel_name": Name = (str)TsString.Unescape(value); break;
 			case "channel_name_phonetic": PhoneticName = (str)TsString.Unescape(value); break;
-			case "channel_needed_talk_power": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NeededTalkPower = (i32)oval; } break;
-			case "channel_order": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
+			case "channel_needed_talk_power": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NeededTalkPower = (i32)oval; } break;
+			case "channel_order": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
 			case "channel_topic": Topic = (str)TsString.Unescape(value); break;
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "cpid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ParentId = (ChannelId)oval; } break;
-			case "invokerid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cpid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ParentId = (ChannelId)oval; } break;
+			case "invokerid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
 			case "invokername": InvokerName = (str)TsString.Unescape(value); break;
 			case "invokeruid": InvokerUid = (Uid)TsString.Unescape(value); break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
@@ -747,34 +747,34 @@ namespace TSLib.Messages
 			var toc = (ChannelCreated[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "channel_codec": foreach(var toi in toc) { toi.Codec = Codec; } break;
-				case "channel_codec_is_unencrypted": foreach(var toi in toc) { toi.IsUnencrypted = IsUnencrypted; } break;
-				case "channel_codec_latency_factor": foreach(var toi in toc) { toi.CodecLatencyFactor = CodecLatencyFactor; } break;
-				case "channel_codec_quality": foreach(var toi in toc) { toi.CodecQuality = CodecQuality; } break;
-				case "channel_delete_delay": foreach(var toi in toc) { toi.DeleteDelay = DeleteDelay; } break;
-				case "channel_flag_default": foreach(var toi in toc) { toi.IsDefault = IsDefault; } break;
-				case "channel_flag_maxclients_unlimited": foreach(var toi in toc) { toi.IsMaxClientsUnlimited = IsMaxClientsUnlimited; } break;
-				case "channel_flag_maxfamilyclients_inherited": foreach(var toi in toc) { toi.InheritsMaxFamilyClients = InheritsMaxFamilyClients; } break;
-				case "channel_flag_maxfamilyclients_unlimited": foreach(var toi in toc) { toi.IsMaxFamilyClientsUnlimited = IsMaxFamilyClientsUnlimited; } break;
-				case "channel_flag_password": foreach(var toi in toc) { toi.HasPassword = HasPassword; } break;
-				case "channel_flag_permanent": foreach(var toi in toc) { toi.IsPermanent = IsPermanent; } break;
-				case "channel_flag_semi_permanent": foreach(var toi in toc) { toi.IsSemiPermanent = IsSemiPermanent; } break;
-				case "channel_icon_id": foreach(var toi in toc) { toi.IconId = IconId; } break;
-				case "channel_maxclients": foreach(var toi in toc) { toi.MaxClients = MaxClients; } break;
-				case "channel_maxfamilyclients": foreach(var toi in toc) { toi.MaxFamilyClients = MaxFamilyClients; } break;
-				case "channel_name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "channel_name_phonetic": foreach(var toi in toc) { toi.PhoneticName = PhoneticName; } break;
-				case "channel_needed_talk_power": foreach(var toi in toc) { toi.NeededTalkPower = NeededTalkPower; } break;
-				case "channel_order": foreach(var toi in toc) { toi.Order = Order; } break;
-				case "channel_topic": foreach(var toi in toc) { toi.Topic = Topic; } break;
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cpid": foreach(var toi in toc) { toi.ParentId = ParentId; } break;
-				case "invokerid": foreach(var toi in toc) { toi.InvokerId = InvokerId; } break;
-				case "invokername": foreach(var toi in toc) { toi.InvokerName = InvokerName; } break;
-				case "invokeruid": foreach(var toi in toc) { toi.InvokerUid = InvokerUid; } break;
+				case "channel_codec": foreach (var toi in toc) { toi.Codec = Codec; } break;
+				case "channel_codec_is_unencrypted": foreach (var toi in toc) { toi.IsUnencrypted = IsUnencrypted; } break;
+				case "channel_codec_latency_factor": foreach (var toi in toc) { toi.CodecLatencyFactor = CodecLatencyFactor; } break;
+				case "channel_codec_quality": foreach (var toi in toc) { toi.CodecQuality = CodecQuality; } break;
+				case "channel_delete_delay": foreach (var toi in toc) { toi.DeleteDelay = DeleteDelay; } break;
+				case "channel_flag_default": foreach (var toi in toc) { toi.IsDefault = IsDefault; } break;
+				case "channel_flag_maxclients_unlimited": foreach (var toi in toc) { toi.IsMaxClientsUnlimited = IsMaxClientsUnlimited; } break;
+				case "channel_flag_maxfamilyclients_inherited": foreach (var toi in toc) { toi.InheritsMaxFamilyClients = InheritsMaxFamilyClients; } break;
+				case "channel_flag_maxfamilyclients_unlimited": foreach (var toi in toc) { toi.IsMaxFamilyClientsUnlimited = IsMaxFamilyClientsUnlimited; } break;
+				case "channel_flag_password": foreach (var toi in toc) { toi.HasPassword = HasPassword; } break;
+				case "channel_flag_permanent": foreach (var toi in toc) { toi.IsPermanent = IsPermanent; } break;
+				case "channel_flag_semi_permanent": foreach (var toi in toc) { toi.IsSemiPermanent = IsSemiPermanent; } break;
+				case "channel_icon_id": foreach (var toi in toc) { toi.IconId = IconId; } break;
+				case "channel_maxclients": foreach (var toi in toc) { toi.MaxClients = MaxClients; } break;
+				case "channel_maxfamilyclients": foreach (var toi in toc) { toi.MaxFamilyClients = MaxFamilyClients; } break;
+				case "channel_name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "channel_name_phonetic": foreach (var toi in toc) { toi.PhoneticName = PhoneticName; } break;
+				case "channel_needed_talk_power": foreach (var toi in toc) { toi.NeededTalkPower = NeededTalkPower; } break;
+				case "channel_order": foreach (var toi in toc) { toi.Order = Order; } break;
+				case "channel_topic": foreach (var toi in toc) { toi.Topic = Topic; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cpid": foreach (var toi in toc) { toi.ParentId = ParentId; } break;
+				case "invokerid": foreach (var toi in toc) { toi.InvokerId = InvokerId; } break;
+				case "invokername": foreach (var toi in toc) { toi.InvokerName = InvokerName; } break;
+				case "invokeruid": foreach (var toi in toc) { toi.InvokerUid = InvokerUid; } break;
 				}
 			}
 
@@ -783,19 +783,19 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelCreateResponse : IResponse
 	{
-		#pragma warning disable CS8618
-		
+#pragma warning disable CS8618
+
 		public string? ReturnCode { get; set; }
 
 		public ChannelId ChannelId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -806,10 +806,10 @@ namespace TSLib.Messages
 			var toc = (ChannelCreateResponse[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
 				}
 			}
 
@@ -818,22 +818,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelDelete : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelDelete;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public bool Force { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
 			case "force": Force = value.Length > 0 && value[0] != '0'; break;
-			
+
 			}
 
 		}
@@ -843,11 +843,11 @@ namespace TSLib.Messages
 			var toc = (ChannelDelete[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "force": foreach(var toi in toc) { toi.Force = Force; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "force": foreach (var toi in toc) { toi.Force = Force; } break;
 				}
 			}
 
@@ -856,7 +856,7 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelDeleted : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelDeleted;
 		public string? ReturnCode { get; set; }
 
@@ -864,15 +864,15 @@ namespace TSLib.Messages
 		public ClientId InvokerId { get; set; }
 		public str InvokerName { get; set; }
 		public Uid? InvokerUid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "invokerid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "invokerid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
 			case "invokername": InvokerName = (str)TsString.Unescape(value); break;
 			case "invokeruid": InvokerUid = (Uid)TsString.Unescape(value); break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
@@ -885,13 +885,13 @@ namespace TSLib.Messages
 			var toc = (ChannelDeleted[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "invokerid": foreach(var toi in toc) { toi.InvokerId = InvokerId; } break;
-				case "invokername": foreach(var toi in toc) { toi.InvokerName = InvokerName; } break;
-				case "invokeruid": foreach(var toi in toc) { toi.InvokerUid = InvokerUid; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "invokerid": foreach (var toi in toc) { toi.InvokerId = InvokerId; } break;
+				case "invokername": foreach (var toi in toc) { toi.InvokerName = InvokerName; } break;
+				case "invokeruid": foreach (var toi in toc) { toi.InvokerUid = InvokerUid; } break;
 				}
 			}
 
@@ -900,11 +900,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelDelPerm : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelDelPerm;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -917,20 +917,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelDescriptionChanged : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelDescriptionChanged;
-		
+
 
 		public ChannelId ChannelId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+
 			}
 
 		}
@@ -940,10 +940,10 @@ namespace TSLib.Messages
 			var toc = (ChannelDescriptionChanged[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
 				}
 			}
 
@@ -952,20 +952,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelDescriptionRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelDescriptionRequest;
-		
+
 
 		public ChannelId ChannelId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+
 			}
 
 		}
@@ -975,10 +975,10 @@ namespace TSLib.Messages
 			var toc = (ChannelDescriptionRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
 				}
 			}
 
@@ -987,9 +987,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelEdit : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelEdit;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public Codec? Codec { get; set; }
@@ -1014,18 +1014,18 @@ namespace TSLib.Messages
 		public ChannelId? ParentId { get; set; }
 		public str? PhoneticName { get; set; }
 		public str? Topic { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "channel_codec": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) Codec = (Codec)oval; } break;
+			case "channel_codec": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) Codec = (Codec)oval; } break;
 			case "channel_codec_is_unencrypted": IsUnencrypted = value.Length > 0 && value[0] != '0'; break;
-			case "channel_codec_latency_factor": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) CodecLatencyFactor = (i32)oval; } break;
-			case "channel_codec_quality": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) CodecQuality = (u8)oval; } break;
-			case "channel_delete_delay": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) DeleteDelay = TimeSpan.FromSeconds(oval); } break;
+			case "channel_codec_latency_factor": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) CodecLatencyFactor = (i32)oval; } break;
+			case "channel_codec_quality": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) CodecQuality = (u8)oval; } break;
+			case "channel_delete_delay": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) DeleteDelay = TimeSpan.FromSeconds(oval); } break;
 			case "channel_description": Description = (str)TsString.Unescape(value); break;
 			case "channel_flag_default": IsDefault = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_maxclients_unlimited": IsMaxClientsUnlimited = value.Length > 0 && value[0] != '0'; break;
@@ -1034,17 +1034,17 @@ namespace TSLib.Messages
 			case "channel_flag_password": HasPassword = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_permanent": IsPermanent = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_semi_permanent": IsSemiPermanent = value.Length > 0 && value[0] != '0'; break;
-			case "channel_icon_id": { if(!value.IsEmpty && value[0] == (u8)'-') { if(Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if(Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
-			case "channel_maxclients": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) MaxClients = (i32)oval; } break;
-			case "channel_maxfamilyclients": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) MaxFamilyClients = (i32)oval; } break;
+			case "channel_icon_id": { if (!value.IsEmpty && value[0] == (u8)'-') { if (Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if (Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
+			case "channel_maxclients": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) MaxClients = (i32)oval; } break;
+			case "channel_maxfamilyclients": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) MaxFamilyClients = (i32)oval; } break;
 			case "channel_name": Name = (str)TsString.Unescape(value); break;
 			case "channel_name_phonetic": PhoneticName = (str)TsString.Unescape(value); break;
-			case "channel_needed_talk_power": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NeededTalkPower = (i32)oval; } break;
-			case "channel_order": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
+			case "channel_needed_talk_power": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NeededTalkPower = (i32)oval; } break;
+			case "channel_order": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
 			case "channel_topic": Topic = (str)TsString.Unescape(value); break;
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "cpid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ParentId = (ChannelId)oval; } break;
-			
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cpid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ParentId = (ChannelId)oval; } break;
+
 			}
 
 		}
@@ -1054,32 +1054,32 @@ namespace TSLib.Messages
 			var toc = (ChannelEdit[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "channel_codec": foreach(var toi in toc) { toi.Codec = Codec; } break;
-				case "channel_codec_is_unencrypted": foreach(var toi in toc) { toi.IsUnencrypted = IsUnencrypted; } break;
-				case "channel_codec_latency_factor": foreach(var toi in toc) { toi.CodecLatencyFactor = CodecLatencyFactor; } break;
-				case "channel_codec_quality": foreach(var toi in toc) { toi.CodecQuality = CodecQuality; } break;
-				case "channel_delete_delay": foreach(var toi in toc) { toi.DeleteDelay = DeleteDelay; } break;
-				case "channel_description": foreach(var toi in toc) { toi.Description = Description; } break;
-				case "channel_flag_default": foreach(var toi in toc) { toi.IsDefault = IsDefault; } break;
-				case "channel_flag_maxclients_unlimited": foreach(var toi in toc) { toi.IsMaxClientsUnlimited = IsMaxClientsUnlimited; } break;
-				case "channel_flag_maxfamilyclients_inherited": foreach(var toi in toc) { toi.InheritsMaxFamilyClients = InheritsMaxFamilyClients; } break;
-				case "channel_flag_maxfamilyclients_unlimited": foreach(var toi in toc) { toi.IsMaxFamilyClientsUnlimited = IsMaxFamilyClientsUnlimited; } break;
-				case "channel_flag_password": foreach(var toi in toc) { toi.HasPassword = HasPassword; } break;
-				case "channel_flag_permanent": foreach(var toi in toc) { toi.IsPermanent = IsPermanent; } break;
-				case "channel_flag_semi_permanent": foreach(var toi in toc) { toi.IsSemiPermanent = IsSemiPermanent; } break;
-				case "channel_icon_id": foreach(var toi in toc) { toi.IconId = IconId; } break;
-				case "channel_maxclients": foreach(var toi in toc) { toi.MaxClients = MaxClients; } break;
-				case "channel_maxfamilyclients": foreach(var toi in toc) { toi.MaxFamilyClients = MaxFamilyClients; } break;
-				case "channel_name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "channel_name_phonetic": foreach(var toi in toc) { toi.PhoneticName = PhoneticName; } break;
-				case "channel_needed_talk_power": foreach(var toi in toc) { toi.NeededTalkPower = NeededTalkPower; } break;
-				case "channel_order": foreach(var toi in toc) { toi.Order = Order; } break;
-				case "channel_topic": foreach(var toi in toc) { toi.Topic = Topic; } break;
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cpid": foreach(var toi in toc) { toi.ParentId = ParentId; } break;
+				case "channel_codec": foreach (var toi in toc) { toi.Codec = Codec; } break;
+				case "channel_codec_is_unencrypted": foreach (var toi in toc) { toi.IsUnencrypted = IsUnencrypted; } break;
+				case "channel_codec_latency_factor": foreach (var toi in toc) { toi.CodecLatencyFactor = CodecLatencyFactor; } break;
+				case "channel_codec_quality": foreach (var toi in toc) { toi.CodecQuality = CodecQuality; } break;
+				case "channel_delete_delay": foreach (var toi in toc) { toi.DeleteDelay = DeleteDelay; } break;
+				case "channel_description": foreach (var toi in toc) { toi.Description = Description; } break;
+				case "channel_flag_default": foreach (var toi in toc) { toi.IsDefault = IsDefault; } break;
+				case "channel_flag_maxclients_unlimited": foreach (var toi in toc) { toi.IsMaxClientsUnlimited = IsMaxClientsUnlimited; } break;
+				case "channel_flag_maxfamilyclients_inherited": foreach (var toi in toc) { toi.InheritsMaxFamilyClients = InheritsMaxFamilyClients; } break;
+				case "channel_flag_maxfamilyclients_unlimited": foreach (var toi in toc) { toi.IsMaxFamilyClientsUnlimited = IsMaxFamilyClientsUnlimited; } break;
+				case "channel_flag_password": foreach (var toi in toc) { toi.HasPassword = HasPassword; } break;
+				case "channel_flag_permanent": foreach (var toi in toc) { toi.IsPermanent = IsPermanent; } break;
+				case "channel_flag_semi_permanent": foreach (var toi in toc) { toi.IsSemiPermanent = IsSemiPermanent; } break;
+				case "channel_icon_id": foreach (var toi in toc) { toi.IconId = IconId; } break;
+				case "channel_maxclients": foreach (var toi in toc) { toi.MaxClients = MaxClients; } break;
+				case "channel_maxfamilyclients": foreach (var toi in toc) { toi.MaxFamilyClients = MaxFamilyClients; } break;
+				case "channel_name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "channel_name_phonetic": foreach (var toi in toc) { toi.PhoneticName = PhoneticName; } break;
+				case "channel_needed_talk_power": foreach (var toi in toc) { toi.NeededTalkPower = NeededTalkPower; } break;
+				case "channel_order": foreach (var toi in toc) { toi.Order = Order; } break;
+				case "channel_topic": foreach (var toi in toc) { toi.Topic = Topic; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cpid": foreach (var toi in toc) { toi.ParentId = ParentId; } break;
 				}
 			}
 
@@ -1088,7 +1088,7 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelEdited : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelEdited;
 		public string? ReturnCode { get; set; }
 
@@ -1119,18 +1119,18 @@ namespace TSLib.Messages
 		public str? PhoneticName { get; set; }
 		public Reason Reason { get; set; }
 		public str? Topic { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "channel_codec": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) Codec = (Codec)oval; } break;
+			case "channel_codec": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) Codec = (Codec)oval; } break;
 			case "channel_codec_is_unencrypted": IsUnencrypted = value.Length > 0 && value[0] != '0'; break;
-			case "channel_codec_latency_factor": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) CodecLatencyFactor = (i32)oval; } break;
-			case "channel_codec_quality": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) CodecQuality = (u8)oval; } break;
-			case "channel_delete_delay": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) DeleteDelay = TimeSpan.FromSeconds(oval); } break;
+			case "channel_codec_latency_factor": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) CodecLatencyFactor = (i32)oval; } break;
+			case "channel_codec_quality": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) CodecQuality = (u8)oval; } break;
+			case "channel_delete_delay": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) DeleteDelay = TimeSpan.FromSeconds(oval); } break;
 			case "channel_description": Description = (str)TsString.Unescape(value); break;
 			case "channel_flag_default": IsDefault = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_maxclients_unlimited": IsMaxClientsUnlimited = value.Length > 0 && value[0] != '0'; break;
@@ -1139,20 +1139,20 @@ namespace TSLib.Messages
 			case "channel_flag_password": HasPassword = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_permanent": IsPermanent = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_semi_permanent": IsSemiPermanent = value.Length > 0 && value[0] != '0'; break;
-			case "channel_icon_id": { if(!value.IsEmpty && value[0] == (u8)'-') { if(Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if(Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
-			case "channel_maxclients": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) MaxClients = (i32)oval; } break;
-			case "channel_maxfamilyclients": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) MaxFamilyClients = (i32)oval; } break;
+			case "channel_icon_id": { if (!value.IsEmpty && value[0] == (u8)'-') { if (Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if (Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
+			case "channel_maxclients": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) MaxClients = (i32)oval; } break;
+			case "channel_maxfamilyclients": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) MaxFamilyClients = (i32)oval; } break;
 			case "channel_name": Name = (str)TsString.Unescape(value); break;
 			case "channel_name_phonetic": PhoneticName = (str)TsString.Unescape(value); break;
-			case "channel_needed_talk_power": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NeededTalkPower = (i32)oval; } break;
-			case "channel_order": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
+			case "channel_needed_talk_power": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NeededTalkPower = (i32)oval; } break;
+			case "channel_order": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
 			case "channel_topic": Topic = (str)TsString.Unescape(value); break;
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "cpid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ParentId = (ChannelId)oval; } break;
-			case "invokerid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cpid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ParentId = (ChannelId)oval; } break;
+			case "invokerid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
 			case "invokername": InvokerName = (str)TsString.Unescape(value); break;
 			case "invokeruid": InvokerUid = (Uid)TsString.Unescape(value); break;
-			case "reasonid": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) Reason = (Reason)oval; } break;
+			case "reasonid": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) Reason = (Reason)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -1163,36 +1163,36 @@ namespace TSLib.Messages
 			var toc = (ChannelEdited[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "channel_codec": foreach(var toi in toc) { toi.Codec = Codec; } break;
-				case "channel_codec_is_unencrypted": foreach(var toi in toc) { toi.IsUnencrypted = IsUnencrypted; } break;
-				case "channel_codec_latency_factor": foreach(var toi in toc) { toi.CodecLatencyFactor = CodecLatencyFactor; } break;
-				case "channel_codec_quality": foreach(var toi in toc) { toi.CodecQuality = CodecQuality; } break;
-				case "channel_delete_delay": foreach(var toi in toc) { toi.DeleteDelay = DeleteDelay; } break;
-				case "channel_description": foreach(var toi in toc) { toi.Description = Description; } break;
-				case "channel_flag_default": foreach(var toi in toc) { toi.IsDefault = IsDefault; } break;
-				case "channel_flag_maxclients_unlimited": foreach(var toi in toc) { toi.IsMaxClientsUnlimited = IsMaxClientsUnlimited; } break;
-				case "channel_flag_maxfamilyclients_inherited": foreach(var toi in toc) { toi.InheritsMaxFamilyClients = InheritsMaxFamilyClients; } break;
-				case "channel_flag_maxfamilyclients_unlimited": foreach(var toi in toc) { toi.IsMaxFamilyClientsUnlimited = IsMaxFamilyClientsUnlimited; } break;
-				case "channel_flag_password": foreach(var toi in toc) { toi.HasPassword = HasPassword; } break;
-				case "channel_flag_permanent": foreach(var toi in toc) { toi.IsPermanent = IsPermanent; } break;
-				case "channel_flag_semi_permanent": foreach(var toi in toc) { toi.IsSemiPermanent = IsSemiPermanent; } break;
-				case "channel_icon_id": foreach(var toi in toc) { toi.IconId = IconId; } break;
-				case "channel_maxclients": foreach(var toi in toc) { toi.MaxClients = MaxClients; } break;
-				case "channel_maxfamilyclients": foreach(var toi in toc) { toi.MaxFamilyClients = MaxFamilyClients; } break;
-				case "channel_name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "channel_name_phonetic": foreach(var toi in toc) { toi.PhoneticName = PhoneticName; } break;
-				case "channel_needed_talk_power": foreach(var toi in toc) { toi.NeededTalkPower = NeededTalkPower; } break;
-				case "channel_order": foreach(var toi in toc) { toi.Order = Order; } break;
-				case "channel_topic": foreach(var toi in toc) { toi.Topic = Topic; } break;
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cpid": foreach(var toi in toc) { toi.ParentId = ParentId; } break;
-				case "invokerid": foreach(var toi in toc) { toi.InvokerId = InvokerId; } break;
-				case "invokername": foreach(var toi in toc) { toi.InvokerName = InvokerName; } break;
-				case "invokeruid": foreach(var toi in toc) { toi.InvokerUid = InvokerUid; } break;
-				case "reasonid": foreach(var toi in toc) { toi.Reason = Reason; } break;
+				case "channel_codec": foreach (var toi in toc) { toi.Codec = Codec; } break;
+				case "channel_codec_is_unencrypted": foreach (var toi in toc) { toi.IsUnencrypted = IsUnencrypted; } break;
+				case "channel_codec_latency_factor": foreach (var toi in toc) { toi.CodecLatencyFactor = CodecLatencyFactor; } break;
+				case "channel_codec_quality": foreach (var toi in toc) { toi.CodecQuality = CodecQuality; } break;
+				case "channel_delete_delay": foreach (var toi in toc) { toi.DeleteDelay = DeleteDelay; } break;
+				case "channel_description": foreach (var toi in toc) { toi.Description = Description; } break;
+				case "channel_flag_default": foreach (var toi in toc) { toi.IsDefault = IsDefault; } break;
+				case "channel_flag_maxclients_unlimited": foreach (var toi in toc) { toi.IsMaxClientsUnlimited = IsMaxClientsUnlimited; } break;
+				case "channel_flag_maxfamilyclients_inherited": foreach (var toi in toc) { toi.InheritsMaxFamilyClients = InheritsMaxFamilyClients; } break;
+				case "channel_flag_maxfamilyclients_unlimited": foreach (var toi in toc) { toi.IsMaxFamilyClientsUnlimited = IsMaxFamilyClientsUnlimited; } break;
+				case "channel_flag_password": foreach (var toi in toc) { toi.HasPassword = HasPassword; } break;
+				case "channel_flag_permanent": foreach (var toi in toc) { toi.IsPermanent = IsPermanent; } break;
+				case "channel_flag_semi_permanent": foreach (var toi in toc) { toi.IsSemiPermanent = IsSemiPermanent; } break;
+				case "channel_icon_id": foreach (var toi in toc) { toi.IconId = IconId; } break;
+				case "channel_maxclients": foreach (var toi in toc) { toi.MaxClients = MaxClients; } break;
+				case "channel_maxfamilyclients": foreach (var toi in toc) { toi.MaxFamilyClients = MaxFamilyClients; } break;
+				case "channel_name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "channel_name_phonetic": foreach (var toi in toc) { toi.PhoneticName = PhoneticName; } break;
+				case "channel_needed_talk_power": foreach (var toi in toc) { toi.NeededTalkPower = NeededTalkPower; } break;
+				case "channel_order": foreach (var toi in toc) { toi.Order = Order; } break;
+				case "channel_topic": foreach (var toi in toc) { toi.Topic = Topic; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cpid": foreach (var toi in toc) { toi.ParentId = ParentId; } break;
+				case "invokerid": foreach (var toi in toc) { toi.InvokerId = InvokerId; } break;
+				case "invokername": foreach (var toi in toc) { toi.InvokerName = InvokerName; } break;
+				case "invokeruid": foreach (var toi in toc) { toi.InvokerUid = InvokerUid; } break;
+				case "reasonid": foreach (var toi in toc) { toi.Reason = Reason; } break;
 				}
 			}
 
@@ -1201,21 +1201,21 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelFind : IResponse
 	{
-		#pragma warning disable CS8618
-		
+#pragma warning disable CS8618
+
 		public string? ReturnCode { get; set; }
 
 		public ChannelId ChannelId { get; set; }
 		public str Name { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "channel_name": Name = (str)TsString.Unescape(value); break;
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -1226,11 +1226,11 @@ namespace TSLib.Messages
 			var toc = (ChannelFind[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "channel_name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "channel_name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
 				}
 			}
 
@@ -1239,20 +1239,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelFindRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelFindRequest;
-		
+
 
 		public str Pattern { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "pattern": Pattern = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -1262,10 +1262,10 @@ namespace TSLib.Messages
 			var toc = (ChannelFindRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "pattern": foreach(var toi in toc) { toi.Pattern = Pattern; } break;
+				case "pattern": foreach (var toi in toc) { toi.Pattern = Pattern; } break;
 				}
 			}
 
@@ -1274,22 +1274,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelGroupAdd : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelGroupAdd;
-		
+
 
 		public GroupType? GroupType { get; set; }
 		public str Name { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "name": Name = (str)TsString.Unescape(value); break;
-			case "type": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) GroupType = (GroupType)oval; } break;
-			
+			case "type": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) GroupType = (GroupType)oval; } break;
+
 			}
 
 		}
@@ -1299,11 +1299,11 @@ namespace TSLib.Messages
 			var toc = (ChannelGroupAdd[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "type": foreach(var toi in toc) { toi.GroupType = GroupType; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "type": foreach (var toi in toc) { toi.GroupType = GroupType; } break;
 				}
 			}
 
@@ -1312,26 +1312,26 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelGroupAddPerm : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelGroupAddPerm;
-		
+
 
 		public ChannelGroupId ChannelGroup { get; set; }
 		public Ts3Permission? PermissionId { get; set; }
 		public str? PermissionNameId { get; set; }
 		public i32 PermissionValue { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "cgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
-			case "permvalue": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
-			
+			case "permvalue": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
+
 			}
 
 		}
@@ -1341,13 +1341,13 @@ namespace TSLib.Messages
 			var toc = (ChannelGroupAddPerm[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cgid": foreach(var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
-				case "permvalue": foreach(var toi in toc) { toi.PermissionValue = PermissionValue; } break;
+				case "cgid": foreach (var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "permvalue": foreach (var toi in toc) { toi.PermissionValue = PermissionValue; } break;
 				}
 			}
 
@@ -1356,23 +1356,23 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelGroupClientList : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelGroupClientList;
 		public string? ReturnCode { get; set; }
 
 		public ChannelGroupId ChannelGroup { get; set; }
 		public ChannelId ChannelId { get; set; }
 		public ClientDbId ClientDbId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "cgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -1383,12 +1383,12 @@ namespace TSLib.Messages
 			var toc = (ChannelGroupClientList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cgid": foreach(var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "cgid": foreach (var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
 				}
 			}
 
@@ -1397,24 +1397,24 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelGroupClientListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelGroupClientListRequest;
-		
+
 
 		public ChannelGroupId? ChannelGroup { get; set; }
 		public ChannelId? ChannelId { get; set; }
 		public ClientDbId? ClientDbId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			
+			case "cgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+
 			}
 
 		}
@@ -1424,12 +1424,12 @@ namespace TSLib.Messages
 			var toc = (ChannelGroupClientListRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cgid": foreach(var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "cgid": foreach (var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
 				}
 			}
 
@@ -1438,26 +1438,26 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelGroupCopy : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelGroupCopy;
-		
+
 
 		public GroupType GroupType { get; set; }
 		public str Name { get; set; }
 		public ChannelGroupId SourceChannelGroupId { get; set; }
 		public ChannelGroupId TargetChannelGroupId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "name": Name = (str)TsString.Unescape(value); break;
-			case "scgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) SourceChannelGroupId = (ChannelGroupId)oval; } break;
-			case "tcgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TargetChannelGroupId = (ChannelGroupId)oval; } break;
-			case "type": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) GroupType = (GroupType)oval; } break;
-			
+			case "scgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) SourceChannelGroupId = (ChannelGroupId)oval; } break;
+			case "tcgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TargetChannelGroupId = (ChannelGroupId)oval; } break;
+			case "type": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) GroupType = (GroupType)oval; } break;
+
 			}
 
 		}
@@ -1467,13 +1467,13 @@ namespace TSLib.Messages
 			var toc = (ChannelGroupCopy[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "scgid": foreach(var toi in toc) { toi.SourceChannelGroupId = SourceChannelGroupId; } break;
-				case "tcgid": foreach(var toi in toc) { toi.TargetChannelGroupId = TargetChannelGroupId; } break;
-				case "type": foreach(var toi in toc) { toi.GroupType = GroupType; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "scgid": foreach (var toi in toc) { toi.SourceChannelGroupId = SourceChannelGroupId; } break;
+				case "tcgid": foreach (var toi in toc) { toi.TargetChannelGroupId = TargetChannelGroupId; } break;
+				case "type": foreach (var toi in toc) { toi.GroupType = GroupType; } break;
 				}
 			}
 
@@ -1482,22 +1482,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelGroupDel : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelGroupDel;
-		
+
 
 		public ChannelGroupId ChannelGroup { get; set; }
 		public bool Force { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
+			case "cgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
 			case "force": Force = value.Length > 0 && value[0] != '0'; break;
-			
+
 			}
 
 		}
@@ -1507,11 +1507,11 @@ namespace TSLib.Messages
 			var toc = (ChannelGroupDel[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cgid": foreach(var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
-				case "force": foreach(var toi in toc) { toi.Force = Force; } break;
+				case "cgid": foreach (var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
+				case "force": foreach (var toi in toc) { toi.Force = Force; } break;
 				}
 			}
 
@@ -1520,24 +1520,24 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelGroupDelPerm : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelGroupDelPerm;
-		
+
 
 		public ChannelGroupId ChannelGroup { get; set; }
 		public Ts3Permission? PermissionId { get; set; }
 		public str? PermissionNameId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "cgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -1547,12 +1547,12 @@ namespace TSLib.Messages
 			var toc = (ChannelGroupDelPerm[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cgid": foreach(var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "cgid": foreach (var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
 				}
 			}
 
@@ -1561,7 +1561,7 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelGroupList : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelGroupList;
 		public string? ReturnCode { get; set; }
 
@@ -1575,23 +1575,23 @@ namespace TSLib.Messages
 		public i32? NeededMemberRemovePower { get; set; }
 		public i32 NeededModifyPower { get; set; }
 		public i32 SortId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
-			case "iconid": { if(!value.IsEmpty && value[0] == (u8)'-') { if(Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if(Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
-			case "n_member_addp": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NeededMemberAddPower = (i32)oval; } break;
-			case "n_member_removep": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NeededMemberRemovePower = (i32)oval; } break;
-			case "n_modifyp": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NeededModifyPower = (i32)oval; } break;
+			case "cgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
+			case "iconid": { if (!value.IsEmpty && value[0] == (u8)'-') { if (Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if (Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
+			case "n_member_addp": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NeededMemberAddPower = (i32)oval; } break;
+			case "n_member_removep": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NeededMemberRemovePower = (i32)oval; } break;
+			case "n_modifyp": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NeededModifyPower = (i32)oval; } break;
 			case "name": Name = (str)TsString.Unescape(value); break;
-			case "namemode": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NamingMode = (GroupNamingMode)oval; } break;
+			case "namemode": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NamingMode = (GroupNamingMode)oval; } break;
 			case "savedb": IsPermanent = value.Length > 0 && value[0] != '0'; break;
-			case "sortid": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) SortId = (i32)oval; } break;
-			case "type": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) GroupType = (GroupType)oval; } break;
+			case "sortid": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) SortId = (i32)oval; } break;
+			case "type": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) GroupType = (GroupType)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -1602,19 +1602,19 @@ namespace TSLib.Messages
 			var toc = (ChannelGroupList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cgid": foreach(var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
-				case "iconid": foreach(var toi in toc) { toi.IconId = IconId; } break;
-				case "n_member_addp": foreach(var toi in toc) { toi.NeededMemberAddPower = NeededMemberAddPower; } break;
-				case "n_member_removep": foreach(var toi in toc) { toi.NeededMemberRemovePower = NeededMemberRemovePower; } break;
-				case "n_modifyp": foreach(var toi in toc) { toi.NeededModifyPower = NeededModifyPower; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "namemode": foreach(var toi in toc) { toi.NamingMode = NamingMode; } break;
-				case "savedb": foreach(var toi in toc) { toi.IsPermanent = IsPermanent; } break;
-				case "sortid": foreach(var toi in toc) { toi.SortId = SortId; } break;
-				case "type": foreach(var toi in toc) { toi.GroupType = GroupType; } break;
+				case "cgid": foreach (var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
+				case "iconid": foreach (var toi in toc) { toi.IconId = IconId; } break;
+				case "n_member_addp": foreach (var toi in toc) { toi.NeededMemberAddPower = NeededMemberAddPower; } break;
+				case "n_member_removep": foreach (var toi in toc) { toi.NeededMemberRemovePower = NeededMemberRemovePower; } break;
+				case "n_modifyp": foreach (var toi in toc) { toi.NeededModifyPower = NeededModifyPower; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "namemode": foreach (var toi in toc) { toi.NamingMode = NamingMode; } break;
+				case "savedb": foreach (var toi in toc) { toi.IsPermanent = IsPermanent; } break;
+				case "sortid": foreach (var toi in toc) { toi.SortId = SortId; } break;
+				case "type": foreach (var toi in toc) { toi.GroupType = GroupType; } break;
 				}
 			}
 
@@ -1623,11 +1623,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelGroupListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelGroupListRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -1640,7 +1640,7 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelGroupPermList : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelGroupPermList;
 		public string? ReturnCode { get; set; }
 
@@ -1650,19 +1650,19 @@ namespace TSLib.Messages
 		public bool PermissionNegated { get; set; }
 		public bool PermissionSkip { get; set; }
 		public i32 PermissionValue { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "cgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permnegated": PermissionNegated = value.Length > 0 && value[0] != '0'; break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
 			case "permskip": PermissionSkip = value.Length > 0 && value[0] != '0'; break;
-			case "permvalue": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
+			case "permvalue": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -1673,15 +1673,15 @@ namespace TSLib.Messages
 			var toc = (ChannelGroupPermList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cgid": foreach(var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permnegated": foreach(var toi in toc) { toi.PermissionNegated = PermissionNegated; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
-				case "permskip": foreach(var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
-				case "permvalue": foreach(var toi in toc) { toi.PermissionValue = PermissionValue; } break;
+				case "cgid": foreach (var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permnegated": foreach (var toi in toc) { toi.PermissionNegated = PermissionNegated; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "permskip": foreach (var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
+				case "permvalue": foreach (var toi in toc) { toi.PermissionValue = PermissionValue; } break;
 				}
 			}
 
@@ -1690,20 +1690,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelGroupPermListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelGroupPermListRequest;
-		
+
 
 		public ChannelGroupId ChannelGroup { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
-			
+			case "cgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
+
 			}
 
 		}
@@ -1713,10 +1713,10 @@ namespace TSLib.Messages
 			var toc = (ChannelGroupPermListRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cgid": foreach(var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
+				case "cgid": foreach (var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
 				}
 			}
 
@@ -1725,22 +1725,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelGroupRename : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelGroupRename;
-		
+
 
 		public ChannelGroupId ChannelGroup { get; set; }
 		public str Name { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
+			case "cgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
 			case "name": Name = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -1750,11 +1750,11 @@ namespace TSLib.Messages
 			var toc = (ChannelGroupRename[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cgid": foreach(var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
+				case "cgid": foreach (var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
 				}
 			}
 
@@ -1763,20 +1763,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelInfoRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelInfoRequest;
-		
+
 
 		public ChannelId ChannelId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+
 			}
 
 		}
@@ -1786,10 +1786,10 @@ namespace TSLib.Messages
 			var toc = (ChannelInfoRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
 				}
 			}
 
@@ -1798,8 +1798,8 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelInfoResponse : IResponse
 	{
-		#pragma warning disable CS8618
-		
+#pragma warning disable CS8618
+
 		public string? ReturnCode { get; set; }
 
 		public str? BannerGfxUrl { get; set; }
@@ -1831,20 +1831,20 @@ namespace TSLib.Messages
 		public str? PasswordSalt { get; set; }
 		public str? PhoneticName { get; set; }
 		public str Topic { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "channel_banner_gfx_url": BannerGfxUrl = (str)TsString.Unescape(value); break;
 			case "channel_banner_mode": BannerMode = (str)TsString.Unescape(value); break;
-			case "channel_codec": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) Codec = (Codec)oval; } break;
+			case "channel_codec": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) Codec = (Codec)oval; } break;
 			case "channel_codec_is_unencrypted": IsUnencrypted = value.Length > 0 && value[0] != '0'; break;
-			case "channel_codec_latency_factor": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) CodecLatencyFactor = (i32)oval; } break;
-			case "channel_codec_quality": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) CodecQuality = (u8)oval; } break;
-			case "channel_delete_delay": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) DeleteDelay = TimeSpan.FromSeconds(oval); } break;
+			case "channel_codec_latency_factor": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) CodecLatencyFactor = (i32)oval; } break;
+			case "channel_codec_quality": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) CodecQuality = (u8)oval; } break;
+			case "channel_delete_delay": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) DeleteDelay = TimeSpan.FromSeconds(oval); } break;
 			case "channel_description": Description = (str)TsString.Unescape(value); break;
 			case "channel_filepath": FilePath = (str)TsString.Unescape(value); break;
 			case "channel_flag_default": IsDefault = value.Length > 0 && value[0] != '0'; break;
@@ -1855,18 +1855,18 @@ namespace TSLib.Messages
 			case "channel_flag_permanent": IsPermanent = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_semi_permanent": IsSemiPermanent = value.Length > 0 && value[0] != '0'; break;
 			case "channel_forced_silence": ForcedSilence = value.Length > 0 && value[0] != '0'; break;
-			case "channel_icon_id": { if(!value.IsEmpty && value[0] == (u8)'-') { if(Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if(Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
-			case "channel_maxclients": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) MaxClients = (i32)oval; } break;
-			case "channel_maxfamilyclients": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) MaxFamilyClients = (i32)oval; } break;
+			case "channel_icon_id": { if (!value.IsEmpty && value[0] == (u8)'-') { if (Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if (Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
+			case "channel_maxclients": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) MaxClients = (i32)oval; } break;
+			case "channel_maxfamilyclients": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) MaxFamilyClients = (i32)oval; } break;
 			case "channel_name": Name = (str)TsString.Unescape(value); break;
 			case "channel_name_phonetic": PhoneticName = (str)TsString.Unescape(value); break;
-			case "channel_needed_talk_power": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NeededTalkPower = (i32)oval; } break;
-			case "channel_order": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
+			case "channel_needed_talk_power": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NeededTalkPower = (i32)oval; } break;
+			case "channel_order": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
 			case "channel_password": Password = (str)TsString.Unescape(value); break;
 			case "channel_security_salt": PasswordSalt = (str)TsString.Unescape(value); break;
 			case "channel_topic": Topic = (str)TsString.Unescape(value); break;
-			case "pid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ParentChannelId = (ChannelId)oval; } break;
-			case "seconds_empty": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) DurationEmpty = TimeSpan.FromSeconds(oval); } break;
+			case "pid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ParentChannelId = (ChannelId)oval; } break;
+			case "seconds_empty": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) DurationEmpty = TimeSpan.FromSeconds(oval); } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -1877,38 +1877,38 @@ namespace TSLib.Messages
 			var toc = (ChannelInfoResponse[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "channel_banner_gfx_url": foreach(var toi in toc) { toi.BannerGfxUrl = BannerGfxUrl; } break;
-				case "channel_banner_mode": foreach(var toi in toc) { toi.BannerMode = BannerMode; } break;
-				case "channel_codec": foreach(var toi in toc) { toi.Codec = Codec; } break;
-				case "channel_codec_is_unencrypted": foreach(var toi in toc) { toi.IsUnencrypted = IsUnencrypted; } break;
-				case "channel_codec_latency_factor": foreach(var toi in toc) { toi.CodecLatencyFactor = CodecLatencyFactor; } break;
-				case "channel_codec_quality": foreach(var toi in toc) { toi.CodecQuality = CodecQuality; } break;
-				case "channel_delete_delay": foreach(var toi in toc) { toi.DeleteDelay = DeleteDelay; } break;
-				case "channel_description": foreach(var toi in toc) { toi.Description = Description; } break;
-				case "channel_filepath": foreach(var toi in toc) { toi.FilePath = FilePath; } break;
-				case "channel_flag_default": foreach(var toi in toc) { toi.IsDefault = IsDefault; } break;
-				case "channel_flag_maxclients_unlimited": foreach(var toi in toc) { toi.IsMaxClientsUnlimited = IsMaxClientsUnlimited; } break;
-				case "channel_flag_maxfamilyclients_inherited": foreach(var toi in toc) { toi.InheritsMaxFamilyClients = InheritsMaxFamilyClients; } break;
-				case "channel_flag_maxfamilyclients_unlimited": foreach(var toi in toc) { toi.IsMaxFamilyClientsUnlimited = IsMaxFamilyClientsUnlimited; } break;
-				case "channel_flag_password": foreach(var toi in toc) { toi.HasPassword = HasPassword; } break;
-				case "channel_flag_permanent": foreach(var toi in toc) { toi.IsPermanent = IsPermanent; } break;
-				case "channel_flag_semi_permanent": foreach(var toi in toc) { toi.IsSemiPermanent = IsSemiPermanent; } break;
-				case "channel_forced_silence": foreach(var toi in toc) { toi.ForcedSilence = ForcedSilence; } break;
-				case "channel_icon_id": foreach(var toi in toc) { toi.IconId = IconId; } break;
-				case "channel_maxclients": foreach(var toi in toc) { toi.MaxClients = MaxClients; } break;
-				case "channel_maxfamilyclients": foreach(var toi in toc) { toi.MaxFamilyClients = MaxFamilyClients; } break;
-				case "channel_name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "channel_name_phonetic": foreach(var toi in toc) { toi.PhoneticName = PhoneticName; } break;
-				case "channel_needed_talk_power": foreach(var toi in toc) { toi.NeededTalkPower = NeededTalkPower; } break;
-				case "channel_order": foreach(var toi in toc) { toi.Order = Order; } break;
-				case "channel_password": foreach(var toi in toc) { toi.Password = Password; } break;
-				case "channel_security_salt": foreach(var toi in toc) { toi.PasswordSalt = PasswordSalt; } break;
-				case "channel_topic": foreach(var toi in toc) { toi.Topic = Topic; } break;
-				case "pid": foreach(var toi in toc) { toi.ParentChannelId = ParentChannelId; } break;
-				case "seconds_empty": foreach(var toi in toc) { toi.DurationEmpty = DurationEmpty; } break;
+				case "channel_banner_gfx_url": foreach (var toi in toc) { toi.BannerGfxUrl = BannerGfxUrl; } break;
+				case "channel_banner_mode": foreach (var toi in toc) { toi.BannerMode = BannerMode; } break;
+				case "channel_codec": foreach (var toi in toc) { toi.Codec = Codec; } break;
+				case "channel_codec_is_unencrypted": foreach (var toi in toc) { toi.IsUnencrypted = IsUnencrypted; } break;
+				case "channel_codec_latency_factor": foreach (var toi in toc) { toi.CodecLatencyFactor = CodecLatencyFactor; } break;
+				case "channel_codec_quality": foreach (var toi in toc) { toi.CodecQuality = CodecQuality; } break;
+				case "channel_delete_delay": foreach (var toi in toc) { toi.DeleteDelay = DeleteDelay; } break;
+				case "channel_description": foreach (var toi in toc) { toi.Description = Description; } break;
+				case "channel_filepath": foreach (var toi in toc) { toi.FilePath = FilePath; } break;
+				case "channel_flag_default": foreach (var toi in toc) { toi.IsDefault = IsDefault; } break;
+				case "channel_flag_maxclients_unlimited": foreach (var toi in toc) { toi.IsMaxClientsUnlimited = IsMaxClientsUnlimited; } break;
+				case "channel_flag_maxfamilyclients_inherited": foreach (var toi in toc) { toi.InheritsMaxFamilyClients = InheritsMaxFamilyClients; } break;
+				case "channel_flag_maxfamilyclients_unlimited": foreach (var toi in toc) { toi.IsMaxFamilyClientsUnlimited = IsMaxFamilyClientsUnlimited; } break;
+				case "channel_flag_password": foreach (var toi in toc) { toi.HasPassword = HasPassword; } break;
+				case "channel_flag_permanent": foreach (var toi in toc) { toi.IsPermanent = IsPermanent; } break;
+				case "channel_flag_semi_permanent": foreach (var toi in toc) { toi.IsSemiPermanent = IsSemiPermanent; } break;
+				case "channel_forced_silence": foreach (var toi in toc) { toi.ForcedSilence = ForcedSilence; } break;
+				case "channel_icon_id": foreach (var toi in toc) { toi.IconId = IconId; } break;
+				case "channel_maxclients": foreach (var toi in toc) { toi.MaxClients = MaxClients; } break;
+				case "channel_maxfamilyclients": foreach (var toi in toc) { toi.MaxFamilyClients = MaxFamilyClients; } break;
+				case "channel_name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "channel_name_phonetic": foreach (var toi in toc) { toi.PhoneticName = PhoneticName; } break;
+				case "channel_needed_talk_power": foreach (var toi in toc) { toi.NeededTalkPower = NeededTalkPower; } break;
+				case "channel_order": foreach (var toi in toc) { toi.Order = Order; } break;
+				case "channel_password": foreach (var toi in toc) { toi.Password = Password; } break;
+				case "channel_security_salt": foreach (var toi in toc) { toi.PasswordSalt = PasswordSalt; } break;
+				case "channel_topic": foreach (var toi in toc) { toi.Topic = Topic; } break;
+				case "pid": foreach (var toi in toc) { toi.ParentChannelId = ParentChannelId; } break;
+				case "seconds_empty": foreach (var toi in toc) { toi.DurationEmpty = DurationEmpty; } break;
 				}
 			}
 
@@ -1917,9 +1917,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelList : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelList;
-		
+
 
 		public str? BannerGfxUrl { get; set; }
 		public str? BannerMode { get; set; }
@@ -1948,20 +1948,20 @@ namespace TSLib.Messages
 		public ChannelId ParentId { get; set; }
 		public str PhoneticName { get; set; }
 		public str Topic { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "channel_banner_gfx_url": BannerGfxUrl = (str)TsString.Unescape(value); break;
 			case "channel_banner_mode": BannerMode = (str)TsString.Unescape(value); break;
-			case "channel_codec": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) Codec = (Codec)oval; } break;
+			case "channel_codec": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) Codec = (Codec)oval; } break;
 			case "channel_codec_is_unencrypted": IsUnencrypted = value.Length > 0 && value[0] != '0'; break;
-			case "channel_codec_latency_factor": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) CodecLatencyFactor = (i32)oval; } break;
-			case "channel_codec_quality": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) CodecQuality = (u8)oval; } break;
-			case "channel_delete_delay": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) DeleteDelay = TimeSpan.FromSeconds(oval); } break;
+			case "channel_codec_latency_factor": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) CodecLatencyFactor = (i32)oval; } break;
+			case "channel_codec_quality": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) CodecQuality = (u8)oval; } break;
+			case "channel_delete_delay": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) DeleteDelay = TimeSpan.FromSeconds(oval); } break;
 			case "channel_flag_default": IsDefault = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_maxclients_unlimited": IsMaxClientsUnlimited = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_maxfamilyclients_inherited": InheritsMaxFamilyClients = value.Length > 0 && value[0] != '0'; break;
@@ -1971,18 +1971,18 @@ namespace TSLib.Messages
 			case "channel_flag_private": IsPrivate = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_semi_permanent": IsSemiPermanent = value.Length > 0 && value[0] != '0'; break;
 			case "channel_forced_silence": ForcedSilence = value.Length > 0 && value[0] != '0'; break;
-			case "channel_icon_id": { if(!value.IsEmpty && value[0] == (u8)'-') { if(Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if(Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
-			case "channel_maxclients": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) MaxClients = (i32)oval; } break;
-			case "channel_maxfamilyclients": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) MaxFamilyClients = (i32)oval; } break;
+			case "channel_icon_id": { if (!value.IsEmpty && value[0] == (u8)'-') { if (Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if (Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
+			case "channel_maxclients": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) MaxClients = (i32)oval; } break;
+			case "channel_maxfamilyclients": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) MaxFamilyClients = (i32)oval; } break;
 			case "channel_name": Name = (str)TsString.Unescape(value); break;
 			case "channel_name_phonetic": PhoneticName = (str)TsString.Unescape(value); break;
-			case "channel_needed_talk_power": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NeededTalkPower = (i32)oval; } break;
-			case "channel_order": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
+			case "channel_needed_talk_power": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NeededTalkPower = (i32)oval; } break;
+			case "channel_order": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
 			case "channel_topic": Topic = (str)TsString.Unescape(value); break;
 			case "channel_unique_identifier": Guid = (str)TsString.Unescape(value); break;
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "cpid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ParentId = (ChannelId)oval; } break;
-			
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cpid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ParentId = (ChannelId)oval; } break;
+
 			}
 
 		}
@@ -1992,36 +1992,36 @@ namespace TSLib.Messages
 			var toc = (ChannelList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "channel_banner_gfx_url": foreach(var toi in toc) { toi.BannerGfxUrl = BannerGfxUrl; } break;
-				case "channel_banner_mode": foreach(var toi in toc) { toi.BannerMode = BannerMode; } break;
-				case "channel_codec": foreach(var toi in toc) { toi.Codec = Codec; } break;
-				case "channel_codec_is_unencrypted": foreach(var toi in toc) { toi.IsUnencrypted = IsUnencrypted; } break;
-				case "channel_codec_latency_factor": foreach(var toi in toc) { toi.CodecLatencyFactor = CodecLatencyFactor; } break;
-				case "channel_codec_quality": foreach(var toi in toc) { toi.CodecQuality = CodecQuality; } break;
-				case "channel_delete_delay": foreach(var toi in toc) { toi.DeleteDelay = DeleteDelay; } break;
-				case "channel_flag_default": foreach(var toi in toc) { toi.IsDefault = IsDefault; } break;
-				case "channel_flag_maxclients_unlimited": foreach(var toi in toc) { toi.IsMaxClientsUnlimited = IsMaxClientsUnlimited; } break;
-				case "channel_flag_maxfamilyclients_inherited": foreach(var toi in toc) { toi.InheritsMaxFamilyClients = InheritsMaxFamilyClients; } break;
-				case "channel_flag_maxfamilyclients_unlimited": foreach(var toi in toc) { toi.IsMaxFamilyClientsUnlimited = IsMaxFamilyClientsUnlimited; } break;
-				case "channel_flag_password": foreach(var toi in toc) { toi.HasPassword = HasPassword; } break;
-				case "channel_flag_permanent": foreach(var toi in toc) { toi.IsPermanent = IsPermanent; } break;
-				case "channel_flag_private": foreach(var toi in toc) { toi.IsPrivate = IsPrivate; } break;
-				case "channel_flag_semi_permanent": foreach(var toi in toc) { toi.IsSemiPermanent = IsSemiPermanent; } break;
-				case "channel_forced_silence": foreach(var toi in toc) { toi.ForcedSilence = ForcedSilence; } break;
-				case "channel_icon_id": foreach(var toi in toc) { toi.IconId = IconId; } break;
-				case "channel_maxclients": foreach(var toi in toc) { toi.MaxClients = MaxClients; } break;
-				case "channel_maxfamilyclients": foreach(var toi in toc) { toi.MaxFamilyClients = MaxFamilyClients; } break;
-				case "channel_name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "channel_name_phonetic": foreach(var toi in toc) { toi.PhoneticName = PhoneticName; } break;
-				case "channel_needed_talk_power": foreach(var toi in toc) { toi.NeededTalkPower = NeededTalkPower; } break;
-				case "channel_order": foreach(var toi in toc) { toi.Order = Order; } break;
-				case "channel_topic": foreach(var toi in toc) { toi.Topic = Topic; } break;
-				case "channel_unique_identifier": foreach(var toi in toc) { toi.Guid = Guid; } break;
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cpid": foreach(var toi in toc) { toi.ParentId = ParentId; } break;
+				case "channel_banner_gfx_url": foreach (var toi in toc) { toi.BannerGfxUrl = BannerGfxUrl; } break;
+				case "channel_banner_mode": foreach (var toi in toc) { toi.BannerMode = BannerMode; } break;
+				case "channel_codec": foreach (var toi in toc) { toi.Codec = Codec; } break;
+				case "channel_codec_is_unencrypted": foreach (var toi in toc) { toi.IsUnencrypted = IsUnencrypted; } break;
+				case "channel_codec_latency_factor": foreach (var toi in toc) { toi.CodecLatencyFactor = CodecLatencyFactor; } break;
+				case "channel_codec_quality": foreach (var toi in toc) { toi.CodecQuality = CodecQuality; } break;
+				case "channel_delete_delay": foreach (var toi in toc) { toi.DeleteDelay = DeleteDelay; } break;
+				case "channel_flag_default": foreach (var toi in toc) { toi.IsDefault = IsDefault; } break;
+				case "channel_flag_maxclients_unlimited": foreach (var toi in toc) { toi.IsMaxClientsUnlimited = IsMaxClientsUnlimited; } break;
+				case "channel_flag_maxfamilyclients_inherited": foreach (var toi in toc) { toi.InheritsMaxFamilyClients = InheritsMaxFamilyClients; } break;
+				case "channel_flag_maxfamilyclients_unlimited": foreach (var toi in toc) { toi.IsMaxFamilyClientsUnlimited = IsMaxFamilyClientsUnlimited; } break;
+				case "channel_flag_password": foreach (var toi in toc) { toi.HasPassword = HasPassword; } break;
+				case "channel_flag_permanent": foreach (var toi in toc) { toi.IsPermanent = IsPermanent; } break;
+				case "channel_flag_private": foreach (var toi in toc) { toi.IsPrivate = IsPrivate; } break;
+				case "channel_flag_semi_permanent": foreach (var toi in toc) { toi.IsSemiPermanent = IsSemiPermanent; } break;
+				case "channel_forced_silence": foreach (var toi in toc) { toi.ForcedSilence = ForcedSilence; } break;
+				case "channel_icon_id": foreach (var toi in toc) { toi.IconId = IconId; } break;
+				case "channel_maxclients": foreach (var toi in toc) { toi.MaxClients = MaxClients; } break;
+				case "channel_maxfamilyclients": foreach (var toi in toc) { toi.MaxFamilyClients = MaxFamilyClients; } break;
+				case "channel_name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "channel_name_phonetic": foreach (var toi in toc) { toi.PhoneticName = PhoneticName; } break;
+				case "channel_needed_talk_power": foreach (var toi in toc) { toi.NeededTalkPower = NeededTalkPower; } break;
+				case "channel_order": foreach (var toi in toc) { toi.Order = Order; } break;
+				case "channel_topic": foreach (var toi in toc) { toi.Topic = Topic; } break;
+				case "channel_unique_identifier": foreach (var toi in toc) { toi.Guid = Guid; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cpid": foreach (var toi in toc) { toi.ParentId = ParentId; } break;
 				}
 			}
 
@@ -2030,11 +2030,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelListFinished : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelListFinished;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -2047,11 +2047,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelListRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -2064,8 +2064,8 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelListResponse : IResponse
 	{
-		#pragma warning disable CS8618
-		
+#pragma warning disable CS8618
+
 		public string? ReturnCode { get; set; }
 
 		public ChannelId ChannelId { get; set; }
@@ -2087,32 +2087,32 @@ namespace TSLib.Messages
 		public str? Topic { get; set; }
 		public i32 TotalClients { get; set; }
 		public i32? TotalFamilyClients { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "channel_codec": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) Codec = (Codec)oval; } break;
-			case "channel_codec_quality": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) CodecQuality = (u8)oval; } break;
+			case "channel_codec": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) Codec = (Codec)oval; } break;
+			case "channel_codec_quality": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) CodecQuality = (u8)oval; } break;
 			case "channel_flag_default": IsDefault = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_password": HasPassword = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_permanent": IsPermanent = value.Length > 0 && value[0] != '0'; break;
 			case "channel_flag_semi_permanent": IsSemiPermanent = value.Length > 0 && value[0] != '0'; break;
-			case "channel_icon_id": { if(!value.IsEmpty && value[0] == (u8)'-') { if(Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if(Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
-			case "channel_maxclients": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) MaxClients = (i32)oval; } break;
-			case "channel_maxfamilyclients": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) MaxFamilyClients = (i32)oval; } break;
+			case "channel_icon_id": { if (!value.IsEmpty && value[0] == (u8)'-') { if (Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if (Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
+			case "channel_maxclients": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) MaxClients = (i32)oval; } break;
+			case "channel_maxfamilyclients": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) MaxFamilyClients = (i32)oval; } break;
 			case "channel_name": Name = (str)TsString.Unescape(value); break;
-			case "channel_needed_subscribe_power": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NeededSubscribePower = (i32)oval; } break;
-			case "channel_needed_talk_power": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NeededTalkPower = (i32)oval; } break;
-			case "channel_order": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
+			case "channel_needed_subscribe_power": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NeededSubscribePower = (i32)oval; } break;
+			case "channel_needed_talk_power": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NeededTalkPower = (i32)oval; } break;
+			case "channel_order": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
 			case "channel_topic": Topic = (str)TsString.Unescape(value); break;
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "pid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ParentChannelId = (ChannelId)oval; } break;
-			case "seconds_empty": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) DurationEmpty = TimeSpan.FromSeconds(oval); } break;
-			case "total_clients": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) TotalClients = (i32)oval; } break;
-			case "total_clients_family": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) TotalFamilyClients = (i32)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "pid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ParentChannelId = (ChannelId)oval; } break;
+			case "seconds_empty": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) DurationEmpty = TimeSpan.FromSeconds(oval); } break;
+			case "total_clients": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) TotalClients = (i32)oval; } break;
+			case "total_clients_family": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) TotalFamilyClients = (i32)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -2123,28 +2123,28 @@ namespace TSLib.Messages
 			var toc = (ChannelListResponse[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "channel_codec": foreach(var toi in toc) { toi.Codec = Codec; } break;
-				case "channel_codec_quality": foreach(var toi in toc) { toi.CodecQuality = CodecQuality; } break;
-				case "channel_flag_default": foreach(var toi in toc) { toi.IsDefault = IsDefault; } break;
-				case "channel_flag_password": foreach(var toi in toc) { toi.HasPassword = HasPassword; } break;
-				case "channel_flag_permanent": foreach(var toi in toc) { toi.IsPermanent = IsPermanent; } break;
-				case "channel_flag_semi_permanent": foreach(var toi in toc) { toi.IsSemiPermanent = IsSemiPermanent; } break;
-				case "channel_icon_id": foreach(var toi in toc) { toi.IconId = IconId; } break;
-				case "channel_maxclients": foreach(var toi in toc) { toi.MaxClients = MaxClients; } break;
-				case "channel_maxfamilyclients": foreach(var toi in toc) { toi.MaxFamilyClients = MaxFamilyClients; } break;
-				case "channel_name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "channel_needed_subscribe_power": foreach(var toi in toc) { toi.NeededSubscribePower = NeededSubscribePower; } break;
-				case "channel_needed_talk_power": foreach(var toi in toc) { toi.NeededTalkPower = NeededTalkPower; } break;
-				case "channel_order": foreach(var toi in toc) { toi.Order = Order; } break;
-				case "channel_topic": foreach(var toi in toc) { toi.Topic = Topic; } break;
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "pid": foreach(var toi in toc) { toi.ParentChannelId = ParentChannelId; } break;
-				case "seconds_empty": foreach(var toi in toc) { toi.DurationEmpty = DurationEmpty; } break;
-				case "total_clients": foreach(var toi in toc) { toi.TotalClients = TotalClients; } break;
-				case "total_clients_family": foreach(var toi in toc) { toi.TotalFamilyClients = TotalFamilyClients; } break;
+				case "channel_codec": foreach (var toi in toc) { toi.Codec = Codec; } break;
+				case "channel_codec_quality": foreach (var toi in toc) { toi.CodecQuality = CodecQuality; } break;
+				case "channel_flag_default": foreach (var toi in toc) { toi.IsDefault = IsDefault; } break;
+				case "channel_flag_password": foreach (var toi in toc) { toi.HasPassword = HasPassword; } break;
+				case "channel_flag_permanent": foreach (var toi in toc) { toi.IsPermanent = IsPermanent; } break;
+				case "channel_flag_semi_permanent": foreach (var toi in toc) { toi.IsSemiPermanent = IsSemiPermanent; } break;
+				case "channel_icon_id": foreach (var toi in toc) { toi.IconId = IconId; } break;
+				case "channel_maxclients": foreach (var toi in toc) { toi.MaxClients = MaxClients; } break;
+				case "channel_maxfamilyclients": foreach (var toi in toc) { toi.MaxFamilyClients = MaxFamilyClients; } break;
+				case "channel_name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "channel_needed_subscribe_power": foreach (var toi in toc) { toi.NeededSubscribePower = NeededSubscribePower; } break;
+				case "channel_needed_talk_power": foreach (var toi in toc) { toi.NeededTalkPower = NeededTalkPower; } break;
+				case "channel_order": foreach (var toi in toc) { toi.Order = Order; } break;
+				case "channel_topic": foreach (var toi in toc) { toi.Topic = Topic; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "pid": foreach (var toi in toc) { toi.ParentChannelId = ParentChannelId; } break;
+				case "seconds_empty": foreach (var toi in toc) { toi.DurationEmpty = DurationEmpty; } break;
+				case "total_clients": foreach (var toi in toc) { toi.TotalClients = TotalClients; } break;
+				case "total_clients_family": foreach (var toi in toc) { toi.TotalFamilyClients = TotalFamilyClients; } break;
 				}
 			}
 
@@ -2153,24 +2153,24 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelMove : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelMove;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public ChannelId? Order { get; set; }
 		public ChannelId ParentId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "cpid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ParentId = (ChannelId)oval; } break;
-			case "order": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
-			
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cpid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ParentId = (ChannelId)oval; } break;
+			case "order": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
+
 			}
 
 		}
@@ -2180,12 +2180,12 @@ namespace TSLib.Messages
 			var toc = (ChannelMove[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cpid": foreach(var toi in toc) { toi.ParentId = ParentId; } break;
-				case "order": foreach(var toi in toc) { toi.Order = Order; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cpid": foreach (var toi in toc) { toi.ParentId = ParentId; } break;
+				case "order": foreach (var toi in toc) { toi.Order = Order; } break;
 				}
 			}
 
@@ -2194,9 +2194,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelMoved : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelMoved;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public ClientId InvokerId { get; set; }
@@ -2205,21 +2205,21 @@ namespace TSLib.Messages
 		public ChannelId Order { get; set; }
 		public ChannelId ParentId { get; set; }
 		public Reason Reason { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "cpid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ParentId = (ChannelId)oval; } break;
-			case "invokerid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cpid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ParentId = (ChannelId)oval; } break;
+			case "invokerid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
 			case "invokername": InvokerName = (str)TsString.Unescape(value); break;
 			case "invokeruid": InvokerUid = (Uid)TsString.Unescape(value); break;
-			case "order": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
-			case "reasonid": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) Reason = (Reason)oval; } break;
-			
+			case "order": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Order = (ChannelId)oval; } break;
+			case "reasonid": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) Reason = (Reason)oval; } break;
+
 			}
 
 		}
@@ -2229,16 +2229,16 @@ namespace TSLib.Messages
 			var toc = (ChannelMoved[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cpid": foreach(var toi in toc) { toi.ParentId = ParentId; } break;
-				case "invokerid": foreach(var toi in toc) { toi.InvokerId = InvokerId; } break;
-				case "invokername": foreach(var toi in toc) { toi.InvokerName = InvokerName; } break;
-				case "invokeruid": foreach(var toi in toc) { toi.InvokerUid = InvokerUid; } break;
-				case "order": foreach(var toi in toc) { toi.Order = Order; } break;
-				case "reasonid": foreach(var toi in toc) { toi.Reason = Reason; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cpid": foreach (var toi in toc) { toi.ParentId = ParentId; } break;
+				case "invokerid": foreach (var toi in toc) { toi.InvokerId = InvokerId; } break;
+				case "invokername": foreach (var toi in toc) { toi.InvokerName = InvokerName; } break;
+				case "invokeruid": foreach (var toi in toc) { toi.InvokerUid = InvokerUid; } break;
+				case "order": foreach (var toi in toc) { toi.Order = Order; } break;
+				case "reasonid": foreach (var toi in toc) { toi.Reason = Reason; } break;
 				}
 			}
 
@@ -2247,20 +2247,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelPasswordChanged : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelPasswordChanged;
-		
+
 
 		public ChannelId ChannelId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+
 			}
 
 		}
@@ -2270,10 +2270,10 @@ namespace TSLib.Messages
 			var toc = (ChannelPasswordChanged[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
 				}
 			}
 
@@ -2282,22 +2282,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelPermissionHints : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelPermissionHints;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public ChannelPermissionHint Flags { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "flags": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) Flags = (ChannelPermissionHint)oval; } break;
-			
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "flags": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) Flags = (ChannelPermissionHint)oval; } break;
+
 			}
 
 		}
@@ -2307,11 +2307,11 @@ namespace TSLib.Messages
 			var toc = (ChannelPermissionHints[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "flags": foreach(var toi in toc) { toi.Flags = Flags; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "flags": foreach (var toi in toc) { toi.Flags = Flags; } break;
 				}
 			}
 
@@ -2320,7 +2320,7 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelPermList : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelPermList;
 		public string? ReturnCode { get; set; }
 
@@ -2329,18 +2329,18 @@ namespace TSLib.Messages
 		public bool PermissionNegated { get; set; }
 		public bool PermissionSkip { get; set; }
 		public i32 PermissionValue { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permnegated": PermissionNegated = value.Length > 0 && value[0] != '0'; break;
 			case "permskip": PermissionSkip = value.Length > 0 && value[0] != '0'; break;
-			case "permvalue": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
+			case "permvalue": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -2351,14 +2351,14 @@ namespace TSLib.Messages
 			var toc = (ChannelPermList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permnegated": foreach(var toi in toc) { toi.PermissionNegated = PermissionNegated; } break;
-				case "permskip": foreach(var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
-				case "permvalue": foreach(var toi in toc) { toi.PermissionValue = PermissionValue; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permnegated": foreach (var toi in toc) { toi.PermissionNegated = PermissionNegated; } break;
+				case "permskip": foreach (var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
+				case "permvalue": foreach (var toi in toc) { toi.PermissionValue = PermissionValue; } break;
 				}
 			}
 
@@ -2367,20 +2367,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelPermListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelPermListRequest;
-		
+
 
 		public ChannelId ChannelId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+
 			}
 
 		}
@@ -2390,10 +2390,10 @@ namespace TSLib.Messages
 			var toc = (ChannelPermListRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
 				}
 			}
 
@@ -2402,20 +2402,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelSubscribe : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelSubscribe;
-		
+
 
 		public ChannelId ChannelId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+
 			}
 
 		}
@@ -2425,10 +2425,10 @@ namespace TSLib.Messages
 			var toc = (ChannelSubscribe[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
 				}
 			}
 
@@ -2437,11 +2437,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelSubscribeAll : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelSubscribeAll;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -2454,22 +2454,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelSubscribed : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelSubscribed;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public DurationSeconds? EmptySince { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "es": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) EmptySince = TimeSpan.FromSeconds(oval); } break;
-			
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "es": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) EmptySince = TimeSpan.FromSeconds(oval); } break;
+
 			}
 
 		}
@@ -2479,11 +2479,11 @@ namespace TSLib.Messages
 			var toc = (ChannelSubscribed[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "es": foreach(var toi in toc) { toi.EmptySince = EmptySince; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "es": foreach (var toi in toc) { toi.EmptySince = EmptySince; } break;
 				}
 			}
 
@@ -2492,20 +2492,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelUnsubscribe : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelUnsubscribe;
-		
+
 
 		public ChannelId ChannelId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+
 			}
 
 		}
@@ -2515,10 +2515,10 @@ namespace TSLib.Messages
 			var toc = (ChannelUnsubscribe[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
 				}
 			}
 
@@ -2527,11 +2527,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelUnsubscribeAll : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelUnsubscribeAll;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -2544,20 +2544,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ChannelUnsubscribed : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ChannelUnsubscribed;
-		
+
 
 		public ChannelId ChannelId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+
 			}
 
 		}
@@ -2567,10 +2567,10 @@ namespace TSLib.Messages
 			var toc = (ChannelUnsubscribed[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
 				}
 			}
 
@@ -2579,28 +2579,28 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientAddPerm : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientAddPerm;
-		
+
 
 		public ClientDbId ClientDbId { get; set; }
 		public Ts3Permission? PermissionId { get; set; }
 		public str? PermissionNameId { get; set; }
 		public bool PermissionSkip { get; set; }
 		public i32 PermissionValue { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
 			case "permskip": PermissionSkip = value.Length > 0 && value[0] != '0'; break;
-			case "permvalue": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
-			
+			case "permvalue": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
+
 			}
 
 		}
@@ -2610,14 +2610,14 @@ namespace TSLib.Messages
 			var toc = (ClientAddPerm[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
-				case "permskip": foreach(var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
-				case "permvalue": foreach(var toi in toc) { toi.PermissionValue = PermissionValue; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "permskip": foreach (var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
+				case "permvalue": foreach (var toi in toc) { toi.PermissionValue = PermissionValue; } break;
 				}
 			}
 
@@ -2626,9 +2626,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientChannelGroupChanged : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientChannelGroupChanged;
-		
+
 
 		public ChannelGroupId ChannelGroup { get; set; }
 		public ChannelGroupId ChannelGroupIndex { get; set; }
@@ -2637,21 +2637,21 @@ namespace TSLib.Messages
 		public ClientId InvokerId { get; set; }
 		public str InvokerName { get; set; }
 		public Uid? InvokerUid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cgi": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroupIndex = (ChannelGroupId)oval; } break;
-			case "cgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
-			case "invokerid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
+			case "cgi": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroupIndex = (ChannelGroupId)oval; } break;
+			case "cgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "invokerid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
 			case "invokername": InvokerName = (str)TsString.Unescape(value); break;
 			case "invokeruid": InvokerUid = (Uid)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -2661,16 +2661,16 @@ namespace TSLib.Messages
 			var toc = (ClientChannelGroupChanged[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cgi": foreach(var toi in toc) { toi.ChannelGroupIndex = ChannelGroupIndex; } break;
-				case "cgid": foreach(var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "invokerid": foreach(var toi in toc) { toi.InvokerId = InvokerId; } break;
-				case "invokername": foreach(var toi in toc) { toi.InvokerName = InvokerName; } break;
-				case "invokeruid": foreach(var toi in toc) { toi.InvokerUid = InvokerUid; } break;
+				case "cgi": foreach (var toi in toc) { toi.ChannelGroupIndex = ChannelGroupIndex; } break;
+				case "cgid": foreach (var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "invokerid": foreach (var toi in toc) { toi.InvokerId = InvokerId; } break;
+				case "invokername": foreach (var toi in toc) { toi.InvokerName = InvokerName; } break;
+				case "invokeruid": foreach (var toi in toc) { toi.InvokerUid = InvokerUid; } break;
 				}
 			}
 
@@ -2679,22 +2679,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientChatClose : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientChatClose;
-		
+
 
 		public ClientId ClientId { get; set; }
 		public Uid ClientUid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -2704,11 +2704,11 @@ namespace TSLib.Messages
 			var toc = (ClientChatClose[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
 				}
 			}
 
@@ -2717,22 +2717,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientChatClosed : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientChatClosed;
-		
+
 
 		public ClientId ClientId { get; set; }
 		public Uid ClientUid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -2742,11 +2742,11 @@ namespace TSLib.Messages
 			var toc = (ClientChatClosed[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
 				}
 			}
 
@@ -2755,22 +2755,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientChatComposing : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientChatComposing;
-		
+
 
 		public ClientId ClientId { get; set; }
 		public Uid ClientUid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -2780,11 +2780,11 @@ namespace TSLib.Messages
 			var toc = (ClientChatComposing[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
 				}
 			}
 
@@ -2793,9 +2793,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientConnectionInfo : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientConnectionInfo;
-		
+
 
 		public u64 BandwidthReceivedLastMinuteControl { get; set; }
 		public u64 BandwidthReceivedLastMinuteKeepalive { get; set; }
@@ -2838,55 +2838,55 @@ namespace TSLib.Messages
 		public f32 ServerToClientPacketlossKeepalive { get; set; }
 		public f32 ServerToClientPacketlossSpeech { get; set; }
 		public f32 ServerToClientPacketlossTotal { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
-			case "connection_bandwidth_received_last_minute_control": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastMinuteControl = (u64)oval; } break;
-			case "connection_bandwidth_received_last_minute_keepalive": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastMinuteKeepalive = (u64)oval; } break;
-			case "connection_bandwidth_received_last_minute_speech": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastMinuteSpeech = (u64)oval; } break;
-			case "connection_bandwidth_received_last_second_control": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastSecondControl = (u64)oval; } break;
-			case "connection_bandwidth_received_last_second_keepalive": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastSecondKeepalive = (u64)oval; } break;
-			case "connection_bandwidth_received_last_second_speech": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastSecondSpeech = (u64)oval; } break;
-			case "connection_bandwidth_sent_last_minute_control": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastMinuteControl = (u64)oval; } break;
-			case "connection_bandwidth_sent_last_minute_keepalive": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastMinuteKeepalive = (u64)oval; } break;
-			case "connection_bandwidth_sent_last_minute_speech": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastMinuteSpeech = (u64)oval; } break;
-			case "connection_bandwidth_sent_last_second_control": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastSecondControl = (u64)oval; } break;
-			case "connection_bandwidth_sent_last_second_keepalive": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastSecondKeepalive = (u64)oval; } break;
-			case "connection_bandwidth_sent_last_second_speech": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastSecondSpeech = (u64)oval; } break;
-			case "connection_bytes_received_control": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BytesReceivedControl = (u64)oval; } break;
-			case "connection_bytes_received_keepalive": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BytesReceivedKeepalive = (u64)oval; } break;
-			case "connection_bytes_received_speech": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BytesReceivedSpeech = (u64)oval; } break;
-			case "connection_bytes_sent_control": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BytesSentControl = (u64)oval; } break;
-			case "connection_bytes_sent_keepalive": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BytesSentKeepalive = (u64)oval; } break;
-			case "connection_bytes_sent_speech": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BytesSentSpeech = (u64)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "connection_bandwidth_received_last_minute_control": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastMinuteControl = (u64)oval; } break;
+			case "connection_bandwidth_received_last_minute_keepalive": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastMinuteKeepalive = (u64)oval; } break;
+			case "connection_bandwidth_received_last_minute_speech": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastMinuteSpeech = (u64)oval; } break;
+			case "connection_bandwidth_received_last_second_control": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastSecondControl = (u64)oval; } break;
+			case "connection_bandwidth_received_last_second_keepalive": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastSecondKeepalive = (u64)oval; } break;
+			case "connection_bandwidth_received_last_second_speech": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastSecondSpeech = (u64)oval; } break;
+			case "connection_bandwidth_sent_last_minute_control": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastMinuteControl = (u64)oval; } break;
+			case "connection_bandwidth_sent_last_minute_keepalive": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastMinuteKeepalive = (u64)oval; } break;
+			case "connection_bandwidth_sent_last_minute_speech": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastMinuteSpeech = (u64)oval; } break;
+			case "connection_bandwidth_sent_last_second_control": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastSecondControl = (u64)oval; } break;
+			case "connection_bandwidth_sent_last_second_keepalive": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastSecondKeepalive = (u64)oval; } break;
+			case "connection_bandwidth_sent_last_second_speech": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastSecondSpeech = (u64)oval; } break;
+			case "connection_bytes_received_control": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BytesReceivedControl = (u64)oval; } break;
+			case "connection_bytes_received_keepalive": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BytesReceivedKeepalive = (u64)oval; } break;
+			case "connection_bytes_received_speech": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BytesReceivedSpeech = (u64)oval; } break;
+			case "connection_bytes_sent_control": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BytesSentControl = (u64)oval; } break;
+			case "connection_bytes_sent_keepalive": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BytesSentKeepalive = (u64)oval; } break;
+			case "connection_bytes_sent_speech": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BytesSentSpeech = (u64)oval; } break;
 			case "connection_client_ip": Ip = (str)TsString.Unescape(value); break;
-			case "connection_client_port": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) Port = (u16)oval; } break;
-			case "connection_client2server_packetloss_control": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) ClientToServerPacketlossControl = (f32)oval; } break;
-			case "connection_client2server_packetloss_keepalive": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) ClientToServerPacketlossKeepalive = (f32)oval; } break;
-			case "connection_client2server_packetloss_speech": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) ClientToServerPacketlossSpeech = (f32)oval; } break;
-			case "connection_client2server_packetloss_total": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) ClientToServerPacketlossTotal = (f32)oval; } break;
-			case "connection_connected_time": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) ConnectedTime = TimeSpan.FromMilliseconds(oval); } break;
-			case "connection_filetransfer_bandwidth_received": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) FiletransferBandwidthReceived = (u64)oval; } break;
-			case "connection_filetransfer_bandwidth_sent": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) FiletransferBandwidthSent = (u64)oval; } break;
-			case "connection_idle_time": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) IdleTime = TimeSpan.FromMilliseconds(oval); } break;
-			case "connection_packets_received_control": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsReceivedControl = (u64)oval; } break;
-			case "connection_packets_received_keepalive": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsReceivedKeepalive = (u64)oval; } break;
-			case "connection_packets_received_speech": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsReceivedSpeech = (u64)oval; } break;
-			case "connection_packets_sent_control": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsSentControl = (u64)oval; } break;
-			case "connection_packets_sent_keepalive": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsSentKeepalive = (u64)oval; } break;
-			case "connection_packets_sent_speech": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsSentSpeech = (u64)oval; } break;
-			case "connection_ping": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) Ping = TimeSpan.FromMilliseconds(oval); } break;
-			case "connection_ping_deviation": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) PingDeviation = TimeSpan.FromMilliseconds(oval); } break;
-			case "connection_server2client_packetloss_control": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) ServerToClientPacketlossControl = (f32)oval; } break;
-			case "connection_server2client_packetloss_keepalive": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) ServerToClientPacketlossKeepalive = (f32)oval; } break;
-			case "connection_server2client_packetloss_speech": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) ServerToClientPacketlossSpeech = (f32)oval; } break;
-			case "connection_server2client_packetloss_total": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) ServerToClientPacketlossTotal = (f32)oval; } break;
-			
+			case "connection_client_port": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) Port = (u16)oval; } break;
+			case "connection_client2server_packetloss_control": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) ClientToServerPacketlossControl = (f32)oval; } break;
+			case "connection_client2server_packetloss_keepalive": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) ClientToServerPacketlossKeepalive = (f32)oval; } break;
+			case "connection_client2server_packetloss_speech": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) ClientToServerPacketlossSpeech = (f32)oval; } break;
+			case "connection_client2server_packetloss_total": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) ClientToServerPacketlossTotal = (f32)oval; } break;
+			case "connection_connected_time": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) ConnectedTime = TimeSpan.FromMilliseconds(oval); } break;
+			case "connection_filetransfer_bandwidth_received": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) FiletransferBandwidthReceived = (u64)oval; } break;
+			case "connection_filetransfer_bandwidth_sent": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) FiletransferBandwidthSent = (u64)oval; } break;
+			case "connection_idle_time": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) IdleTime = TimeSpan.FromMilliseconds(oval); } break;
+			case "connection_packets_received_control": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsReceivedControl = (u64)oval; } break;
+			case "connection_packets_received_keepalive": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsReceivedKeepalive = (u64)oval; } break;
+			case "connection_packets_received_speech": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsReceivedSpeech = (u64)oval; } break;
+			case "connection_packets_sent_control": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsSentControl = (u64)oval; } break;
+			case "connection_packets_sent_keepalive": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsSentKeepalive = (u64)oval; } break;
+			case "connection_packets_sent_speech": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsSentSpeech = (u64)oval; } break;
+			case "connection_ping": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) Ping = TimeSpan.FromMilliseconds(oval); } break;
+			case "connection_ping_deviation": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) PingDeviation = TimeSpan.FromMilliseconds(oval); } break;
+			case "connection_server2client_packetloss_control": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) ServerToClientPacketlossControl = (f32)oval; } break;
+			case "connection_server2client_packetloss_keepalive": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) ServerToClientPacketlossKeepalive = (f32)oval; } break;
+			case "connection_server2client_packetloss_speech": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) ServerToClientPacketlossSpeech = (f32)oval; } break;
+			case "connection_server2client_packetloss_total": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) ServerToClientPacketlossTotal = (f32)oval; } break;
+
 			}
 
 		}
@@ -2896,50 +2896,50 @@ namespace TSLib.Messages
 			var toc = (ClientConnectionInfo[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "connection_bandwidth_received_last_minute_control": foreach(var toi in toc) { toi.BandwidthReceivedLastMinuteControl = BandwidthReceivedLastMinuteControl; } break;
-				case "connection_bandwidth_received_last_minute_keepalive": foreach(var toi in toc) { toi.BandwidthReceivedLastMinuteKeepalive = BandwidthReceivedLastMinuteKeepalive; } break;
-				case "connection_bandwidth_received_last_minute_speech": foreach(var toi in toc) { toi.BandwidthReceivedLastMinuteSpeech = BandwidthReceivedLastMinuteSpeech; } break;
-				case "connection_bandwidth_received_last_second_control": foreach(var toi in toc) { toi.BandwidthReceivedLastSecondControl = BandwidthReceivedLastSecondControl; } break;
-				case "connection_bandwidth_received_last_second_keepalive": foreach(var toi in toc) { toi.BandwidthReceivedLastSecondKeepalive = BandwidthReceivedLastSecondKeepalive; } break;
-				case "connection_bandwidth_received_last_second_speech": foreach(var toi in toc) { toi.BandwidthReceivedLastSecondSpeech = BandwidthReceivedLastSecondSpeech; } break;
-				case "connection_bandwidth_sent_last_minute_control": foreach(var toi in toc) { toi.BandwidthSentLastMinuteControl = BandwidthSentLastMinuteControl; } break;
-				case "connection_bandwidth_sent_last_minute_keepalive": foreach(var toi in toc) { toi.BandwidthSentLastMinuteKeepalive = BandwidthSentLastMinuteKeepalive; } break;
-				case "connection_bandwidth_sent_last_minute_speech": foreach(var toi in toc) { toi.BandwidthSentLastMinuteSpeech = BandwidthSentLastMinuteSpeech; } break;
-				case "connection_bandwidth_sent_last_second_control": foreach(var toi in toc) { toi.BandwidthSentLastSecondControl = BandwidthSentLastSecondControl; } break;
-				case "connection_bandwidth_sent_last_second_keepalive": foreach(var toi in toc) { toi.BandwidthSentLastSecondKeepalive = BandwidthSentLastSecondKeepalive; } break;
-				case "connection_bandwidth_sent_last_second_speech": foreach(var toi in toc) { toi.BandwidthSentLastSecondSpeech = BandwidthSentLastSecondSpeech; } break;
-				case "connection_bytes_received_control": foreach(var toi in toc) { toi.BytesReceivedControl = BytesReceivedControl; } break;
-				case "connection_bytes_received_keepalive": foreach(var toi in toc) { toi.BytesReceivedKeepalive = BytesReceivedKeepalive; } break;
-				case "connection_bytes_received_speech": foreach(var toi in toc) { toi.BytesReceivedSpeech = BytesReceivedSpeech; } break;
-				case "connection_bytes_sent_control": foreach(var toi in toc) { toi.BytesSentControl = BytesSentControl; } break;
-				case "connection_bytes_sent_keepalive": foreach(var toi in toc) { toi.BytesSentKeepalive = BytesSentKeepalive; } break;
-				case "connection_bytes_sent_speech": foreach(var toi in toc) { toi.BytesSentSpeech = BytesSentSpeech; } break;
-				case "connection_client_ip": foreach(var toi in toc) { toi.Ip = Ip; } break;
-				case "connection_client_port": foreach(var toi in toc) { toi.Port = Port; } break;
-				case "connection_client2server_packetloss_control": foreach(var toi in toc) { toi.ClientToServerPacketlossControl = ClientToServerPacketlossControl; } break;
-				case "connection_client2server_packetloss_keepalive": foreach(var toi in toc) { toi.ClientToServerPacketlossKeepalive = ClientToServerPacketlossKeepalive; } break;
-				case "connection_client2server_packetloss_speech": foreach(var toi in toc) { toi.ClientToServerPacketlossSpeech = ClientToServerPacketlossSpeech; } break;
-				case "connection_client2server_packetloss_total": foreach(var toi in toc) { toi.ClientToServerPacketlossTotal = ClientToServerPacketlossTotal; } break;
-				case "connection_connected_time": foreach(var toi in toc) { toi.ConnectedTime = ConnectedTime; } break;
-				case "connection_filetransfer_bandwidth_received": foreach(var toi in toc) { toi.FiletransferBandwidthReceived = FiletransferBandwidthReceived; } break;
-				case "connection_filetransfer_bandwidth_sent": foreach(var toi in toc) { toi.FiletransferBandwidthSent = FiletransferBandwidthSent; } break;
-				case "connection_idle_time": foreach(var toi in toc) { toi.IdleTime = IdleTime; } break;
-				case "connection_packets_received_control": foreach(var toi in toc) { toi.PacketsReceivedControl = PacketsReceivedControl; } break;
-				case "connection_packets_received_keepalive": foreach(var toi in toc) { toi.PacketsReceivedKeepalive = PacketsReceivedKeepalive; } break;
-				case "connection_packets_received_speech": foreach(var toi in toc) { toi.PacketsReceivedSpeech = PacketsReceivedSpeech; } break;
-				case "connection_packets_sent_control": foreach(var toi in toc) { toi.PacketsSentControl = PacketsSentControl; } break;
-				case "connection_packets_sent_keepalive": foreach(var toi in toc) { toi.PacketsSentKeepalive = PacketsSentKeepalive; } break;
-				case "connection_packets_sent_speech": foreach(var toi in toc) { toi.PacketsSentSpeech = PacketsSentSpeech; } break;
-				case "connection_ping": foreach(var toi in toc) { toi.Ping = Ping; } break;
-				case "connection_ping_deviation": foreach(var toi in toc) { toi.PingDeviation = PingDeviation; } break;
-				case "connection_server2client_packetloss_control": foreach(var toi in toc) { toi.ServerToClientPacketlossControl = ServerToClientPacketlossControl; } break;
-				case "connection_server2client_packetloss_keepalive": foreach(var toi in toc) { toi.ServerToClientPacketlossKeepalive = ServerToClientPacketlossKeepalive; } break;
-				case "connection_server2client_packetloss_speech": foreach(var toi in toc) { toi.ServerToClientPacketlossSpeech = ServerToClientPacketlossSpeech; } break;
-				case "connection_server2client_packetloss_total": foreach(var toi in toc) { toi.ServerToClientPacketlossTotal = ServerToClientPacketlossTotal; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "connection_bandwidth_received_last_minute_control": foreach (var toi in toc) { toi.BandwidthReceivedLastMinuteControl = BandwidthReceivedLastMinuteControl; } break;
+				case "connection_bandwidth_received_last_minute_keepalive": foreach (var toi in toc) { toi.BandwidthReceivedLastMinuteKeepalive = BandwidthReceivedLastMinuteKeepalive; } break;
+				case "connection_bandwidth_received_last_minute_speech": foreach (var toi in toc) { toi.BandwidthReceivedLastMinuteSpeech = BandwidthReceivedLastMinuteSpeech; } break;
+				case "connection_bandwidth_received_last_second_control": foreach (var toi in toc) { toi.BandwidthReceivedLastSecondControl = BandwidthReceivedLastSecondControl; } break;
+				case "connection_bandwidth_received_last_second_keepalive": foreach (var toi in toc) { toi.BandwidthReceivedLastSecondKeepalive = BandwidthReceivedLastSecondKeepalive; } break;
+				case "connection_bandwidth_received_last_second_speech": foreach (var toi in toc) { toi.BandwidthReceivedLastSecondSpeech = BandwidthReceivedLastSecondSpeech; } break;
+				case "connection_bandwidth_sent_last_minute_control": foreach (var toi in toc) { toi.BandwidthSentLastMinuteControl = BandwidthSentLastMinuteControl; } break;
+				case "connection_bandwidth_sent_last_minute_keepalive": foreach (var toi in toc) { toi.BandwidthSentLastMinuteKeepalive = BandwidthSentLastMinuteKeepalive; } break;
+				case "connection_bandwidth_sent_last_minute_speech": foreach (var toi in toc) { toi.BandwidthSentLastMinuteSpeech = BandwidthSentLastMinuteSpeech; } break;
+				case "connection_bandwidth_sent_last_second_control": foreach (var toi in toc) { toi.BandwidthSentLastSecondControl = BandwidthSentLastSecondControl; } break;
+				case "connection_bandwidth_sent_last_second_keepalive": foreach (var toi in toc) { toi.BandwidthSentLastSecondKeepalive = BandwidthSentLastSecondKeepalive; } break;
+				case "connection_bandwidth_sent_last_second_speech": foreach (var toi in toc) { toi.BandwidthSentLastSecondSpeech = BandwidthSentLastSecondSpeech; } break;
+				case "connection_bytes_received_control": foreach (var toi in toc) { toi.BytesReceivedControl = BytesReceivedControl; } break;
+				case "connection_bytes_received_keepalive": foreach (var toi in toc) { toi.BytesReceivedKeepalive = BytesReceivedKeepalive; } break;
+				case "connection_bytes_received_speech": foreach (var toi in toc) { toi.BytesReceivedSpeech = BytesReceivedSpeech; } break;
+				case "connection_bytes_sent_control": foreach (var toi in toc) { toi.BytesSentControl = BytesSentControl; } break;
+				case "connection_bytes_sent_keepalive": foreach (var toi in toc) { toi.BytesSentKeepalive = BytesSentKeepalive; } break;
+				case "connection_bytes_sent_speech": foreach (var toi in toc) { toi.BytesSentSpeech = BytesSentSpeech; } break;
+				case "connection_client_ip": foreach (var toi in toc) { toi.Ip = Ip; } break;
+				case "connection_client_port": foreach (var toi in toc) { toi.Port = Port; } break;
+				case "connection_client2server_packetloss_control": foreach (var toi in toc) { toi.ClientToServerPacketlossControl = ClientToServerPacketlossControl; } break;
+				case "connection_client2server_packetloss_keepalive": foreach (var toi in toc) { toi.ClientToServerPacketlossKeepalive = ClientToServerPacketlossKeepalive; } break;
+				case "connection_client2server_packetloss_speech": foreach (var toi in toc) { toi.ClientToServerPacketlossSpeech = ClientToServerPacketlossSpeech; } break;
+				case "connection_client2server_packetloss_total": foreach (var toi in toc) { toi.ClientToServerPacketlossTotal = ClientToServerPacketlossTotal; } break;
+				case "connection_connected_time": foreach (var toi in toc) { toi.ConnectedTime = ConnectedTime; } break;
+				case "connection_filetransfer_bandwidth_received": foreach (var toi in toc) { toi.FiletransferBandwidthReceived = FiletransferBandwidthReceived; } break;
+				case "connection_filetransfer_bandwidth_sent": foreach (var toi in toc) { toi.FiletransferBandwidthSent = FiletransferBandwidthSent; } break;
+				case "connection_idle_time": foreach (var toi in toc) { toi.IdleTime = IdleTime; } break;
+				case "connection_packets_received_control": foreach (var toi in toc) { toi.PacketsReceivedControl = PacketsReceivedControl; } break;
+				case "connection_packets_received_keepalive": foreach (var toi in toc) { toi.PacketsReceivedKeepalive = PacketsReceivedKeepalive; } break;
+				case "connection_packets_received_speech": foreach (var toi in toc) { toi.PacketsReceivedSpeech = PacketsReceivedSpeech; } break;
+				case "connection_packets_sent_control": foreach (var toi in toc) { toi.PacketsSentControl = PacketsSentControl; } break;
+				case "connection_packets_sent_keepalive": foreach (var toi in toc) { toi.PacketsSentKeepalive = PacketsSentKeepalive; } break;
+				case "connection_packets_sent_speech": foreach (var toi in toc) { toi.PacketsSentSpeech = PacketsSentSpeech; } break;
+				case "connection_ping": foreach (var toi in toc) { toi.Ping = Ping; } break;
+				case "connection_ping_deviation": foreach (var toi in toc) { toi.PingDeviation = PingDeviation; } break;
+				case "connection_server2client_packetloss_control": foreach (var toi in toc) { toi.ServerToClientPacketlossControl = ServerToClientPacketlossControl; } break;
+				case "connection_server2client_packetloss_keepalive": foreach (var toi in toc) { toi.ServerToClientPacketlossKeepalive = ServerToClientPacketlossKeepalive; } break;
+				case "connection_server2client_packetloss_speech": foreach (var toi in toc) { toi.ServerToClientPacketlossSpeech = ServerToClientPacketlossSpeech; } break;
+				case "connection_server2client_packetloss_total": foreach (var toi in toc) { toi.ServerToClientPacketlossTotal = ServerToClientPacketlossTotal; } break;
 				}
 			}
 
@@ -2948,20 +2948,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientConnectionInfoRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientConnectionInfoRequest;
-		
+
 
 		public ClientId ClientId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
-			
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+
 			}
 
 		}
@@ -2971,10 +2971,10 @@ namespace TSLib.Messages
 			var toc = (ClientConnectionInfoRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
 				}
 			}
 
@@ -2983,11 +2983,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientConnectionInfoUpdateRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientConnectionInfoUpdateRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -3000,20 +3000,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientDbDelete : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientDbDelete;
-		
+
 
 		public ClientDbId ClientDbId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+
 			}
 
 		}
@@ -3023,10 +3023,10 @@ namespace TSLib.Messages
 			var toc = (ClientDbDelete[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
 				}
 			}
 
@@ -3035,20 +3035,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientDbEdit : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientDbEdit;
-		
+
 
 		public ClientDbId ClientDbId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+
 			}
 
 		}
@@ -3058,10 +3058,10 @@ namespace TSLib.Messages
 			var toc = (ClientDbEdit[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
 				}
 			}
 
@@ -3070,7 +3070,7 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientDbFind : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientDbFind;
 		public string? ReturnCode { get; set; }
 
@@ -3079,17 +3079,17 @@ namespace TSLib.Messages
 		public str Name { get; set; }
 		public i32 TotalConnections { get; set; }
 		public Uid Uid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			case "client_lastconnected": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) LastConnected = Tools.FromUnix(oval); } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "client_lastconnected": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) LastConnected = Tools.FromUnix(oval); } break;
 			case "client_nickname": Name = (str)TsString.Unescape(value); break;
-			case "client_totalconnections": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) TotalConnections = (i32)oval; } break;
+			case "client_totalconnections": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) TotalConnections = (i32)oval; } break;
 			case "client_unique_identifier": Uid = (Uid)TsString.Unescape(value); break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
@@ -3101,14 +3101,14 @@ namespace TSLib.Messages
 			var toc = (ClientDbFind[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "client_lastconnected": foreach(var toi in toc) { toi.LastConnected = LastConnected; } break;
-				case "client_nickname": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "client_totalconnections": foreach(var toi in toc) { toi.TotalConnections = TotalConnections; } break;
-				case "client_unique_identifier": foreach(var toi in toc) { toi.Uid = Uid; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "client_lastconnected": foreach (var toi in toc) { toi.LastConnected = LastConnected; } break;
+				case "client_nickname": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "client_totalconnections": foreach (var toi in toc) { toi.TotalConnections = TotalConnections; } break;
+				case "client_unique_identifier": foreach (var toi in toc) { toi.Uid = Uid; } break;
 				}
 			}
 
@@ -3117,20 +3117,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientDbFindRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientDbFindRequest;
-		
+
 
 		public str Pattern { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "pattern": Pattern = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -3140,10 +3140,10 @@ namespace TSLib.Messages
 			var toc = (ClientDbFindRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "pattern": foreach(var toi in toc) { toi.Pattern = Pattern; } break;
+				case "pattern": foreach (var toi in toc) { toi.Pattern = Pattern; } break;
 				}
 			}
 
@@ -3152,20 +3152,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientDbIdFromUid : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientDbIdFromUid;
 		public string? ReturnCode { get; set; }
 
 		public ClientDbId ClientDbId { get; set; }
 		public Uid ClientUid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
@@ -3177,11 +3177,11 @@ namespace TSLib.Messages
 			var toc = (ClientDbIdFromUid[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
 				}
 			}
 
@@ -3190,20 +3190,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientDbIdFromUidRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientDbIdFromUidRequest;
-		
+
 
 		public Uid ClientUid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -3213,10 +3213,10 @@ namespace TSLib.Messages
 			var toc = (ClientDbIdFromUidRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
 				}
 			}
 
@@ -3225,8 +3225,8 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientDbInfo : IResponse
 	{
-		#pragma warning disable CS8618
-		
+#pragma warning disable CS8618
+
 		public string? ReturnCode { get; set; }
 
 		public str AvatarHash { get; set; }
@@ -3247,30 +3247,30 @@ namespace TSLib.Messages
 		public i64 TotalDownloadQuota { get; set; }
 		public i64 TotalUploadQuota { get; set; }
 		public Uid Uid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "client_base64HashClientUID": Base64HashClientUid = (str)TsString.Unescape(value); break;
-			case "client_created": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) CreationDate = Tools.FromUnix(oval); } break;
-			case "client_database_id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) DatabaseId = (ClientDbId)oval; } break;
+			case "client_created": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) CreationDate = Tools.FromUnix(oval); } break;
+			case "client_database_id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) DatabaseId = (ClientDbId)oval; } break;
 			case "client_description": Description = (str)TsString.Unescape(value); break;
 			case "client_flag_avatar": AvatarHash = (str)TsString.Unescape(value); break;
-			case "client_icon_id": { if(!value.IsEmpty && value[0] == (u8)'-') { if(Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if(Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
-			case "client_lastconnected": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) LastConnected = Tools.FromUnix(oval); } break;
+			case "client_icon_id": { if (!value.IsEmpty && value[0] == (u8)'-') { if (Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if (Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
+			case "client_lastconnected": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) LastConnected = Tools.FromUnix(oval); } break;
 			case "client_lastip": LastIp = (str)TsString.Unescape(value); break;
-			case "client_month_bytes_downloaded": { if(Utf8Parser.TryParse(value, out i64 oval, out _)) MonthlyDownloadQuota = (i64)oval; } break;
-			case "client_month_bytes_uploaded": { if(Utf8Parser.TryParse(value, out i64 oval, out _)) MonthlyUploadQuota = (i64)oval; } break;
+			case "client_month_bytes_downloaded": { if (Utf8Parser.TryParse(value, out i64 oval, out _)) MonthlyDownloadQuota = (i64)oval; } break;
+			case "client_month_bytes_uploaded": { if (Utf8Parser.TryParse(value, out i64 oval, out _)) MonthlyUploadQuota = (i64)oval; } break;
 			case "client_nickname": Name = (str)TsString.Unescape(value); break;
-			case "client_total_bytes_downloaded": { if(Utf8Parser.TryParse(value, out i64 oval, out _)) TotalDownloadQuota = (i64)oval; } break;
-			case "client_total_bytes_uploaded": { if(Utf8Parser.TryParse(value, out i64 oval, out _)) TotalUploadQuota = (i64)oval; } break;
-			case "client_totalconnections": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) TotalConnections = (i32)oval; } break;
-			case "client_type": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) ClientType = (ClientType)oval; } break;
+			case "client_total_bytes_downloaded": { if (Utf8Parser.TryParse(value, out i64 oval, out _)) TotalDownloadQuota = (i64)oval; } break;
+			case "client_total_bytes_uploaded": { if (Utf8Parser.TryParse(value, out i64 oval, out _)) TotalUploadQuota = (i64)oval; } break;
+			case "client_totalconnections": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) TotalConnections = (i32)oval; } break;
+			case "client_type": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) ClientType = (ClientType)oval; } break;
 			case "client_unique_identifier": Uid = (Uid)TsString.Unescape(value); break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
@@ -3282,27 +3282,27 @@ namespace TSLib.Messages
 			var toc = (ClientDbInfo[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "client_base64HashClientUID": foreach(var toi in toc) { toi.Base64HashClientUid = Base64HashClientUid; } break;
-				case "client_created": foreach(var toi in toc) { toi.CreationDate = CreationDate; } break;
-				case "client_database_id": foreach(var toi in toc) { toi.DatabaseId = DatabaseId; } break;
-				case "client_description": foreach(var toi in toc) { toi.Description = Description; } break;
-				case "client_flag_avatar": foreach(var toi in toc) { toi.AvatarHash = AvatarHash; } break;
-				case "client_icon_id": foreach(var toi in toc) { toi.IconId = IconId; } break;
-				case "client_lastconnected": foreach(var toi in toc) { toi.LastConnected = LastConnected; } break;
-				case "client_lastip": foreach(var toi in toc) { toi.LastIp = LastIp; } break;
-				case "client_month_bytes_downloaded": foreach(var toi in toc) { toi.MonthlyDownloadQuota = MonthlyDownloadQuota; } break;
-				case "client_month_bytes_uploaded": foreach(var toi in toc) { toi.MonthlyUploadQuota = MonthlyUploadQuota; } break;
-				case "client_nickname": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "client_total_bytes_downloaded": foreach(var toi in toc) { toi.TotalDownloadQuota = TotalDownloadQuota; } break;
-				case "client_total_bytes_uploaded": foreach(var toi in toc) { toi.TotalUploadQuota = TotalUploadQuota; } break;
-				case "client_totalconnections": foreach(var toi in toc) { toi.TotalConnections = TotalConnections; } break;
-				case "client_type": foreach(var toi in toc) { toi.ClientType = ClientType; } break;
-				case "client_unique_identifier": foreach(var toi in toc) { toi.Uid = Uid; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "client_base64HashClientUID": foreach (var toi in toc) { toi.Base64HashClientUid = Base64HashClientUid; } break;
+				case "client_created": foreach (var toi in toc) { toi.CreationDate = CreationDate; } break;
+				case "client_database_id": foreach (var toi in toc) { toi.DatabaseId = DatabaseId; } break;
+				case "client_description": foreach (var toi in toc) { toi.Description = Description; } break;
+				case "client_flag_avatar": foreach (var toi in toc) { toi.AvatarHash = AvatarHash; } break;
+				case "client_icon_id": foreach (var toi in toc) { toi.IconId = IconId; } break;
+				case "client_lastconnected": foreach (var toi in toc) { toi.LastConnected = LastConnected; } break;
+				case "client_lastip": foreach (var toi in toc) { toi.LastIp = LastIp; } break;
+				case "client_month_bytes_downloaded": foreach (var toi in toc) { toi.MonthlyDownloadQuota = MonthlyDownloadQuota; } break;
+				case "client_month_bytes_uploaded": foreach (var toi in toc) { toi.MonthlyUploadQuota = MonthlyUploadQuota; } break;
+				case "client_nickname": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "client_total_bytes_downloaded": foreach (var toi in toc) { toi.TotalDownloadQuota = TotalDownloadQuota; } break;
+				case "client_total_bytes_uploaded": foreach (var toi in toc) { toi.TotalUploadQuota = TotalUploadQuota; } break;
+				case "client_totalconnections": foreach (var toi in toc) { toi.TotalConnections = TotalConnections; } break;
+				case "client_type": foreach (var toi in toc) { toi.ClientType = ClientType; } break;
+				case "client_unique_identifier": foreach (var toi in toc) { toi.Uid = Uid; } break;
 				}
 			}
 
@@ -3311,20 +3311,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientDbInfoRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientDbInfoRequest;
-		
+
 
 		public ClientDbId ClientDbId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+
 			}
 
 		}
@@ -3334,10 +3334,10 @@ namespace TSLib.Messages
 			var toc = (ClientDbInfoRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
 				}
 			}
 
@@ -3346,7 +3346,7 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientDbList : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientDbList;
 		public string? ReturnCode { get; set; }
 
@@ -3358,20 +3358,20 @@ namespace TSLib.Messages
 		public str Name { get; set; }
 		public i32 TotalConnections { get; set; }
 		public Uid Uid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			case "client_created": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) CreationDate = Tools.FromUnix(oval); } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "client_created": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) CreationDate = Tools.FromUnix(oval); } break;
 			case "client_description": Description = (str)TsString.Unescape(value); break;
-			case "client_lastconnected": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) LastConnected = Tools.FromUnix(oval); } break;
+			case "client_lastconnected": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) LastConnected = Tools.FromUnix(oval); } break;
 			case "client_lastip": LastIp = (str)TsString.Unescape(value); break;
 			case "client_nickname": Name = (str)TsString.Unescape(value); break;
-			case "client_totalconnections": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) TotalConnections = (i32)oval; } break;
+			case "client_totalconnections": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) TotalConnections = (i32)oval; } break;
 			case "client_unique_identifier": Uid = (Uid)TsString.Unescape(value); break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
@@ -3383,17 +3383,17 @@ namespace TSLib.Messages
 			var toc = (ClientDbList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "client_created": foreach(var toi in toc) { toi.CreationDate = CreationDate; } break;
-				case "client_description": foreach(var toi in toc) { toi.Description = Description; } break;
-				case "client_lastconnected": foreach(var toi in toc) { toi.LastConnected = LastConnected; } break;
-				case "client_lastip": foreach(var toi in toc) { toi.LastIp = LastIp; } break;
-				case "client_nickname": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "client_totalconnections": foreach(var toi in toc) { toi.TotalConnections = TotalConnections; } break;
-				case "client_unique_identifier": foreach(var toi in toc) { toi.Uid = Uid; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "client_created": foreach (var toi in toc) { toi.CreationDate = CreationDate; } break;
+				case "client_description": foreach (var toi in toc) { toi.Description = Description; } break;
+				case "client_lastconnected": foreach (var toi in toc) { toi.LastConnected = LastConnected; } break;
+				case "client_lastip": foreach (var toi in toc) { toi.LastIp = LastIp; } break;
+				case "client_nickname": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "client_totalconnections": foreach (var toi in toc) { toi.TotalConnections = TotalConnections; } break;
+				case "client_unique_identifier": foreach (var toi in toc) { toi.Uid = Uid; } break;
 				}
 			}
 
@@ -3402,22 +3402,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientDbListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientDbListRequest;
-		
+
 
 		public u32? Limit { get; set; }
 		public u32? Offset { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "duration": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) Limit = (u32)oval; } break;
-			case "start": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) Offset = (u32)oval; } break;
-			
+			case "duration": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) Limit = (u32)oval; } break;
+			case "start": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) Offset = (u32)oval; } break;
+
 			}
 
 		}
@@ -3427,11 +3427,11 @@ namespace TSLib.Messages
 			var toc = (ClientDbListRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "duration": foreach(var toi in toc) { toi.Limit = Limit; } break;
-				case "start": foreach(var toi in toc) { toi.Offset = Offset; } break;
+				case "duration": foreach (var toi in toc) { toi.Limit = Limit; } break;
+				case "start": foreach (var toi in toc) { toi.Offset = Offset; } break;
 				}
 			}
 
@@ -3440,24 +3440,24 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientDelPerm : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientDelPerm;
-		
+
 
 		public ClientDbId ClientDbId { get; set; }
 		public Ts3Permission? PermissionId { get; set; }
 		public str? PermissionNameId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -3467,12 +3467,12 @@ namespace TSLib.Messages
 			var toc = (ClientDelPerm[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
 				}
 			}
 
@@ -3481,24 +3481,24 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientEdit : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientEdit;
-		
+
 
 		public ClientId ClientId { get; set; }
 		public str? Description { get; set; }
 		public bool? TalkPowerGranted { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "client_description": Description = (str)TsString.Unescape(value); break;
 			case "client_is_talker": TalkPowerGranted = value.Length > 0 && value[0] != '0'; break;
-			
+
 			}
 
 		}
@@ -3508,12 +3508,12 @@ namespace TSLib.Messages
 			var toc = (ClientEdit[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "client_description": foreach(var toi in toc) { toi.Description = Description; } break;
-				case "client_is_talker": foreach(var toi in toc) { toi.TalkPowerGranted = TalkPowerGranted; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "client_description": foreach (var toi in toc) { toi.Description = Description; } break;
+				case "client_is_talker": foreach (var toi in toc) { toi.TalkPowerGranted = TalkPowerGranted; } break;
 				}
 			}
 
@@ -3522,9 +3522,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientEnterView : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientEnterView;
-		
+
 
 		public str AvatarHash { get; set; }
 		public str AwayMessage { get; set; }
@@ -3567,25 +3567,25 @@ namespace TSLib.Messages
 		public ChannelId TargetChannelId { get; set; }
 		public Uid Uid { get; set; }
 		public u32 UnreadMessages { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cfid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) SourceChannelId = (ChannelId)oval; } break;
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "cfid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) SourceChannelId = (ChannelId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "client_away": IsAway = value.Length > 0 && value[0] != '0'; break;
 			case "client_away_message": AwayMessage = (str)TsString.Unescape(value); break;
 			case "client_badges": Badges = (str)TsString.Unescape(value); break;
-			case "client_channel_group_id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
-			case "client_channel_group_inherited_channel_id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) InheritedChannelGroupFromChannel = (ChannelId)oval; } break;
+			case "client_channel_group_id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
+			case "client_channel_group_inherited_channel_id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) InheritedChannelGroupFromChannel = (ChannelId)oval; } break;
 			case "client_country": CountryCode = (str)TsString.Unescape(value); break;
-			case "client_database_id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) DatabaseId = (ClientDbId)oval; } break;
+			case "client_database_id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) DatabaseId = (ClientDbId)oval; } break;
 			case "client_description": Description = (str)TsString.Unescape(value); break;
 			case "client_flag_avatar": AvatarHash = (str)TsString.Unescape(value); break;
-			case "client_icon_id": { if(!value.IsEmpty && value[0] == (u8)'-') { if(Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if(Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
+			case "client_icon_id": { if (!value.IsEmpty && value[0] == (u8)'-') { if (Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if (Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
 			case "client_input_hardware": InputHardwareEnabled = value.Length > 0 && value[0] != '0'; break;
 			case "client_input_muted": InputMuted = value.Length > 0 && value[0] != '0'; break;
 			case "client_integrations": Integrations = (str)TsString.Unescape(value); break;
@@ -3596,26 +3596,62 @@ namespace TSLib.Messages
 			case "client_meta_data": Metadata = (str)TsString.Unescape(value); break;
 			case "client_myteamspeak_avatar": MyTeamSpeakAvatar = (str)TsString.Unescape(value); break;
 			case "client_myteamspeak_id": MyTeamSpeakId = (str)TsString.Unescape(value); break;
-			case "client_needed_serverquery_view_power": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NeededServerqueryViewPower = (i32)oval; } break;
+			case "client_needed_serverquery_view_power": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NeededServerqueryViewPower = (i32)oval; } break;
 			case "client_nickname": Name = (str)TsString.Unescape(value); break;
 			case "client_nickname_phonetic": PhoneticName = (str)TsString.Unescape(value); break;
 			case "client_output_hardware": OutputHardwareEnabled = value.Length > 0 && value[0] != '0'; break;
 			case "client_output_muted": OutputMuted = value.Length > 0 && value[0] != '0'; break;
 			case "client_outputonly_muted": OutputOnlyMuted = value.Length > 0 && value[0] != '0'; break;
-			case "client_servergroups": { if(value.Length == 0) ServerGroups = Array.Empty<ServerGroupId>(); else { var ss = new SpanSplitter<byte>(); ss.First(value, (byte)','); int cnt = 0; for (int i = 0; i < value.Length; i++) if (value[i] == ',') cnt++; ServerGroups = new ServerGroupId[cnt + 1]; for(int i = 0; i < cnt + 1; i++) { { if(Utf8Parser.TryParse(ss.Trim(value), out u64 oval, out _)) ServerGroups[i] = (ServerGroupId)oval; } if (i < cnt) value = ss.Next(value); } } } break;
+			case "client_servergroups":
+				{
+					if (value.Length == 0)
+					{
+						ServerGroups = Array.Empty<ServerGroupId>();
+					}
+					else
+					{
+						var ss = new SpanSplitter<byte>();
+						ss.First(value, (byte)',');
+						int cnt = 0;
+						for (int i = 0; i < value.Length; i++)
+						{
+							if (value[i] == ',')
+							{
+								cnt++;
+							}
+						}
+
+						ServerGroups = new ServerGroupId[cnt + 1];
+						for (int i = 0; i < cnt + 1; i++)
+						{
+							ReadOnlySpan<byte> currentSpan = value; // Declare currentSpan within the loop
+							if (Utf8Parser.TryParse(ss.Trim(currentSpan), out u64 oval, out _))
+							{
+								ServerGroups[i] = (ServerGroupId)oval;
+							}
+
+							if (i < cnt)
+							{
+								var nextSpan = currentSpan.Slice(ss.NextIndex + 1);
+								currentSpan = nextSpan;
+							}
+						}
+					}
+				}
+				break;
 			case "client_signed_badges": SignedBadges = (str)TsString.Unescape(value); break;
-			case "client_talk_power": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) TalkPower = (i32)oval; } break;
-			case "client_talk_request": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) TalkPowerRequestTime = Tools.FromUnix(oval); } break;
+			case "client_talk_power": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) TalkPower = (i32)oval; } break;
+			case "client_talk_request": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) TalkPowerRequestTime = Tools.FromUnix(oval); } break;
 			case "client_talk_request_msg": TalkPowerRequestMessage = (str)TsString.Unescape(value); break;
-			case "client_type": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) ClientType = (ClientType)oval; } break;
+			case "client_type": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) ClientType = (ClientType)oval; } break;
 			case "client_unique_identifier": Uid = (Uid)TsString.Unescape(value); break;
-			case "client_unread_messages": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) UnreadMessages = (u32)oval; } break;
-			case "ctid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TargetChannelId = (ChannelId)oval; } break;
-			case "invokerid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
+			case "client_unread_messages": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) UnreadMessages = (u32)oval; } break;
+			case "ctid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TargetChannelId = (ChannelId)oval; } break;
+			case "invokerid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
 			case "invokername": InvokerName = (str)TsString.Unescape(value); break;
 			case "invokeruid": InvokerUid = (Uid)TsString.Unescape(value); break;
-			case "reasonid": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) Reason = (Reason)oval; } break;
-			
+			case "reasonid": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) Reason = (Reason)oval; } break;
+
 			}
 
 		}
@@ -3625,50 +3661,50 @@ namespace TSLib.Messages
 			var toc = (ClientEnterView[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cfid": foreach(var toi in toc) { toi.SourceChannelId = SourceChannelId; } break;
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "client_away": foreach(var toi in toc) { toi.IsAway = IsAway; } break;
-				case "client_away_message": foreach(var toi in toc) { toi.AwayMessage = AwayMessage; } break;
-				case "client_badges": foreach(var toi in toc) { toi.Badges = Badges; } break;
-				case "client_channel_group_id": foreach(var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
-				case "client_channel_group_inherited_channel_id": foreach(var toi in toc) { toi.InheritedChannelGroupFromChannel = InheritedChannelGroupFromChannel; } break;
-				case "client_country": foreach(var toi in toc) { toi.CountryCode = CountryCode; } break;
-				case "client_database_id": foreach(var toi in toc) { toi.DatabaseId = DatabaseId; } break;
-				case "client_description": foreach(var toi in toc) { toi.Description = Description; } break;
-				case "client_flag_avatar": foreach(var toi in toc) { toi.AvatarHash = AvatarHash; } break;
-				case "client_icon_id": foreach(var toi in toc) { toi.IconId = IconId; } break;
-				case "client_input_hardware": foreach(var toi in toc) { toi.InputHardwareEnabled = InputHardwareEnabled; } break;
-				case "client_input_muted": foreach(var toi in toc) { toi.InputMuted = InputMuted; } break;
-				case "client_integrations": foreach(var toi in toc) { toi.Integrations = Integrations; } break;
-				case "client_is_channel_commander": foreach(var toi in toc) { toi.IsChannelCommander = IsChannelCommander; } break;
-				case "client_is_priority_speaker": foreach(var toi in toc) { toi.IsPrioritySpeaker = IsPrioritySpeaker; } break;
-				case "client_is_recording": foreach(var toi in toc) { toi.IsRecording = IsRecording; } break;
-				case "client_is_talker": foreach(var toi in toc) { toi.TalkPowerGranted = TalkPowerGranted; } break;
-				case "client_meta_data": foreach(var toi in toc) { toi.Metadata = Metadata; } break;
-				case "client_myteamspeak_avatar": foreach(var toi in toc) { toi.MyTeamSpeakAvatar = MyTeamSpeakAvatar; } break;
-				case "client_myteamspeak_id": foreach(var toi in toc) { toi.MyTeamSpeakId = MyTeamSpeakId; } break;
-				case "client_needed_serverquery_view_power": foreach(var toi in toc) { toi.NeededServerqueryViewPower = NeededServerqueryViewPower; } break;
-				case "client_nickname": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "client_nickname_phonetic": foreach(var toi in toc) { toi.PhoneticName = PhoneticName; } break;
-				case "client_output_hardware": foreach(var toi in toc) { toi.OutputHardwareEnabled = OutputHardwareEnabled; } break;
-				case "client_output_muted": foreach(var toi in toc) { toi.OutputMuted = OutputMuted; } break;
-				case "client_outputonly_muted": foreach(var toi in toc) { toi.OutputOnlyMuted = OutputOnlyMuted; } break;
-				case "client_servergroups": foreach(var toi in toc) { toi.ServerGroups = ServerGroups; } break;
-				case "client_signed_badges": foreach(var toi in toc) { toi.SignedBadges = SignedBadges; } break;
-				case "client_talk_power": foreach(var toi in toc) { toi.TalkPower = TalkPower; } break;
-				case "client_talk_request": foreach(var toi in toc) { toi.TalkPowerRequestTime = TalkPowerRequestTime; } break;
-				case "client_talk_request_msg": foreach(var toi in toc) { toi.TalkPowerRequestMessage = TalkPowerRequestMessage; } break;
-				case "client_type": foreach(var toi in toc) { toi.ClientType = ClientType; } break;
-				case "client_unique_identifier": foreach(var toi in toc) { toi.Uid = Uid; } break;
-				case "client_unread_messages": foreach(var toi in toc) { toi.UnreadMessages = UnreadMessages; } break;
-				case "ctid": foreach(var toi in toc) { toi.TargetChannelId = TargetChannelId; } break;
-				case "invokerid": foreach(var toi in toc) { toi.InvokerId = InvokerId; } break;
-				case "invokername": foreach(var toi in toc) { toi.InvokerName = InvokerName; } break;
-				case "invokeruid": foreach(var toi in toc) { toi.InvokerUid = InvokerUid; } break;
-				case "reasonid": foreach(var toi in toc) { toi.Reason = Reason; } break;
+				case "cfid": foreach (var toi in toc) { toi.SourceChannelId = SourceChannelId; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "client_away": foreach (var toi in toc) { toi.IsAway = IsAway; } break;
+				case "client_away_message": foreach (var toi in toc) { toi.AwayMessage = AwayMessage; } break;
+				case "client_badges": foreach (var toi in toc) { toi.Badges = Badges; } break;
+				case "client_channel_group_id": foreach (var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
+				case "client_channel_group_inherited_channel_id": foreach (var toi in toc) { toi.InheritedChannelGroupFromChannel = InheritedChannelGroupFromChannel; } break;
+				case "client_country": foreach (var toi in toc) { toi.CountryCode = CountryCode; } break;
+				case "client_database_id": foreach (var toi in toc) { toi.DatabaseId = DatabaseId; } break;
+				case "client_description": foreach (var toi in toc) { toi.Description = Description; } break;
+				case "client_flag_avatar": foreach (var toi in toc) { toi.AvatarHash = AvatarHash; } break;
+				case "client_icon_id": foreach (var toi in toc) { toi.IconId = IconId; } break;
+				case "client_input_hardware": foreach (var toi in toc) { toi.InputHardwareEnabled = InputHardwareEnabled; } break;
+				case "client_input_muted": foreach (var toi in toc) { toi.InputMuted = InputMuted; } break;
+				case "client_integrations": foreach (var toi in toc) { toi.Integrations = Integrations; } break;
+				case "client_is_channel_commander": foreach (var toi in toc) { toi.IsChannelCommander = IsChannelCommander; } break;
+				case "client_is_priority_speaker": foreach (var toi in toc) { toi.IsPrioritySpeaker = IsPrioritySpeaker; } break;
+				case "client_is_recording": foreach (var toi in toc) { toi.IsRecording = IsRecording; } break;
+				case "client_is_talker": foreach (var toi in toc) { toi.TalkPowerGranted = TalkPowerGranted; } break;
+				case "client_meta_data": foreach (var toi in toc) { toi.Metadata = Metadata; } break;
+				case "client_myteamspeak_avatar": foreach (var toi in toc) { toi.MyTeamSpeakAvatar = MyTeamSpeakAvatar; } break;
+				case "client_myteamspeak_id": foreach (var toi in toc) { toi.MyTeamSpeakId = MyTeamSpeakId; } break;
+				case "client_needed_serverquery_view_power": foreach (var toi in toc) { toi.NeededServerqueryViewPower = NeededServerqueryViewPower; } break;
+				case "client_nickname": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "client_nickname_phonetic": foreach (var toi in toc) { toi.PhoneticName = PhoneticName; } break;
+				case "client_output_hardware": foreach (var toi in toc) { toi.OutputHardwareEnabled = OutputHardwareEnabled; } break;
+				case "client_output_muted": foreach (var toi in toc) { toi.OutputMuted = OutputMuted; } break;
+				case "client_outputonly_muted": foreach (var toi in toc) { toi.OutputOnlyMuted = OutputOnlyMuted; } break;
+				case "client_servergroups": foreach (var toi in toc) { toi.ServerGroups = ServerGroups; } break;
+				case "client_signed_badges": foreach (var toi in toc) { toi.SignedBadges = SignedBadges; } break;
+				case "client_talk_power": foreach (var toi in toc) { toi.TalkPower = TalkPower; } break;
+				case "client_talk_request": foreach (var toi in toc) { toi.TalkPowerRequestTime = TalkPowerRequestTime; } break;
+				case "client_talk_request_msg": foreach (var toi in toc) { toi.TalkPowerRequestMessage = TalkPowerRequestMessage; } break;
+				case "client_type": foreach (var toi in toc) { toi.ClientType = ClientType; } break;
+				case "client_unique_identifier": foreach (var toi in toc) { toi.Uid = Uid; } break;
+				case "client_unread_messages": foreach (var toi in toc) { toi.UnreadMessages = UnreadMessages; } break;
+				case "ctid": foreach (var toi in toc) { toi.TargetChannelId = TargetChannelId; } break;
+				case "invokerid": foreach (var toi in toc) { toi.InvokerId = InvokerId; } break;
+				case "invokername": foreach (var toi in toc) { toi.InvokerName = InvokerName; } break;
+				case "invokeruid": foreach (var toi in toc) { toi.InvokerUid = InvokerUid; } break;
+				case "reasonid": foreach (var toi in toc) { toi.Reason = Reason; } break;
 				}
 			}
 
@@ -3677,20 +3713,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientFindRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientFindRequest;
-		
+
 
 		public str Pattern { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "pattern": Pattern = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -3700,10 +3736,10 @@ namespace TSLib.Messages
 			var toc = (ClientFindRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "pattern": foreach(var toi in toc) { toi.Pattern = Pattern; } break;
+				case "pattern": foreach (var toi in toc) { toi.Pattern = Pattern; } break;
 				}
 			}
 
@@ -3712,21 +3748,21 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientIds : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientIds;
 		public string? ReturnCode { get; set; }
 
 		public ClientId ClientId { get; set; }
 		public Uid ClientUid { get; set; }
 		public str Name { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
 			case "name": Name = (str)TsString.Unescape(value); break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
@@ -3739,12 +3775,12 @@ namespace TSLib.Messages
 			var toc = (ClientIds[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
 				}
 			}
 
@@ -3753,20 +3789,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientIdsRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientIdsRequest;
-		
+
 
 		public Uid ClientUid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -3776,10 +3812,10 @@ namespace TSLib.Messages
 			var toc = (ClientIdsRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
 				}
 			}
 
@@ -3788,8 +3824,8 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientInfo : IResponse
 	{
-		#pragma warning disable CS8618
-		
+#pragma warning disable CS8618
+
 		public string? ReturnCode { get; set; }
 
 		public str AvatarHash { get; set; }
@@ -3853,29 +3889,29 @@ namespace TSLib.Messages
 		public i64 TotalUploadQuota { get; set; }
 		public Uid Uid { get; set; }
 		public u32 UnreadMessages { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
 			case "client_away": IsAway = value.Length > 0 && value[0] != '0'; break;
 			case "client_away_message": AwayMessage = (str)TsString.Unescape(value); break;
 			case "client_badges": Badges = (str)TsString.Unescape(value); break;
 			case "client_base64HashClientUID": Base64HashClientUid = (str)TsString.Unescape(value); break;
-			case "client_channel_group_id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
-			case "client_channel_group_inherited_channel_id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) InheritedChannelGroupFromChannel = (ChannelId)oval; } break;
+			case "client_channel_group_id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
+			case "client_channel_group_inherited_channel_id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) InheritedChannelGroupFromChannel = (ChannelId)oval; } break;
 			case "client_country": CountryCode = (str)TsString.Unescape(value); break;
-			case "client_created": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) CreationDate = Tools.FromUnix(oval); } break;
-			case "client_database_id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) DatabaseId = (ClientDbId)oval; } break;
+			case "client_created": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) CreationDate = Tools.FromUnix(oval); } break;
+			case "client_database_id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) DatabaseId = (ClientDbId)oval; } break;
 			case "client_default_channel": DefaultChannel = (str)TsString.Unescape(value); break;
 			case "client_default_token": DefaultToken = (str)TsString.Unescape(value); break;
 			case "client_description": Description = (str)TsString.Unescape(value); break;
 			case "client_flag_avatar": AvatarHash = (str)TsString.Unescape(value); break;
-			case "client_icon_id": { if(!value.IsEmpty && value[0] == (u8)'-') { if(Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if(Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
-			case "client_idle_time": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) ClientIdleTime = TimeSpan.FromMilliseconds(oval); } break;
+			case "client_icon_id": { if (!value.IsEmpty && value[0] == (u8)'-') { if (Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if (Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
+			case "client_idle_time": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) ClientIdleTime = TimeSpan.FromMilliseconds(oval); } break;
 			case "client_input_hardware": InputHardwareEnabled = value.Length > 0 && value[0] != '0'; break;
 			case "client_input_muted": InputMuted = value.Length > 0 && value[0] != '0'; break;
 			case "client_integrations": Integrations = (str)TsString.Unescape(value); break;
@@ -3883,13 +3919,13 @@ namespace TSLib.Messages
 			case "client_is_priority_speaker": IsPrioritySpeaker = value.Length > 0 && value[0] != '0'; break;
 			case "client_is_recording": IsRecording = value.Length > 0 && value[0] != '0'; break;
 			case "client_is_talker": TalkPowerGranted = value.Length > 0 && value[0] != '0'; break;
-			case "client_lastconnected": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) LastConnected = Tools.FromUnix(oval); } break;
+			case "client_lastconnected": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) LastConnected = Tools.FromUnix(oval); } break;
 			case "client_login_name": LoginName = (str)TsString.Unescape(value); break;
 			case "client_meta_data": Metadata = (str)TsString.Unescape(value); break;
-			case "client_month_bytes_downloaded": { if(Utf8Parser.TryParse(value, out i64 oval, out _)) MonthlyDownloadQuota = (i64)oval; } break;
-			case "client_month_bytes_uploaded": { if(Utf8Parser.TryParse(value, out i64 oval, out _)) MonthlyUploadQuota = (i64)oval; } break;
+			case "client_month_bytes_downloaded": { if (Utf8Parser.TryParse(value, out i64 oval, out _)) MonthlyDownloadQuota = (i64)oval; } break;
+			case "client_month_bytes_uploaded": { if (Utf8Parser.TryParse(value, out i64 oval, out _)) MonthlyUploadQuota = (i64)oval; } break;
 			case "client_myteamspeak_id": MyTeamSpeakId = (str)TsString.Unescape(value); break;
-			case "client_needed_serverquery_view_power": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NeededServerqueryViewPower = (i32)oval; } break;
+			case "client_needed_serverquery_view_power": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NeededServerqueryViewPower = (i32)oval; } break;
 			case "client_nickname": Name = (str)TsString.Unescape(value); break;
 			case "client_nickname_phonetic": PhoneticName = (str)TsString.Unescape(value); break;
 			case "client_output_hardware": OutputHardwareEnabled = value.Length > 0 && value[0] != '0'; break;
@@ -3897,30 +3933,71 @@ namespace TSLib.Messages
 			case "client_outputonly_muted": OutputOnlyMuted = value.Length > 0 && value[0] != '0'; break;
 			case "client_platform": ClientPlatform = (str)TsString.Unescape(value); break;
 			case "client_security_hash": SecurityHash = (str)TsString.Unescape(value); break;
-			case "client_servergroups": { if(value.Length == 0) ServerGroups = Array.Empty<ServerGroupId>(); else { var ss = new SpanSplitter<byte>(); ss.First(value, (byte)','); int cnt = 0; for (int i = 0; i < value.Length; i++) if (value[i] == ',') cnt++; ServerGroups = new ServerGroupId[cnt + 1]; for(int i = 0; i < cnt + 1; i++) { { if(Utf8Parser.TryParse(ss.Trim(value), out u64 oval, out _)) ServerGroups[i] = (ServerGroupId)oval; } if (i < cnt) value = ss.Next(value); } } } break;
-			case "client_talk_power": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) TalkPower = (i32)oval; } break;
-			case "client_talk_request": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) TalkPowerRequestTime = Tools.FromUnix(oval); } break;
+			case "client_servergroups":
+				{
+					if (value.Length == 0)
+					{
+						ServerGroups = Array.Empty<ServerGroupId>();
+					}
+					else
+					{
+						var ss = new SpanSplitter<byte>();
+						ss.First(value, (byte)',');
+						int cnt = 0;
+						for (int i = 0; i < value.Length; i++)
+						{
+							if (value[i] == ',')
+							{
+								cnt++;
+							}
+						}
+
+						ServerGroups = new ServerGroupId[cnt + 1];
+						var currentSpan = value; // Capture initial span
+
+						for (int i = 0; i < cnt + 1; i++)
+						{
+							if (Utf8Parser.TryParse(ss.Trim(currentSpan), out u64 oval, out _))
+							{
+								ServerGroups[i] = (ServerGroupId)oval;
+							}
+
+							if (i < cnt)
+							{
+								// Create a copy of the span for the next iteration
+								// to avoid potential scope issues
+								var nextSpan = currentSpan.Slice(ss.NextIndex + 1);
+								currentSpan = nextSpan;
+							}
+						}
+					}
+				}
+				break;
+
+
+			case "client_talk_power": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) TalkPower = (i32)oval; } break;
+			case "client_talk_request": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) TalkPowerRequestTime = Tools.FromUnix(oval); } break;
 			case "client_talk_request_msg": TalkPowerRequestMessage = (str)TsString.Unescape(value); break;
-			case "client_total_bytes_downloaded": { if(Utf8Parser.TryParse(value, out i64 oval, out _)) TotalDownloadQuota = (i64)oval; } break;
-			case "client_total_bytes_uploaded": { if(Utf8Parser.TryParse(value, out i64 oval, out _)) TotalUploadQuota = (i64)oval; } break;
-			case "client_totalconnections": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) TotalConnections = (i32)oval; } break;
-			case "client_type": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) ClientType = (ClientType)oval; } break;
+			case "client_total_bytes_downloaded": { if (Utf8Parser.TryParse(value, out i64 oval, out _)) TotalDownloadQuota = (i64)oval; } break;
+			case "client_total_bytes_uploaded": { if (Utf8Parser.TryParse(value, out i64 oval, out _)) TotalUploadQuota = (i64)oval; } break;
+			case "client_totalconnections": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) TotalConnections = (i32)oval; } break;
+			case "client_type": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) ClientType = (ClientType)oval; } break;
 			case "client_unique_identifier": Uid = (Uid)TsString.Unescape(value); break;
-			case "client_unread_messages": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) UnreadMessages = (u32)oval; } break;
+			case "client_unread_messages": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) UnreadMessages = (u32)oval; } break;
 			case "client_version": ClientVersion = (str)TsString.Unescape(value); break;
 			case "client_version_sign": ClientVersionSign = (str)TsString.Unescape(value); break;
-			case "connection_bandwidth_received_last_minute_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastMinuteTotal = (u64)oval; } break;
-			case "connection_bandwidth_received_last_second_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastSecondTotal = (u64)oval; } break;
-			case "connection_bandwidth_sent_last_minute_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastMinuteTotal = (u64)oval; } break;
-			case "connection_bandwidth_sent_last_second_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastSecondTotal = (u64)oval; } break;
-			case "connection_bytes_received_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BytesReceivedTotal = (u64)oval; } break;
-			case "connection_bytes_sent_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BytesSentTotal = (u64)oval; } break;
+			case "connection_bandwidth_received_last_minute_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastMinuteTotal = (u64)oval; } break;
+			case "connection_bandwidth_received_last_second_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastSecondTotal = (u64)oval; } break;
+			case "connection_bandwidth_sent_last_minute_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastMinuteTotal = (u64)oval; } break;
+			case "connection_bandwidth_sent_last_second_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastSecondTotal = (u64)oval; } break;
+			case "connection_bytes_received_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BytesReceivedTotal = (u64)oval; } break;
+			case "connection_bytes_sent_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BytesSentTotal = (u64)oval; } break;
 			case "connection_client_ip": Ip = (str)TsString.Unescape(value); break;
-			case "connection_connected_time": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) ConnectedTime = TimeSpan.FromMilliseconds(oval); } break;
-			case "connection_filetransfer_bandwidth_received": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) FiletransferBandwidthReceived = (u64)oval; } break;
-			case "connection_filetransfer_bandwidth_sent": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) FiletransferBandwidthSent = (u64)oval; } break;
-			case "connection_packets_received_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsReceivedTotal = (u64)oval; } break;
-			case "connection_packets_sent_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsSentTotal = (u64)oval; } break;
+			case "connection_connected_time": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) ConnectedTime = TimeSpan.FromMilliseconds(oval); } break;
+			case "connection_filetransfer_bandwidth_received": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) FiletransferBandwidthReceived = (u64)oval; } break;
+			case "connection_filetransfer_bandwidth_sent": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) FiletransferBandwidthSent = (u64)oval; } break;
+			case "connection_packets_received_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsReceivedTotal = (u64)oval; } break;
+			case "connection_packets_sent_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsSentTotal = (u64)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -3931,70 +4008,70 @@ namespace TSLib.Messages
 			var toc = (ClientInfo[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "client_away": foreach(var toi in toc) { toi.IsAway = IsAway; } break;
-				case "client_away_message": foreach(var toi in toc) { toi.AwayMessage = AwayMessage; } break;
-				case "client_badges": foreach(var toi in toc) { toi.Badges = Badges; } break;
-				case "client_base64HashClientUID": foreach(var toi in toc) { toi.Base64HashClientUid = Base64HashClientUid; } break;
-				case "client_channel_group_id": foreach(var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
-				case "client_channel_group_inherited_channel_id": foreach(var toi in toc) { toi.InheritedChannelGroupFromChannel = InheritedChannelGroupFromChannel; } break;
-				case "client_country": foreach(var toi in toc) { toi.CountryCode = CountryCode; } break;
-				case "client_created": foreach(var toi in toc) { toi.CreationDate = CreationDate; } break;
-				case "client_database_id": foreach(var toi in toc) { toi.DatabaseId = DatabaseId; } break;
-				case "client_default_channel": foreach(var toi in toc) { toi.DefaultChannel = DefaultChannel; } break;
-				case "client_default_token": foreach(var toi in toc) { toi.DefaultToken = DefaultToken; } break;
-				case "client_description": foreach(var toi in toc) { toi.Description = Description; } break;
-				case "client_flag_avatar": foreach(var toi in toc) { toi.AvatarHash = AvatarHash; } break;
-				case "client_icon_id": foreach(var toi in toc) { toi.IconId = IconId; } break;
-				case "client_idle_time": foreach(var toi in toc) { toi.ClientIdleTime = ClientIdleTime; } break;
-				case "client_input_hardware": foreach(var toi in toc) { toi.InputHardwareEnabled = InputHardwareEnabled; } break;
-				case "client_input_muted": foreach(var toi in toc) { toi.InputMuted = InputMuted; } break;
-				case "client_integrations": foreach(var toi in toc) { toi.Integrations = Integrations; } break;
-				case "client_is_channel_commander": foreach(var toi in toc) { toi.IsChannelCommander = IsChannelCommander; } break;
-				case "client_is_priority_speaker": foreach(var toi in toc) { toi.IsPrioritySpeaker = IsPrioritySpeaker; } break;
-				case "client_is_recording": foreach(var toi in toc) { toi.IsRecording = IsRecording; } break;
-				case "client_is_talker": foreach(var toi in toc) { toi.TalkPowerGranted = TalkPowerGranted; } break;
-				case "client_lastconnected": foreach(var toi in toc) { toi.LastConnected = LastConnected; } break;
-				case "client_login_name": foreach(var toi in toc) { toi.LoginName = LoginName; } break;
-				case "client_meta_data": foreach(var toi in toc) { toi.Metadata = Metadata; } break;
-				case "client_month_bytes_downloaded": foreach(var toi in toc) { toi.MonthlyDownloadQuota = MonthlyDownloadQuota; } break;
-				case "client_month_bytes_uploaded": foreach(var toi in toc) { toi.MonthlyUploadQuota = MonthlyUploadQuota; } break;
-				case "client_myteamspeak_id": foreach(var toi in toc) { toi.MyTeamSpeakId = MyTeamSpeakId; } break;
-				case "client_needed_serverquery_view_power": foreach(var toi in toc) { toi.NeededServerqueryViewPower = NeededServerqueryViewPower; } break;
-				case "client_nickname": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "client_nickname_phonetic": foreach(var toi in toc) { toi.PhoneticName = PhoneticName; } break;
-				case "client_output_hardware": foreach(var toi in toc) { toi.OutputHardwareEnabled = OutputHardwareEnabled; } break;
-				case "client_output_muted": foreach(var toi in toc) { toi.OutputMuted = OutputMuted; } break;
-				case "client_outputonly_muted": foreach(var toi in toc) { toi.OutputOnlyMuted = OutputOnlyMuted; } break;
-				case "client_platform": foreach(var toi in toc) { toi.ClientPlatform = ClientPlatform; } break;
-				case "client_security_hash": foreach(var toi in toc) { toi.SecurityHash = SecurityHash; } break;
-				case "client_servergroups": foreach(var toi in toc) { toi.ServerGroups = ServerGroups; } break;
-				case "client_talk_power": foreach(var toi in toc) { toi.TalkPower = TalkPower; } break;
-				case "client_talk_request": foreach(var toi in toc) { toi.TalkPowerRequestTime = TalkPowerRequestTime; } break;
-				case "client_talk_request_msg": foreach(var toi in toc) { toi.TalkPowerRequestMessage = TalkPowerRequestMessage; } break;
-				case "client_total_bytes_downloaded": foreach(var toi in toc) { toi.TotalDownloadQuota = TotalDownloadQuota; } break;
-				case "client_total_bytes_uploaded": foreach(var toi in toc) { toi.TotalUploadQuota = TotalUploadQuota; } break;
-				case "client_totalconnections": foreach(var toi in toc) { toi.TotalConnections = TotalConnections; } break;
-				case "client_type": foreach(var toi in toc) { toi.ClientType = ClientType; } break;
-				case "client_unique_identifier": foreach(var toi in toc) { toi.Uid = Uid; } break;
-				case "client_unread_messages": foreach(var toi in toc) { toi.UnreadMessages = UnreadMessages; } break;
-				case "client_version": foreach(var toi in toc) { toi.ClientVersion = ClientVersion; } break;
-				case "client_version_sign": foreach(var toi in toc) { toi.ClientVersionSign = ClientVersionSign; } break;
-				case "connection_bandwidth_received_last_minute_total": foreach(var toi in toc) { toi.BandwidthReceivedLastMinuteTotal = BandwidthReceivedLastMinuteTotal; } break;
-				case "connection_bandwidth_received_last_second_total": foreach(var toi in toc) { toi.BandwidthReceivedLastSecondTotal = BandwidthReceivedLastSecondTotal; } break;
-				case "connection_bandwidth_sent_last_minute_total": foreach(var toi in toc) { toi.BandwidthSentLastMinuteTotal = BandwidthSentLastMinuteTotal; } break;
-				case "connection_bandwidth_sent_last_second_total": foreach(var toi in toc) { toi.BandwidthSentLastSecondTotal = BandwidthSentLastSecondTotal; } break;
-				case "connection_bytes_received_total": foreach(var toi in toc) { toi.BytesReceivedTotal = BytesReceivedTotal; } break;
-				case "connection_bytes_sent_total": foreach(var toi in toc) { toi.BytesSentTotal = BytesSentTotal; } break;
-				case "connection_client_ip": foreach(var toi in toc) { toi.Ip = Ip; } break;
-				case "connection_connected_time": foreach(var toi in toc) { toi.ConnectedTime = ConnectedTime; } break;
-				case "connection_filetransfer_bandwidth_received": foreach(var toi in toc) { toi.FiletransferBandwidthReceived = FiletransferBandwidthReceived; } break;
-				case "connection_filetransfer_bandwidth_sent": foreach(var toi in toc) { toi.FiletransferBandwidthSent = FiletransferBandwidthSent; } break;
-				case "connection_packets_received_total": foreach(var toi in toc) { toi.PacketsReceivedTotal = PacketsReceivedTotal; } break;
-				case "connection_packets_sent_total": foreach(var toi in toc) { toi.PacketsSentTotal = PacketsSentTotal; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "client_away": foreach (var toi in toc) { toi.IsAway = IsAway; } break;
+				case "client_away_message": foreach (var toi in toc) { toi.AwayMessage = AwayMessage; } break;
+				case "client_badges": foreach (var toi in toc) { toi.Badges = Badges; } break;
+				case "client_base64HashClientUID": foreach (var toi in toc) { toi.Base64HashClientUid = Base64HashClientUid; } break;
+				case "client_channel_group_id": foreach (var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
+				case "client_channel_group_inherited_channel_id": foreach (var toi in toc) { toi.InheritedChannelGroupFromChannel = InheritedChannelGroupFromChannel; } break;
+				case "client_country": foreach (var toi in toc) { toi.CountryCode = CountryCode; } break;
+				case "client_created": foreach (var toi in toc) { toi.CreationDate = CreationDate; } break;
+				case "client_database_id": foreach (var toi in toc) { toi.DatabaseId = DatabaseId; } break;
+				case "client_default_channel": foreach (var toi in toc) { toi.DefaultChannel = DefaultChannel; } break;
+				case "client_default_token": foreach (var toi in toc) { toi.DefaultToken = DefaultToken; } break;
+				case "client_description": foreach (var toi in toc) { toi.Description = Description; } break;
+				case "client_flag_avatar": foreach (var toi in toc) { toi.AvatarHash = AvatarHash; } break;
+				case "client_icon_id": foreach (var toi in toc) { toi.IconId = IconId; } break;
+				case "client_idle_time": foreach (var toi in toc) { toi.ClientIdleTime = ClientIdleTime; } break;
+				case "client_input_hardware": foreach (var toi in toc) { toi.InputHardwareEnabled = InputHardwareEnabled; } break;
+				case "client_input_muted": foreach (var toi in toc) { toi.InputMuted = InputMuted; } break;
+				case "client_integrations": foreach (var toi in toc) { toi.Integrations = Integrations; } break;
+				case "client_is_channel_commander": foreach (var toi in toc) { toi.IsChannelCommander = IsChannelCommander; } break;
+				case "client_is_priority_speaker": foreach (var toi in toc) { toi.IsPrioritySpeaker = IsPrioritySpeaker; } break;
+				case "client_is_recording": foreach (var toi in toc) { toi.IsRecording = IsRecording; } break;
+				case "client_is_talker": foreach (var toi in toc) { toi.TalkPowerGranted = TalkPowerGranted; } break;
+				case "client_lastconnected": foreach (var toi in toc) { toi.LastConnected = LastConnected; } break;
+				case "client_login_name": foreach (var toi in toc) { toi.LoginName = LoginName; } break;
+				case "client_meta_data": foreach (var toi in toc) { toi.Metadata = Metadata; } break;
+				case "client_month_bytes_downloaded": foreach (var toi in toc) { toi.MonthlyDownloadQuota = MonthlyDownloadQuota; } break;
+				case "client_month_bytes_uploaded": foreach (var toi in toc) { toi.MonthlyUploadQuota = MonthlyUploadQuota; } break;
+				case "client_myteamspeak_id": foreach (var toi in toc) { toi.MyTeamSpeakId = MyTeamSpeakId; } break;
+				case "client_needed_serverquery_view_power": foreach (var toi in toc) { toi.NeededServerqueryViewPower = NeededServerqueryViewPower; } break;
+				case "client_nickname": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "client_nickname_phonetic": foreach (var toi in toc) { toi.PhoneticName = PhoneticName; } break;
+				case "client_output_hardware": foreach (var toi in toc) { toi.OutputHardwareEnabled = OutputHardwareEnabled; } break;
+				case "client_output_muted": foreach (var toi in toc) { toi.OutputMuted = OutputMuted; } break;
+				case "client_outputonly_muted": foreach (var toi in toc) { toi.OutputOnlyMuted = OutputOnlyMuted; } break;
+				case "client_platform": foreach (var toi in toc) { toi.ClientPlatform = ClientPlatform; } break;
+				case "client_security_hash": foreach (var toi in toc) { toi.SecurityHash = SecurityHash; } break;
+				case "client_servergroups": foreach (var toi in toc) { toi.ServerGroups = ServerGroups; } break;
+				case "client_talk_power": foreach (var toi in toc) { toi.TalkPower = TalkPower; } break;
+				case "client_talk_request": foreach (var toi in toc) { toi.TalkPowerRequestTime = TalkPowerRequestTime; } break;
+				case "client_talk_request_msg": foreach (var toi in toc) { toi.TalkPowerRequestMessage = TalkPowerRequestMessage; } break;
+				case "client_total_bytes_downloaded": foreach (var toi in toc) { toi.TotalDownloadQuota = TotalDownloadQuota; } break;
+				case "client_total_bytes_uploaded": foreach (var toi in toc) { toi.TotalUploadQuota = TotalUploadQuota; } break;
+				case "client_totalconnections": foreach (var toi in toc) { toi.TotalConnections = TotalConnections; } break;
+				case "client_type": foreach (var toi in toc) { toi.ClientType = ClientType; } break;
+				case "client_unique_identifier": foreach (var toi in toc) { toi.Uid = Uid; } break;
+				case "client_unread_messages": foreach (var toi in toc) { toi.UnreadMessages = UnreadMessages; } break;
+				case "client_version": foreach (var toi in toc) { toi.ClientVersion = ClientVersion; } break;
+				case "client_version_sign": foreach (var toi in toc) { toi.ClientVersionSign = ClientVersionSign; } break;
+				case "connection_bandwidth_received_last_minute_total": foreach (var toi in toc) { toi.BandwidthReceivedLastMinuteTotal = BandwidthReceivedLastMinuteTotal; } break;
+				case "connection_bandwidth_received_last_second_total": foreach (var toi in toc) { toi.BandwidthReceivedLastSecondTotal = BandwidthReceivedLastSecondTotal; } break;
+				case "connection_bandwidth_sent_last_minute_total": foreach (var toi in toc) { toi.BandwidthSentLastMinuteTotal = BandwidthSentLastMinuteTotal; } break;
+				case "connection_bandwidth_sent_last_second_total": foreach (var toi in toc) { toi.BandwidthSentLastSecondTotal = BandwidthSentLastSecondTotal; } break;
+				case "connection_bytes_received_total": foreach (var toi in toc) { toi.BytesReceivedTotal = BytesReceivedTotal; } break;
+				case "connection_bytes_sent_total": foreach (var toi in toc) { toi.BytesSentTotal = BytesSentTotal; } break;
+				case "connection_client_ip": foreach (var toi in toc) { toi.Ip = Ip; } break;
+				case "connection_connected_time": foreach (var toi in toc) { toi.ConnectedTime = ConnectedTime; } break;
+				case "connection_filetransfer_bandwidth_received": foreach (var toi in toc) { toi.FiletransferBandwidthReceived = FiletransferBandwidthReceived; } break;
+				case "connection_filetransfer_bandwidth_sent": foreach (var toi in toc) { toi.FiletransferBandwidthSent = FiletransferBandwidthSent; } break;
+				case "connection_packets_received_total": foreach (var toi in toc) { toi.PacketsReceivedTotal = PacketsReceivedTotal; } break;
+				case "connection_packets_sent_total": foreach (var toi in toc) { toi.PacketsSentTotal = PacketsSentTotal; } break;
 				}
 			}
 
@@ -4003,20 +4080,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientInfoRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientInfoRequest;
-		
+
 
 		public ClientId ClientId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
-			
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+
 			}
 
 		}
@@ -4026,10 +4103,10 @@ namespace TSLib.Messages
 			var toc = (ClientInfoRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
 				}
 			}
 
@@ -4038,9 +4115,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientInit : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientInit;
-		
+
 
 		public str? ActiveIntegrationsInfo { get; set; }
 		public str? Badges { get; set; }
@@ -4063,11 +4140,11 @@ namespace TSLib.Messages
 		public str PhoneticName { get; set; }
 		public str? SecurityHash { get; set; }
 		public str? SignedBadges { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "client_active_integrations_info": ActiveIntegrationsInfo = (str)TsString.Unescape(value); break;
@@ -4077,7 +4154,7 @@ namespace TSLib.Messages
 			case "client_default_token": DefaultToken = (str)TsString.Unescape(value); break;
 			case "client_input_hardware": InputHardwareEnabled = value.Length > 0 && value[0] != '0'; break;
 			case "client_integrations": Integrations = (str)TsString.Unescape(value); break;
-			case "client_key_offset": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientKeyOffset = (u64)oval; } break;
+			case "client_key_offset": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientKeyOffset = (u64)oval; } break;
 			case "client_meta_data": Metadata = (str)TsString.Unescape(value); break;
 			case "client_myteamspeak_avatar": MyTeamSpeakAvatar = (str)TsString.Unescape(value); break;
 			case "client_myteamspeak_id": MyTeamSpeakId = (str)TsString.Unescape(value); break;
@@ -4091,7 +4168,7 @@ namespace TSLib.Messages
 			case "client_version": ClientVersion = (str)TsString.Unescape(value); break;
 			case "client_version_sign": ClientVersionSign = (str)TsString.Unescape(value); break;
 			case "hwid": HardwareId = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -4101,30 +4178,30 @@ namespace TSLib.Messages
 			var toc = (ClientInit[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "client_active_integrations_info": foreach(var toi in toc) { toi.ActiveIntegrationsInfo = ActiveIntegrationsInfo; } break;
-				case "client_badges": foreach(var toi in toc) { toi.Badges = Badges; } break;
-				case "client_default_channel": foreach(var toi in toc) { toi.DefaultChannel = DefaultChannel; } break;
-				case "client_default_channel_password": foreach(var toi in toc) { toi.DefaultChannelPassword = DefaultChannelPassword; } break;
-				case "client_default_token": foreach(var toi in toc) { toi.DefaultToken = DefaultToken; } break;
-				case "client_input_hardware": foreach(var toi in toc) { toi.InputHardwareEnabled = InputHardwareEnabled; } break;
-				case "client_integrations": foreach(var toi in toc) { toi.Integrations = Integrations; } break;
-				case "client_key_offset": foreach(var toi in toc) { toi.ClientKeyOffset = ClientKeyOffset; } break;
-				case "client_meta_data": foreach(var toi in toc) { toi.Metadata = Metadata; } break;
-				case "client_myteamspeak_avatar": foreach(var toi in toc) { toi.MyTeamSpeakAvatar = MyTeamSpeakAvatar; } break;
-				case "client_myteamspeak_id": foreach(var toi in toc) { toi.MyTeamSpeakId = MyTeamSpeakId; } break;
-				case "client_nickname": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "client_nickname_phonetic": foreach(var toi in toc) { toi.PhoneticName = PhoneticName; } break;
-				case "client_output_hardware": foreach(var toi in toc) { toi.OutputHardwareEnabled = OutputHardwareEnabled; } break;
-				case "client_platform": foreach(var toi in toc) { toi.ClientPlatform = ClientPlatform; } break;
-				case "client_security_hash": foreach(var toi in toc) { toi.SecurityHash = SecurityHash; } break;
-				case "client_server_password": foreach(var toi in toc) { toi.Password = Password; } break;
-				case "client_signed_badges": foreach(var toi in toc) { toi.SignedBadges = SignedBadges; } break;
-				case "client_version": foreach(var toi in toc) { toi.ClientVersion = ClientVersion; } break;
-				case "client_version_sign": foreach(var toi in toc) { toi.ClientVersionSign = ClientVersionSign; } break;
-				case "hwid": foreach(var toi in toc) { toi.HardwareId = HardwareId; } break;
+				case "client_active_integrations_info": foreach (var toi in toc) { toi.ActiveIntegrationsInfo = ActiveIntegrationsInfo; } break;
+				case "client_badges": foreach (var toi in toc) { toi.Badges = Badges; } break;
+				case "client_default_channel": foreach (var toi in toc) { toi.DefaultChannel = DefaultChannel; } break;
+				case "client_default_channel_password": foreach (var toi in toc) { toi.DefaultChannelPassword = DefaultChannelPassword; } break;
+				case "client_default_token": foreach (var toi in toc) { toi.DefaultToken = DefaultToken; } break;
+				case "client_input_hardware": foreach (var toi in toc) { toi.InputHardwareEnabled = InputHardwareEnabled; } break;
+				case "client_integrations": foreach (var toi in toc) { toi.Integrations = Integrations; } break;
+				case "client_key_offset": foreach (var toi in toc) { toi.ClientKeyOffset = ClientKeyOffset; } break;
+				case "client_meta_data": foreach (var toi in toc) { toi.Metadata = Metadata; } break;
+				case "client_myteamspeak_avatar": foreach (var toi in toc) { toi.MyTeamSpeakAvatar = MyTeamSpeakAvatar; } break;
+				case "client_myteamspeak_id": foreach (var toi in toc) { toi.MyTeamSpeakId = MyTeamSpeakId; } break;
+				case "client_nickname": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "client_nickname_phonetic": foreach (var toi in toc) { toi.PhoneticName = PhoneticName; } break;
+				case "client_output_hardware": foreach (var toi in toc) { toi.OutputHardwareEnabled = OutputHardwareEnabled; } break;
+				case "client_platform": foreach (var toi in toc) { toi.ClientPlatform = ClientPlatform; } break;
+				case "client_security_hash": foreach (var toi in toc) { toi.SecurityHash = SecurityHash; } break;
+				case "client_server_password": foreach (var toi in toc) { toi.Password = Password; } break;
+				case "client_signed_badges": foreach (var toi in toc) { toi.SignedBadges = SignedBadges; } break;
+				case "client_version": foreach (var toi in toc) { toi.ClientVersion = ClientVersion; } break;
+				case "client_version_sign": foreach (var toi in toc) { toi.ClientVersionSign = ClientVersionSign; } break;
+				case "hwid": foreach (var toi in toc) { toi.HardwareId = HardwareId; } break;
 				}
 			}
 
@@ -4133,24 +4210,24 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientInitIv : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientInitIv;
-		
+
 
 		public str Alpha { get; set; }
 		public IpAddr Ip { get; set; }
 		public str Omega { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "alpha": Alpha = (str)TsString.Unescape(value); break;
 			case "ip": Ip = (IpAddr)TsString.Unescape(value); break;
 			case "omega": Omega = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -4160,12 +4237,12 @@ namespace TSLib.Messages
 			var toc = (ClientInitIv[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "alpha": foreach(var toi in toc) { toi.Alpha = Alpha; } break;
-				case "ip": foreach(var toi in toc) { toi.Ip = Ip; } break;
-				case "omega": foreach(var toi in toc) { toi.Omega = Omega; } break;
+				case "alpha": foreach (var toi in toc) { toi.Alpha = Alpha; } break;
+				case "ip": foreach (var toi in toc) { toi.Ip = Ip; } break;
+				case "omega": foreach (var toi in toc) { toi.Omega = Omega; } break;
 				}
 			}
 
@@ -4174,24 +4251,24 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientKick : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientKick;
-		
+
 
 		public ClientId ClientId { get; set; }
 		public Reason Reason { get; set; }
 		public str? ReasonMessage { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
-			case "reasonid": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) Reason = (Reason)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "reasonid": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) Reason = (Reason)oval; } break;
 			case "reasonmsg": ReasonMessage = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -4201,12 +4278,12 @@ namespace TSLib.Messages
 			var toc = (ClientKick[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "reasonid": foreach(var toi in toc) { toi.Reason = Reason; } break;
-				case "reasonmsg": foreach(var toi in toc) { toi.ReasonMessage = ReasonMessage; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "reasonid": foreach (var toi in toc) { toi.Reason = Reason; } break;
+				case "reasonmsg": foreach (var toi in toc) { toi.ReasonMessage = ReasonMessage; } break;
 				}
 			}
 
@@ -4215,9 +4292,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientLeftView : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientLeftView;
-		
+
 
 		public DurationSeconds? BanTime { get; set; }
 		public ClientId ClientId { get; set; }
@@ -4228,23 +4305,23 @@ namespace TSLib.Messages
 		public str? ReasonMessage { get; set; }
 		public ChannelId SourceChannelId { get; set; }
 		public ChannelId TargetChannelId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "bantime": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) BanTime = TimeSpan.FromSeconds(oval); } break;
-			case "cfid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) SourceChannelId = (ChannelId)oval; } break;
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
-			case "ctid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TargetChannelId = (ChannelId)oval; } break;
-			case "invokerid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
+			case "bantime": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) BanTime = TimeSpan.FromSeconds(oval); } break;
+			case "cfid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) SourceChannelId = (ChannelId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "ctid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TargetChannelId = (ChannelId)oval; } break;
+			case "invokerid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
 			case "invokername": InvokerName = (str)TsString.Unescape(value); break;
 			case "invokeruid": InvokerUid = (Uid)TsString.Unescape(value); break;
-			case "reasonid": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) Reason = (Reason)oval; } break;
+			case "reasonid": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) Reason = (Reason)oval; } break;
 			case "reasonmsg": ReasonMessage = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -4254,18 +4331,18 @@ namespace TSLib.Messages
 			var toc = (ClientLeftView[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "bantime": foreach(var toi in toc) { toi.BanTime = BanTime; } break;
-				case "cfid": foreach(var toi in toc) { toi.SourceChannelId = SourceChannelId; } break;
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "ctid": foreach(var toi in toc) { toi.TargetChannelId = TargetChannelId; } break;
-				case "invokerid": foreach(var toi in toc) { toi.InvokerId = InvokerId; } break;
-				case "invokername": foreach(var toi in toc) { toi.InvokerName = InvokerName; } break;
-				case "invokeruid": foreach(var toi in toc) { toi.InvokerUid = InvokerUid; } break;
-				case "reasonid": foreach(var toi in toc) { toi.Reason = Reason; } break;
-				case "reasonmsg": foreach(var toi in toc) { toi.ReasonMessage = ReasonMessage; } break;
+				case "bantime": foreach (var toi in toc) { toi.BanTime = BanTime; } break;
+				case "cfid": foreach (var toi in toc) { toi.SourceChannelId = SourceChannelId; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "ctid": foreach (var toi in toc) { toi.TargetChannelId = TargetChannelId; } break;
+				case "invokerid": foreach (var toi in toc) { toi.InvokerId = InvokerId; } break;
+				case "invokername": foreach (var toi in toc) { toi.InvokerName = InvokerName; } break;
+				case "invokeruid": foreach (var toi in toc) { toi.InvokerUid = InvokerUid; } break;
+				case "reasonid": foreach (var toi in toc) { toi.Reason = Reason; } break;
+				case "reasonmsg": foreach (var toi in toc) { toi.ReasonMessage = ReasonMessage; } break;
 				}
 			}
 
@@ -4274,8 +4351,8 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientList : IResponse
 	{
-		#pragma warning disable CS8618
-		
+#pragma warning disable CS8618
+
 		public string? ReturnCode { get; set; }
 
 		public str? AwayMessage { get; set; }
@@ -4307,39 +4384,79 @@ namespace TSLib.Messages
 		public i32? TalkPower { get; set; }
 		public bool? TalkPowerGranted { get; set; }
 		public Uid? Uid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "client_away": IsAway = value.Length > 0 && value[0] != '0'; break;
 			case "client_away_message": AwayMessage = (str)TsString.Unescape(value); break;
 			case "client_badges": Badges = (str)TsString.Unescape(value); break;
-			case "client_channel_group_id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
-			case "client_channel_group_inherited_channel_id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) InheritedChannelGroupFromChannel = (ChannelId)oval; } break;
+			case "client_channel_group_id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
+			case "client_channel_group_inherited_channel_id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) InheritedChannelGroupFromChannel = (ChannelId)oval; } break;
 			case "client_country": CountryCode = (str)TsString.Unescape(value); break;
-			case "client_created": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) CreationDate = Tools.FromUnix(oval); } break;
-			case "client_database_id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) DatabaseId = (ClientDbId)oval; } break;
+			case "client_created": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) CreationDate = Tools.FromUnix(oval); } break;
+			case "client_database_id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) DatabaseId = (ClientDbId)oval; } break;
 			case "client_flag_talking": IsTalking = value.Length > 0 && value[0] != '0'; break;
-			case "client_idle_time": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) ClientIdleTime = TimeSpan.FromMilliseconds(oval); } break;
+			case "client_idle_time": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) ClientIdleTime = TimeSpan.FromMilliseconds(oval); } break;
 			case "client_input_hardware": InputHardwareEnabled = value.Length > 0 && value[0] != '0'; break;
 			case "client_input_muted": InputMuted = value.Length > 0 && value[0] != '0'; break;
 			case "client_is_channel_commander": IsChannelCommander = value.Length > 0 && value[0] != '0'; break;
 			case "client_is_priority_speaker": IsPrioritySpeaker = value.Length > 0 && value[0] != '0'; break;
 			case "client_is_recording": IsRecording = value.Length > 0 && value[0] != '0'; break;
 			case "client_is_talker": TalkPowerGranted = value.Length > 0 && value[0] != '0'; break;
-			case "client_lastconnected": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) LastConnected = Tools.FromUnix(oval); } break;
+			case "client_lastconnected": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) LastConnected = Tools.FromUnix(oval); } break;
 			case "client_nickname": Name = (str)TsString.Unescape(value); break;
 			case "client_output_hardware": OutputHardwareEnabled = value.Length > 0 && value[0] != '0'; break;
 			case "client_output_muted": OutputMuted = value.Length > 0 && value[0] != '0'; break;
 			case "client_platform": ClientPlatform = (str)TsString.Unescape(value); break;
-			case "client_servergroups": { if(value.Length == 0) ServerGroups = Array.Empty<ServerGroupId>(); else { var ss = new SpanSplitter<byte>(); ss.First(value, (byte)','); int cnt = 0; for (int i = 0; i < value.Length; i++) if (value[i] == ',') cnt++; ServerGroups = new ServerGroupId[cnt + 1]; for(int i = 0; i < cnt + 1; i++) { { if(Utf8Parser.TryParse(ss.Trim(value), out u64 oval, out _)) ServerGroups[i] = (ServerGroupId)oval; } if (i < cnt) value = ss.Next(value); } } } break;
-			case "client_talk_power": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) TalkPower = (i32)oval; } break;
-			case "client_type": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) ClientType = (ClientType)oval; } break;
+			case "client_servergroups":
+				{
+					if (value.Length == 0)
+					{
+						ServerGroups = Array.Empty<ServerGroupId>();
+					}
+					else
+					{
+						var ss = new SpanSplitter<byte>();
+						ss.First(value, (byte)',');
+						int cnt = 0;
+						for (int i = 0; i < value.Length; i++)
+						{
+							if (value[i] == ',')
+							{
+								cnt++;
+							}
+						}
+
+						ServerGroups = new ServerGroupId[cnt + 1];
+						var currentSpan = value; // Capture initial span
+
+						for (int i = 0; i < cnt + 1; i++)
+						{
+							if (Utf8Parser.TryParse(ss.Trim(currentSpan), out u64 oval, out _))
+							{
+								ServerGroups[i] = (ServerGroupId)oval;
+							}
+
+							if (i < cnt)
+							{
+								// Create a copy of the span for the next iteration
+								// to avoid potential scope issues
+								var nextSpan = currentSpan.Slice(ss.NextIndex + 1);
+								currentSpan = nextSpan;
+							}
+						}
+					}
+				}
+				break;
+
+			case "client_talk_power": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) TalkPower = (i32)oval; } break;
+			case "client_type": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) ClientType = (ClientType)oval; } break;
 			case "client_unique_identifier": Uid = (Uid)TsString.Unescape(value); break;
 			case "client_version": ClientVersion = (str)TsString.Unescape(value); break;
 			case "connection_client_ip": Ip = (str)TsString.Unescape(value); break;
@@ -4353,38 +4470,38 @@ namespace TSLib.Messages
 			var toc = (ClientList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "client_away": foreach(var toi in toc) { toi.IsAway = IsAway; } break;
-				case "client_away_message": foreach(var toi in toc) { toi.AwayMessage = AwayMessage; } break;
-				case "client_badges": foreach(var toi in toc) { toi.Badges = Badges; } break;
-				case "client_channel_group_id": foreach(var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
-				case "client_channel_group_inherited_channel_id": foreach(var toi in toc) { toi.InheritedChannelGroupFromChannel = InheritedChannelGroupFromChannel; } break;
-				case "client_country": foreach(var toi in toc) { toi.CountryCode = CountryCode; } break;
-				case "client_created": foreach(var toi in toc) { toi.CreationDate = CreationDate; } break;
-				case "client_database_id": foreach(var toi in toc) { toi.DatabaseId = DatabaseId; } break;
-				case "client_flag_talking": foreach(var toi in toc) { toi.IsTalking = IsTalking; } break;
-				case "client_idle_time": foreach(var toi in toc) { toi.ClientIdleTime = ClientIdleTime; } break;
-				case "client_input_hardware": foreach(var toi in toc) { toi.InputHardwareEnabled = InputHardwareEnabled; } break;
-				case "client_input_muted": foreach(var toi in toc) { toi.InputMuted = InputMuted; } break;
-				case "client_is_channel_commander": foreach(var toi in toc) { toi.IsChannelCommander = IsChannelCommander; } break;
-				case "client_is_priority_speaker": foreach(var toi in toc) { toi.IsPrioritySpeaker = IsPrioritySpeaker; } break;
-				case "client_is_recording": foreach(var toi in toc) { toi.IsRecording = IsRecording; } break;
-				case "client_is_talker": foreach(var toi in toc) { toi.TalkPowerGranted = TalkPowerGranted; } break;
-				case "client_lastconnected": foreach(var toi in toc) { toi.LastConnected = LastConnected; } break;
-				case "client_nickname": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "client_output_hardware": foreach(var toi in toc) { toi.OutputHardwareEnabled = OutputHardwareEnabled; } break;
-				case "client_output_muted": foreach(var toi in toc) { toi.OutputMuted = OutputMuted; } break;
-				case "client_platform": foreach(var toi in toc) { toi.ClientPlatform = ClientPlatform; } break;
-				case "client_servergroups": foreach(var toi in toc) { toi.ServerGroups = ServerGroups; } break;
-				case "client_talk_power": foreach(var toi in toc) { toi.TalkPower = TalkPower; } break;
-				case "client_type": foreach(var toi in toc) { toi.ClientType = ClientType; } break;
-				case "client_unique_identifier": foreach(var toi in toc) { toi.Uid = Uid; } break;
-				case "client_version": foreach(var toi in toc) { toi.ClientVersion = ClientVersion; } break;
-				case "connection_client_ip": foreach(var toi in toc) { toi.Ip = Ip; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "client_away": foreach (var toi in toc) { toi.IsAway = IsAway; } break;
+				case "client_away_message": foreach (var toi in toc) { toi.AwayMessage = AwayMessage; } break;
+				case "client_badges": foreach (var toi in toc) { toi.Badges = Badges; } break;
+				case "client_channel_group_id": foreach (var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
+				case "client_channel_group_inherited_channel_id": foreach (var toi in toc) { toi.InheritedChannelGroupFromChannel = InheritedChannelGroupFromChannel; } break;
+				case "client_country": foreach (var toi in toc) { toi.CountryCode = CountryCode; } break;
+				case "client_created": foreach (var toi in toc) { toi.CreationDate = CreationDate; } break;
+				case "client_database_id": foreach (var toi in toc) { toi.DatabaseId = DatabaseId; } break;
+				case "client_flag_talking": foreach (var toi in toc) { toi.IsTalking = IsTalking; } break;
+				case "client_idle_time": foreach (var toi in toc) { toi.ClientIdleTime = ClientIdleTime; } break;
+				case "client_input_hardware": foreach (var toi in toc) { toi.InputHardwareEnabled = InputHardwareEnabled; } break;
+				case "client_input_muted": foreach (var toi in toc) { toi.InputMuted = InputMuted; } break;
+				case "client_is_channel_commander": foreach (var toi in toc) { toi.IsChannelCommander = IsChannelCommander; } break;
+				case "client_is_priority_speaker": foreach (var toi in toc) { toi.IsPrioritySpeaker = IsPrioritySpeaker; } break;
+				case "client_is_recording": foreach (var toi in toc) { toi.IsRecording = IsRecording; } break;
+				case "client_is_talker": foreach (var toi in toc) { toi.TalkPowerGranted = TalkPowerGranted; } break;
+				case "client_lastconnected": foreach (var toi in toc) { toi.LastConnected = LastConnected; } break;
+				case "client_nickname": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "client_output_hardware": foreach (var toi in toc) { toi.OutputHardwareEnabled = OutputHardwareEnabled; } break;
+				case "client_output_muted": foreach (var toi in toc) { toi.OutputMuted = OutputMuted; } break;
+				case "client_platform": foreach (var toi in toc) { toi.ClientPlatform = ClientPlatform; } break;
+				case "client_servergroups": foreach (var toi in toc) { toi.ServerGroups = ServerGroups; } break;
+				case "client_talk_power": foreach (var toi in toc) { toi.TalkPower = TalkPower; } break;
+				case "client_type": foreach (var toi in toc) { toi.ClientType = ClientType; } break;
+				case "client_unique_identifier": foreach (var toi in toc) { toi.Uid = Uid; } break;
+				case "client_version": foreach (var toi in toc) { toi.ClientVersion = ClientVersion; } break;
+				case "connection_client_ip": foreach (var toi in toc) { toi.Ip = Ip; } break;
 				}
 			}
 
@@ -4393,11 +4510,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientListRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -4410,24 +4527,24 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientMove : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientMove;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public str? ChannelPassword { get; set; }
 		public ClientId ClientId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "cpw": ChannelPassword = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -4437,12 +4554,12 @@ namespace TSLib.Messages
 			var toc = (ClientMove[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "cpw": foreach(var toi in toc) { toi.ChannelPassword = ChannelPassword; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "cpw": foreach (var toi in toc) { toi.ChannelPassword = ChannelPassword; } break;
 				}
 			}
 
@@ -4451,9 +4568,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientMoved : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientMoved;
-		
+
 
 		public ClientId ClientId { get; set; }
 		public ClientId? InvokerId { get; set; }
@@ -4462,21 +4579,21 @@ namespace TSLib.Messages
 		public Reason Reason { get; set; }
 		public str? ReasonMessage { get; set; }
 		public ChannelId TargetChannelId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
-			case "ctid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TargetChannelId = (ChannelId)oval; } break;
-			case "invokerid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "ctid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TargetChannelId = (ChannelId)oval; } break;
+			case "invokerid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
 			case "invokername": InvokerName = (str)TsString.Unescape(value); break;
 			case "invokeruid": InvokerUid = (Uid)TsString.Unescape(value); break;
-			case "reasonid": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) Reason = (Reason)oval; } break;
+			case "reasonid": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) Reason = (Reason)oval; } break;
 			case "reasonmsg": ReasonMessage = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -4486,16 +4603,16 @@ namespace TSLib.Messages
 			var toc = (ClientMoved[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "ctid": foreach(var toi in toc) { toi.TargetChannelId = TargetChannelId; } break;
-				case "invokerid": foreach(var toi in toc) { toi.InvokerId = InvokerId; } break;
-				case "invokername": foreach(var toi in toc) { toi.InvokerName = InvokerName; } break;
-				case "invokeruid": foreach(var toi in toc) { toi.InvokerUid = InvokerUid; } break;
-				case "reasonid": foreach(var toi in toc) { toi.Reason = Reason; } break;
-				case "reasonmsg": foreach(var toi in toc) { toi.ReasonMessage = ReasonMessage; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "ctid": foreach (var toi in toc) { toi.TargetChannelId = TargetChannelId; } break;
+				case "invokerid": foreach (var toi in toc) { toi.InvokerId = InvokerId; } break;
+				case "invokername": foreach (var toi in toc) { toi.InvokerName = InvokerName; } break;
+				case "invokeruid": foreach (var toi in toc) { toi.InvokerUid = InvokerUid; } break;
+				case "reasonid": foreach (var toi in toc) { toi.Reason = Reason; } break;
+				case "reasonmsg": foreach (var toi in toc) { toi.ReasonMessage = ReasonMessage; } break;
 				}
 			}
 
@@ -4504,21 +4621,21 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientNameFromDbId : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientNameFromDbId;
 		public string? ReturnCode { get; set; }
 
 		public ClientDbId ClientDbId { get; set; }
 		public Uid ClientUid { get; set; }
 		public str Name { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
 			case "name": Name = (str)TsString.Unescape(value); break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
@@ -4531,12 +4648,12 @@ namespace TSLib.Messages
 			var toc = (ClientNameFromDbId[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
 				}
 			}
 
@@ -4545,20 +4662,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientNameFromDbIdRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientNameFromDbIdRequest;
-		
+
 
 		public ClientDbId ClientDbId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+
 			}
 
 		}
@@ -4568,10 +4685,10 @@ namespace TSLib.Messages
 			var toc = (ClientNameFromDbIdRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
 				}
 			}
 
@@ -4580,21 +4697,21 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientNameFromUid : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientNameFromUid;
 		public string? ReturnCode { get; set; }
 
 		public ClientDbId ClientDbId { get; set; }
 		public Uid ClientUid { get; set; }
 		public str Name { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
 			case "name": Name = (str)TsString.Unescape(value); break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
@@ -4607,12 +4724,12 @@ namespace TSLib.Messages
 			var toc = (ClientNameFromUid[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
 				}
 			}
 
@@ -4621,20 +4738,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientNameFromUidRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientNameFromUidRequest;
-		
+
 
 		public Uid ClientUid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -4644,10 +4761,10 @@ namespace TSLib.Messages
 			var toc = (ClientNameFromUidRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
 				}
 			}
 
@@ -4656,22 +4773,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientNeededPermissions : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientNeededPermissions;
-		
+
 
 		public Ts3Permission PermissionId { get; set; }
 		public i32? PermissionValue { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
-			case "permvalue": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
-			
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "permvalue": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
+
 			}
 
 		}
@@ -4681,11 +4798,11 @@ namespace TSLib.Messages
 			var toc = (ClientNeededPermissions[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permvalue": foreach(var toi in toc) { toi.PermissionValue = PermissionValue; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permvalue": foreach (var toi in toc) { toi.PermissionValue = PermissionValue; } break;
 				}
 			}
 
@@ -4694,22 +4811,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientPermissionHints : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientPermissionHints;
-		
+
 
 		public ClientId ClientId { get; set; }
 		public ClientPermissionHint Flags { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
-			case "flags": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) Flags = (ClientPermissionHint)oval; } break;
-			
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "flags": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) Flags = (ClientPermissionHint)oval; } break;
+
 			}
 
 		}
@@ -4719,11 +4836,11 @@ namespace TSLib.Messages
 			var toc = (ClientPermissionHints[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "flags": foreach(var toi in toc) { toi.Flags = Flags; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "flags": foreach (var toi in toc) { toi.Flags = Flags; } break;
 				}
 			}
 
@@ -4732,7 +4849,7 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientPermList : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientPermList;
 		public string? ReturnCode { get; set; }
 
@@ -4742,19 +4859,19 @@ namespace TSLib.Messages
 		public bool PermissionNegated { get; set; }
 		public bool PermissionSkip { get; set; }
 		public i32 PermissionValue { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permnegated": PermissionNegated = value.Length > 0 && value[0] != '0'; break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
 			case "permskip": PermissionSkip = value.Length > 0 && value[0] != '0'; break;
-			case "permvalue": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
+			case "permvalue": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -4765,15 +4882,15 @@ namespace TSLib.Messages
 			var toc = (ClientPermList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permnegated": foreach(var toi in toc) { toi.PermissionNegated = PermissionNegated; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
-				case "permskip": foreach(var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
-				case "permvalue": foreach(var toi in toc) { toi.PermissionValue = PermissionValue; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permnegated": foreach (var toi in toc) { toi.PermissionNegated = PermissionNegated; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "permskip": foreach (var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
+				case "permvalue": foreach (var toi in toc) { toi.PermissionValue = PermissionValue; } break;
 				}
 			}
 
@@ -4782,20 +4899,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientPermListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientPermListRequest;
-		
+
 
 		public ClientDbId ClientDbId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+
 			}
 
 		}
@@ -4805,10 +4922,10 @@ namespace TSLib.Messages
 			var toc = (ClientPermListRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
 				}
 			}
 
@@ -4817,26 +4934,26 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientPoke : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientPoke;
-		
+
 
 		public ClientId InvokerId { get; set; }
 		public str InvokerName { get; set; }
 		public Uid? InvokerUid { get; set; }
 		public str Message { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "invokerid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
+			case "invokerid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
 			case "invokername": InvokerName = (str)TsString.Unescape(value); break;
 			case "invokeruid": InvokerUid = (Uid)TsString.Unescape(value); break;
 			case "msg": Message = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -4846,13 +4963,13 @@ namespace TSLib.Messages
 			var toc = (ClientPoke[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "invokerid": foreach(var toi in toc) { toi.InvokerId = InvokerId; } break;
-				case "invokername": foreach(var toi in toc) { toi.InvokerName = InvokerName; } break;
-				case "invokeruid": foreach(var toi in toc) { toi.InvokerUid = InvokerUid; } break;
-				case "msg": foreach(var toi in toc) { toi.Message = Message; } break;
+				case "invokerid": foreach (var toi in toc) { toi.InvokerId = InvokerId; } break;
+				case "invokername": foreach (var toi in toc) { toi.InvokerName = InvokerName; } break;
+				case "invokeruid": foreach (var toi in toc) { toi.InvokerUid = InvokerUid; } break;
+				case "msg": foreach (var toi in toc) { toi.Message = Message; } break;
 				}
 			}
 
@@ -4861,22 +4978,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientPokeRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientPokeRequest;
-		
+
 
 		public ClientId ClientId { get; set; }
 		public str Message { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "msg": Message = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -4886,11 +5003,11 @@ namespace TSLib.Messages
 			var toc = (ClientPokeRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "msg": foreach(var toi in toc) { toi.Message = Message; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "msg": foreach (var toi in toc) { toi.Message = Message; } break;
 				}
 			}
 
@@ -4899,9 +5016,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientServerGroupAdded : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientServerGroupAdded;
-		
+
 
 		public ClientId ClientId { get; set; }
 		public Uid ClientUid { get; set; }
@@ -4910,21 +5027,21 @@ namespace TSLib.Messages
 		public Uid? InvokerUid { get; set; }
 		public str Name { get; set; }
 		public ServerGroupId ServerGroupId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
-			case "invokerid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
+			case "invokerid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
 			case "invokername": InvokerName = (str)TsString.Unescape(value); break;
 			case "invokeruid": InvokerUid = (Uid)TsString.Unescape(value); break;
 			case "name": Name = (str)TsString.Unescape(value); break;
-			case "sgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
-			
+			case "sgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
+
 			}
 
 		}
@@ -4934,16 +5051,16 @@ namespace TSLib.Messages
 			var toc = (ClientServerGroupAdded[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
-				case "invokerid": foreach(var toi in toc) { toi.InvokerId = InvokerId; } break;
-				case "invokername": foreach(var toi in toc) { toi.InvokerName = InvokerName; } break;
-				case "invokeruid": foreach(var toi in toc) { toi.InvokerUid = InvokerUid; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "sgid": foreach(var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "invokerid": foreach (var toi in toc) { toi.InvokerId = InvokerId; } break;
+				case "invokername": foreach (var toi in toc) { toi.InvokerName = InvokerName; } break;
+				case "invokeruid": foreach (var toi in toc) { toi.InvokerUid = InvokerUid; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "sgid": foreach (var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
 				}
 			}
 
@@ -4952,9 +5069,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientServerGroupRemoved : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientServerGroupRemoved;
-		
+
 
 		public ClientId ClientId { get; set; }
 		public Uid ClientUid { get; set; }
@@ -4963,21 +5080,21 @@ namespace TSLib.Messages
 		public Uid? InvokerUid { get; set; }
 		public str Name { get; set; }
 		public ServerGroupId ServerGroupId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
-			case "invokerid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
+			case "invokerid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
 			case "invokername": InvokerName = (str)TsString.Unescape(value); break;
 			case "invokeruid": InvokerUid = (Uid)TsString.Unescape(value); break;
 			case "name": Name = (str)TsString.Unescape(value); break;
-			case "sgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
-			
+			case "sgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
+
 			}
 
 		}
@@ -4987,16 +5104,16 @@ namespace TSLib.Messages
 			var toc = (ClientServerGroupRemoved[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
-				case "invokerid": foreach(var toi in toc) { toi.InvokerId = InvokerId; } break;
-				case "invokername": foreach(var toi in toc) { toi.InvokerName = InvokerName; } break;
-				case "invokeruid": foreach(var toi in toc) { toi.InvokerUid = InvokerUid; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "sgid": foreach(var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "invokerid": foreach (var toi in toc) { toi.InvokerId = InvokerId; } break;
+				case "invokername": foreach (var toi in toc) { toi.InvokerName = InvokerName; } break;
+				case "invokeruid": foreach (var toi in toc) { toi.InvokerUid = InvokerUid; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "sgid": foreach (var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
 				}
 			}
 
@@ -5005,16 +5122,16 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientSetServerQueryLogin : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientSetServerQueryLogin;
 		public string? ReturnCode { get; set; }
 
 		public str LoginPassword { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "client_login_password": LoginPassword = (str)TsString.Unescape(value); break;
@@ -5028,10 +5145,10 @@ namespace TSLib.Messages
 			var toc = (ClientSetServerQueryLogin[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "client_login_password": foreach(var toi in toc) { toi.LoginPassword = LoginPassword; } break;
+				case "client_login_password": foreach (var toi in toc) { toi.LoginPassword = LoginPassword; } break;
 				}
 			}
 
@@ -5040,24 +5157,24 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientSetServerQueryLoginRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientSetServerQueryLoginRequest;
-		
+
 
 		public ClientDbId? ClientDbId { get; set; }
 		public str LoginName { get; set; }
 		public str? LoginPassword { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
 			case "client_login_name": LoginName = (str)TsString.Unescape(value); break;
 			case "client_login_password": LoginPassword = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -5067,12 +5184,12 @@ namespace TSLib.Messages
 			var toc = (ClientSetServerQueryLoginRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "client_login_name": foreach(var toi in toc) { toi.LoginName = LoginName; } break;
-				case "client_login_password": foreach(var toi in toc) { toi.LoginPassword = LoginPassword; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "client_login_name": foreach (var toi in toc) { toi.LoginName = LoginName; } break;
+				case "client_login_password": foreach (var toi in toc) { toi.LoginPassword = LoginPassword; } break;
 				}
 			}
 
@@ -5081,21 +5198,21 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientUidFromClid : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientUidFromClid;
 		public string? ReturnCode { get; set; }
 
 		public ClientId ClientId { get; set; }
 		public Uid ClientUid { get; set; }
 		public str Nickname { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
 			case "nickname": Nickname = (str)TsString.Unescape(value); break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
@@ -5108,12 +5225,12 @@ namespace TSLib.Messages
 			var toc = (ClientUidFromClid[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
-				case "nickname": foreach(var toi in toc) { toi.Nickname = Nickname; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "nickname": foreach (var toi in toc) { toi.Nickname = Nickname; } break;
 				}
 			}
 
@@ -5122,20 +5239,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientUidFromClidRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientUidFromClidRequest;
-		
+
 
 		public ClientId ClientId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
-			
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+
 			}
 
 		}
@@ -5145,10 +5262,10 @@ namespace TSLib.Messages
 			var toc = (ClientUidFromClidRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
 				}
 			}
 
@@ -5157,9 +5274,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientUpdate : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientUpdate;
-		
+
 
 		public str? AvatarHash { get; set; }
 		public str? AwayMessage { get; set; }
@@ -5175,11 +5292,11 @@ namespace TSLib.Messages
 		public str? PhoneticName { get; set; }
 		public str? TalkPowerRequestMessage { get; set; }
 		public DateTime? TalkPowerRequestTime { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "client_away": IsAway = value.Length > 0 && value[0] != '0'; break;
@@ -5194,9 +5311,9 @@ namespace TSLib.Messages
 			case "client_nickname_phonetic": PhoneticName = (str)TsString.Unescape(value); break;
 			case "client_output_hardware": OutputHardwareEnabled = value.Length > 0 && value[0] != '0'; break;
 			case "client_output_muted": OutputMuted = value.Length > 0 && value[0] != '0'; break;
-			case "client_talk_request": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) TalkPowerRequestTime = Tools.FromUnix(oval); } break;
+			case "client_talk_request": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) TalkPowerRequestTime = Tools.FromUnix(oval); } break;
 			case "client_talk_request_msg": TalkPowerRequestMessage = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -5206,23 +5323,23 @@ namespace TSLib.Messages
 			var toc = (ClientUpdate[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "client_away": foreach(var toi in toc) { toi.IsAway = IsAway; } break;
-				case "client_away_message": foreach(var toi in toc) { toi.AwayMessage = AwayMessage; } break;
-				case "client_badges": foreach(var toi in toc) { toi.Badges = Badges; } break;
-				case "client_flag_avatar": foreach(var toi in toc) { toi.AvatarHash = AvatarHash; } break;
-				case "client_input_hardware": foreach(var toi in toc) { toi.InputHardwareEnabled = InputHardwareEnabled; } break;
-				case "client_input_muted": foreach(var toi in toc) { toi.InputMuted = InputMuted; } break;
-				case "client_is_channel_commander": foreach(var toi in toc) { toi.IsChannelCommander = IsChannelCommander; } break;
-				case "client_is_recording": foreach(var toi in toc) { toi.IsRecording = IsRecording; } break;
-				case "client_nickname": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "client_nickname_phonetic": foreach(var toi in toc) { toi.PhoneticName = PhoneticName; } break;
-				case "client_output_hardware": foreach(var toi in toc) { toi.OutputHardwareEnabled = OutputHardwareEnabled; } break;
-				case "client_output_muted": foreach(var toi in toc) { toi.OutputMuted = OutputMuted; } break;
-				case "client_talk_request": foreach(var toi in toc) { toi.TalkPowerRequestTime = TalkPowerRequestTime; } break;
-				case "client_talk_request_msg": foreach(var toi in toc) { toi.TalkPowerRequestMessage = TalkPowerRequestMessage; } break;
+				case "client_away": foreach (var toi in toc) { toi.IsAway = IsAway; } break;
+				case "client_away_message": foreach (var toi in toc) { toi.AwayMessage = AwayMessage; } break;
+				case "client_badges": foreach (var toi in toc) { toi.Badges = Badges; } break;
+				case "client_flag_avatar": foreach (var toi in toc) { toi.AvatarHash = AvatarHash; } break;
+				case "client_input_hardware": foreach (var toi in toc) { toi.InputHardwareEnabled = InputHardwareEnabled; } break;
+				case "client_input_muted": foreach (var toi in toc) { toi.InputMuted = InputMuted; } break;
+				case "client_is_channel_commander": foreach (var toi in toc) { toi.IsChannelCommander = IsChannelCommander; } break;
+				case "client_is_recording": foreach (var toi in toc) { toi.IsRecording = IsRecording; } break;
+				case "client_nickname": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "client_nickname_phonetic": foreach (var toi in toc) { toi.PhoneticName = PhoneticName; } break;
+				case "client_output_hardware": foreach (var toi in toc) { toi.OutputHardwareEnabled = OutputHardwareEnabled; } break;
+				case "client_output_muted": foreach (var toi in toc) { toi.OutputMuted = OutputMuted; } break;
+				case "client_talk_request": foreach (var toi in toc) { toi.TalkPowerRequestTime = TalkPowerRequestTime; } break;
+				case "client_talk_request_msg": foreach (var toi in toc) { toi.TalkPowerRequestMessage = TalkPowerRequestMessage; } break;
 				}
 			}
 
@@ -5231,9 +5348,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientUpdated : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientUpdated;
-		
+
 
 		public str? AvatarHash { get; set; }
 		public str? AwayMessage { get; set; }
@@ -5268,47 +5385,87 @@ namespace TSLib.Messages
 		public i64? TotalDownloadQuota { get; set; }
 		public i64? TotalUploadQuota { get; set; }
 		public u32? UnreadMessages { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "client_away": IsAway = value.Length > 0 && value[0] != '0'; break;
 			case "client_away_message": AwayMessage = (str)TsString.Unescape(value); break;
 			case "client_badges": Badges = (str)TsString.Unescape(value); break;
-			case "client_created": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) CreationDate = Tools.FromUnix(oval); } break;
+			case "client_created": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) CreationDate = Tools.FromUnix(oval); } break;
 			case "client_description": Description = (str)TsString.Unescape(value); break;
 			case "client_flag_avatar": AvatarHash = (str)TsString.Unescape(value); break;
-			case "client_icon_id": { if(!value.IsEmpty && value[0] == (u8)'-') { if(Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if(Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
+			case "client_icon_id": { if (!value.IsEmpty && value[0] == (u8)'-') { if (Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if (Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
 			case "client_input_hardware": InputHardwareEnabled = value.Length > 0 && value[0] != '0'; break;
 			case "client_input_muted": InputMuted = value.Length > 0 && value[0] != '0'; break;
 			case "client_is_channel_commander": IsChannelCommander = value.Length > 0 && value[0] != '0'; break;
 			case "client_is_priority_speaker": IsPrioritySpeaker = value.Length > 0 && value[0] != '0'; break;
 			case "client_is_recording": IsRecording = value.Length > 0 && value[0] != '0'; break;
 			case "client_is_talker": TalkPowerGranted = value.Length > 0 && value[0] != '0'; break;
-			case "client_lastconnected": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) LastConnected = Tools.FromUnix(oval); } break;
+			case "client_lastconnected": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) LastConnected = Tools.FromUnix(oval); } break;
 			case "client_login_name": LoginName = (str)TsString.Unescape(value); break;
-			case "client_month_bytes_downloaded": { if(Utf8Parser.TryParse(value, out i64 oval, out _)) MonthlyDownloadQuota = (i64)oval; } break;
-			case "client_month_bytes_uploaded": { if(Utf8Parser.TryParse(value, out i64 oval, out _)) MonthlyUploadQuota = (i64)oval; } break;
+			case "client_month_bytes_downloaded": { if (Utf8Parser.TryParse(value, out i64 oval, out _)) MonthlyDownloadQuota = (i64)oval; } break;
+			case "client_month_bytes_uploaded": { if (Utf8Parser.TryParse(value, out i64 oval, out _)) MonthlyUploadQuota = (i64)oval; } break;
 			case "client_myteamspeak_id": MyTeamSpeakId = (str)TsString.Unescape(value); break;
 			case "client_nickname": Name = (str)TsString.Unescape(value); break;
 			case "client_nickname_phonetic": PhoneticName = (str)TsString.Unescape(value); break;
 			case "client_output_hardware": OutputHardwareEnabled = value.Length > 0 && value[0] != '0'; break;
 			case "client_output_muted": OutputMuted = value.Length > 0 && value[0] != '0'; break;
 			case "client_platform": ClientPlatform = (str)TsString.Unescape(value); break;
-			case "client_servergroups": { if(value.Length == 0) ServerGroups = Array.Empty<ServerGroupId>(); else { var ss = new SpanSplitter<byte>(); ss.First(value, (byte)','); int cnt = 0; for (int i = 0; i < value.Length; i++) if (value[i] == ',') cnt++; ServerGroups = new ServerGroupId[cnt + 1]; for(int i = 0; i < cnt + 1; i++) { { if(Utf8Parser.TryParse(ss.Trim(value), out u64 oval, out _)) ServerGroups[i] = (ServerGroupId)oval; } if (i < cnt) value = ss.Next(value); } } } break;
-			case "client_talk_power": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) TalkPower = (i32)oval; } break;
-			case "client_talk_request": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) TalkPowerRequestTime = Tools.FromUnix(oval); } break;
+			case "client_servergroups":
+				{
+					if (value.Length == 0)
+					{
+						ServerGroups = Array.Empty<ServerGroupId>();
+					}
+					else
+					{
+						var ss = new SpanSplitter<byte>();
+						ss.First(value, (byte)',');
+						int cnt = 0;
+						for (int i = 0; i < value.Length; i++)
+						{
+							if (value[i] == ',')
+							{
+								cnt++;
+							}
+						}
+
+						ServerGroups = new ServerGroupId[cnt + 1];
+						var currentSpan = value; // Capture initial span
+
+						for (int i = 0; i < cnt + 1; i++)
+						{
+							if (Utf8Parser.TryParse(ss.Trim(currentSpan), out u64 oval, out _))
+							{
+								ServerGroups[i] = (ServerGroupId)oval;
+							}
+
+							if (i < cnt)
+							{
+								// Create a copy of the span for the next iteration
+								// to avoid potential scope issues
+								var nextSpan = currentSpan.Slice(ss.NextIndex + 1);
+								currentSpan = nextSpan;
+							}
+						}
+					}
+				}
+				break;
+
+			case "client_talk_power": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) TalkPower = (i32)oval; } break;
+			case "client_talk_request": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) TalkPowerRequestTime = Tools.FromUnix(oval); } break;
 			case "client_talk_request_msg": TalkPowerRequestMessage = (str)TsString.Unescape(value); break;
-			case "client_total_bytes_downloaded": { if(Utf8Parser.TryParse(value, out i64 oval, out _)) TotalDownloadQuota = (i64)oval; } break;
-			case "client_total_bytes_uploaded": { if(Utf8Parser.TryParse(value, out i64 oval, out _)) TotalUploadQuota = (i64)oval; } break;
-			case "client_totalconnections": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) TotalConnections = (i32)oval; } break;
-			case "client_unread_messages": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) UnreadMessages = (u32)oval; } break;
+			case "client_total_bytes_downloaded": { if (Utf8Parser.TryParse(value, out i64 oval, out _)) TotalDownloadQuota = (i64)oval; } break;
+			case "client_total_bytes_uploaded": { if (Utf8Parser.TryParse(value, out i64 oval, out _)) TotalUploadQuota = (i64)oval; } break;
+			case "client_totalconnections": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) TotalConnections = (i32)oval; } break;
+			case "client_unread_messages": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) UnreadMessages = (u32)oval; } break;
 			case "client_version": ClientVersion = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -5318,42 +5475,42 @@ namespace TSLib.Messages
 			var toc = (ClientUpdated[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "client_away": foreach(var toi in toc) { toi.IsAway = IsAway; } break;
-				case "client_away_message": foreach(var toi in toc) { toi.AwayMessage = AwayMessage; } break;
-				case "client_badges": foreach(var toi in toc) { toi.Badges = Badges; } break;
-				case "client_created": foreach(var toi in toc) { toi.CreationDate = CreationDate; } break;
-				case "client_description": foreach(var toi in toc) { toi.Description = Description; } break;
-				case "client_flag_avatar": foreach(var toi in toc) { toi.AvatarHash = AvatarHash; } break;
-				case "client_icon_id": foreach(var toi in toc) { toi.IconId = IconId; } break;
-				case "client_input_hardware": foreach(var toi in toc) { toi.InputHardwareEnabled = InputHardwareEnabled; } break;
-				case "client_input_muted": foreach(var toi in toc) { toi.InputMuted = InputMuted; } break;
-				case "client_is_channel_commander": foreach(var toi in toc) { toi.IsChannelCommander = IsChannelCommander; } break;
-				case "client_is_priority_speaker": foreach(var toi in toc) { toi.IsPrioritySpeaker = IsPrioritySpeaker; } break;
-				case "client_is_recording": foreach(var toi in toc) { toi.IsRecording = IsRecording; } break;
-				case "client_is_talker": foreach(var toi in toc) { toi.TalkPowerGranted = TalkPowerGranted; } break;
-				case "client_lastconnected": foreach(var toi in toc) { toi.LastConnected = LastConnected; } break;
-				case "client_login_name": foreach(var toi in toc) { toi.LoginName = LoginName; } break;
-				case "client_month_bytes_downloaded": foreach(var toi in toc) { toi.MonthlyDownloadQuota = MonthlyDownloadQuota; } break;
-				case "client_month_bytes_uploaded": foreach(var toi in toc) { toi.MonthlyUploadQuota = MonthlyUploadQuota; } break;
-				case "client_myteamspeak_id": foreach(var toi in toc) { toi.MyTeamSpeakId = MyTeamSpeakId; } break;
-				case "client_nickname": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "client_nickname_phonetic": foreach(var toi in toc) { toi.PhoneticName = PhoneticName; } break;
-				case "client_output_hardware": foreach(var toi in toc) { toi.OutputHardwareEnabled = OutputHardwareEnabled; } break;
-				case "client_output_muted": foreach(var toi in toc) { toi.OutputMuted = OutputMuted; } break;
-				case "client_platform": foreach(var toi in toc) { toi.ClientPlatform = ClientPlatform; } break;
-				case "client_servergroups": foreach(var toi in toc) { toi.ServerGroups = ServerGroups; } break;
-				case "client_talk_power": foreach(var toi in toc) { toi.TalkPower = TalkPower; } break;
-				case "client_talk_request": foreach(var toi in toc) { toi.TalkPowerRequestTime = TalkPowerRequestTime; } break;
-				case "client_talk_request_msg": foreach(var toi in toc) { toi.TalkPowerRequestMessage = TalkPowerRequestMessage; } break;
-				case "client_total_bytes_downloaded": foreach(var toi in toc) { toi.TotalDownloadQuota = TotalDownloadQuota; } break;
-				case "client_total_bytes_uploaded": foreach(var toi in toc) { toi.TotalUploadQuota = TotalUploadQuota; } break;
-				case "client_totalconnections": foreach(var toi in toc) { toi.TotalConnections = TotalConnections; } break;
-				case "client_unread_messages": foreach(var toi in toc) { toi.UnreadMessages = UnreadMessages; } break;
-				case "client_version": foreach(var toi in toc) { toi.ClientVersion = ClientVersion; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "client_away": foreach (var toi in toc) { toi.IsAway = IsAway; } break;
+				case "client_away_message": foreach (var toi in toc) { toi.AwayMessage = AwayMessage; } break;
+				case "client_badges": foreach (var toi in toc) { toi.Badges = Badges; } break;
+				case "client_created": foreach (var toi in toc) { toi.CreationDate = CreationDate; } break;
+				case "client_description": foreach (var toi in toc) { toi.Description = Description; } break;
+				case "client_flag_avatar": foreach (var toi in toc) { toi.AvatarHash = AvatarHash; } break;
+				case "client_icon_id": foreach (var toi in toc) { toi.IconId = IconId; } break;
+				case "client_input_hardware": foreach (var toi in toc) { toi.InputHardwareEnabled = InputHardwareEnabled; } break;
+				case "client_input_muted": foreach (var toi in toc) { toi.InputMuted = InputMuted; } break;
+				case "client_is_channel_commander": foreach (var toi in toc) { toi.IsChannelCommander = IsChannelCommander; } break;
+				case "client_is_priority_speaker": foreach (var toi in toc) { toi.IsPrioritySpeaker = IsPrioritySpeaker; } break;
+				case "client_is_recording": foreach (var toi in toc) { toi.IsRecording = IsRecording; } break;
+				case "client_is_talker": foreach (var toi in toc) { toi.TalkPowerGranted = TalkPowerGranted; } break;
+				case "client_lastconnected": foreach (var toi in toc) { toi.LastConnected = LastConnected; } break;
+				case "client_login_name": foreach (var toi in toc) { toi.LoginName = LoginName; } break;
+				case "client_month_bytes_downloaded": foreach (var toi in toc) { toi.MonthlyDownloadQuota = MonthlyDownloadQuota; } break;
+				case "client_month_bytes_uploaded": foreach (var toi in toc) { toi.MonthlyUploadQuota = MonthlyUploadQuota; } break;
+				case "client_myteamspeak_id": foreach (var toi in toc) { toi.MyTeamSpeakId = MyTeamSpeakId; } break;
+				case "client_nickname": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "client_nickname_phonetic": foreach (var toi in toc) { toi.PhoneticName = PhoneticName; } break;
+				case "client_output_hardware": foreach (var toi in toc) { toi.OutputHardwareEnabled = OutputHardwareEnabled; } break;
+				case "client_output_muted": foreach (var toi in toc) { toi.OutputMuted = OutputMuted; } break;
+				case "client_platform": foreach (var toi in toc) { toi.ClientPlatform = ClientPlatform; } break;
+				case "client_servergroups": foreach (var toi in toc) { toi.ServerGroups = ServerGroups; } break;
+				case "client_talk_power": foreach (var toi in toc) { toi.TalkPower = TalkPower; } break;
+				case "client_talk_request": foreach (var toi in toc) { toi.TalkPowerRequestTime = TalkPowerRequestTime; } break;
+				case "client_talk_request_msg": foreach (var toi in toc) { toi.TalkPowerRequestMessage = TalkPowerRequestMessage; } break;
+				case "client_total_bytes_downloaded": foreach (var toi in toc) { toi.TotalDownloadQuota = TotalDownloadQuota; } break;
+				case "client_total_bytes_uploaded": foreach (var toi in toc) { toi.TotalUploadQuota = TotalUploadQuota; } break;
+				case "client_totalconnections": foreach (var toi in toc) { toi.TotalConnections = TotalConnections; } break;
+				case "client_unread_messages": foreach (var toi in toc) { toi.UnreadMessages = UnreadMessages; } break;
+				case "client_version": foreach (var toi in toc) { toi.ClientVersion = ClientVersion; } break;
 				}
 			}
 
@@ -5362,20 +5519,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ClientVariablesRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ClientVariablesRequest;
-		
+
 
 		public ClientId ClientId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
-			
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+
 			}
 
 		}
@@ -5385,10 +5542,10 @@ namespace TSLib.Messages
 			var toc = (ClientVariablesRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
 				}
 			}
 
@@ -5397,28 +5554,28 @@ namespace TSLib.Messages
 
 	public sealed partial class CommandError : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.CommandError;
-		
+
 
 		public str? ExtraMessage { get; set; }
 		public Ts3ErrorCode Id { get; set; }
 		public str Message { get; set; }
 		public Ts3Permission? MissingPermissionId { get; set; }
 		public str? ReturnCode { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "extra_msg": ExtraMessage = (str)TsString.Unescape(value); break;
-			case "failed_permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) MissingPermissionId = ser.PermissionTransform.GetName(oval); } break;
-			case "id": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) Id = (Ts3ErrorCode)oval; } break;
+			case "failed_permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) MissingPermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "id": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) Id = (Ts3ErrorCode)oval; } break;
 			case "msg": Message = (str)TsString.Unescape(value); break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -5428,14 +5585,14 @@ namespace TSLib.Messages
 			var toc = (CommandError[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "extra_msg": foreach(var toi in toc) { toi.ExtraMessage = ExtraMessage; } break;
-				case "failed_permid": foreach(var toi in toc) { toi.MissingPermissionId = MissingPermissionId; } break;
-				case "id": foreach(var toi in toc) { toi.Id = Id; } break;
-				case "msg": foreach(var toi in toc) { toi.Message = Message; } break;
-				case "return_code": foreach(var toi in toc) { toi.ReturnCode = ReturnCode; } break;
+				case "extra_msg": foreach (var toi in toc) { toi.ExtraMessage = ExtraMessage; } break;
+				case "failed_permid": foreach (var toi in toc) { toi.MissingPermissionId = MissingPermissionId; } break;
+				case "id": foreach (var toi in toc) { toi.Id = Id; } break;
+				case "msg": foreach (var toi in toc) { toi.Message = Message; } break;
+				case "return_code": foreach (var toi in toc) { toi.ReturnCode = ReturnCode; } break;
 				}
 			}
 
@@ -5444,22 +5601,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ComplainAdd : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ComplainAdd;
-		
+
 
 		public str Message { get; set; }
 		public ClientDbId TargetClientDbId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "message": Message = (str)TsString.Unescape(value); break;
-			case "tcldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TargetClientDbId = (ClientDbId)oval; } break;
-			
+			case "tcldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TargetClientDbId = (ClientDbId)oval; } break;
+
 			}
 
 		}
@@ -5469,11 +5626,11 @@ namespace TSLib.Messages
 			var toc = (ComplainAdd[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "message": foreach(var toi in toc) { toi.Message = Message; } break;
-				case "tcldbid": foreach(var toi in toc) { toi.TargetClientDbId = TargetClientDbId; } break;
+				case "message": foreach (var toi in toc) { toi.Message = Message; } break;
+				case "tcldbid": foreach (var toi in toc) { toi.TargetClientDbId = TargetClientDbId; } break;
 				}
 			}
 
@@ -5482,22 +5639,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ComplainDel : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ComplainDel;
-		
+
 
 		public ClientDbId FromClientDbId { get; set; }
 		public ClientDbId TargetClientDbId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "fcldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) FromClientDbId = (ClientDbId)oval; } break;
-			case "tcldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TargetClientDbId = (ClientDbId)oval; } break;
-			
+			case "fcldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) FromClientDbId = (ClientDbId)oval; } break;
+			case "tcldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TargetClientDbId = (ClientDbId)oval; } break;
+
 			}
 
 		}
@@ -5507,11 +5664,11 @@ namespace TSLib.Messages
 			var toc = (ComplainDel[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "fcldbid": foreach(var toi in toc) { toi.FromClientDbId = FromClientDbId; } break;
-				case "tcldbid": foreach(var toi in toc) { toi.TargetClientDbId = TargetClientDbId; } break;
+				case "fcldbid": foreach (var toi in toc) { toi.FromClientDbId = FromClientDbId; } break;
+				case "tcldbid": foreach (var toi in toc) { toi.TargetClientDbId = TargetClientDbId; } break;
 				}
 			}
 
@@ -5520,20 +5677,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ComplainDelAll : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ComplainDelAll;
-		
+
 
 		public ClientDbId TargetClientDbId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "tcldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TargetClientDbId = (ClientDbId)oval; } break;
-			
+			case "tcldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TargetClientDbId = (ClientDbId)oval; } break;
+
 			}
 
 		}
@@ -5543,10 +5700,10 @@ namespace TSLib.Messages
 			var toc = (ComplainDelAll[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "tcldbid": foreach(var toi in toc) { toi.TargetClientDbId = TargetClientDbId; } break;
+				case "tcldbid": foreach (var toi in toc) { toi.TargetClientDbId = TargetClientDbId; } break;
 				}
 			}
 
@@ -5555,7 +5712,7 @@ namespace TSLib.Messages
 
 	public sealed partial class ComplainList : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ComplainList;
 		public string? ReturnCode { get; set; }
 
@@ -5565,18 +5722,18 @@ namespace TSLib.Messages
 		public ClientDbId TargetClientDbId { get; set; }
 		public str TargetName { get; set; }
 		public DateTime Timestamp { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "fcldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) FromClientDbId = (ClientDbId)oval; } break;
+			case "fcldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) FromClientDbId = (ClientDbId)oval; } break;
 			case "fname": FromName = (str)TsString.Unescape(value); break;
 			case "message": Message = (str)TsString.Unescape(value); break;
-			case "tcldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TargetClientDbId = (ClientDbId)oval; } break;
-			case "timestamp": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) Timestamp = Tools.FromUnix(oval); } break;
+			case "tcldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TargetClientDbId = (ClientDbId)oval; } break;
+			case "timestamp": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) Timestamp = Tools.FromUnix(oval); } break;
 			case "tname": TargetName = (str)TsString.Unescape(value); break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
@@ -5588,15 +5745,15 @@ namespace TSLib.Messages
 			var toc = (ComplainList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "fcldbid": foreach(var toi in toc) { toi.FromClientDbId = FromClientDbId; } break;
-				case "fname": foreach(var toi in toc) { toi.FromName = FromName; } break;
-				case "message": foreach(var toi in toc) { toi.Message = Message; } break;
-				case "tcldbid": foreach(var toi in toc) { toi.TargetClientDbId = TargetClientDbId; } break;
-				case "timestamp": foreach(var toi in toc) { toi.Timestamp = Timestamp; } break;
-				case "tname": foreach(var toi in toc) { toi.TargetName = TargetName; } break;
+				case "fcldbid": foreach (var toi in toc) { toi.FromClientDbId = FromClientDbId; } break;
+				case "fname": foreach (var toi in toc) { toi.FromName = FromName; } break;
+				case "message": foreach (var toi in toc) { toi.Message = Message; } break;
+				case "tcldbid": foreach (var toi in toc) { toi.TargetClientDbId = TargetClientDbId; } break;
+				case "timestamp": foreach (var toi in toc) { toi.Timestamp = Timestamp; } break;
+				case "tname": foreach (var toi in toc) { toi.TargetName = TargetName; } break;
 				}
 			}
 
@@ -5605,20 +5762,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ComplainListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ComplainListRequest;
-		
+
 
 		public ClientDbId? TargetClientDbId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "tcldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TargetClientDbId = (ClientDbId)oval; } break;
-			
+			case "tcldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TargetClientDbId = (ClientDbId)oval; } break;
+
 			}
 
 		}
@@ -5628,10 +5785,10 @@ namespace TSLib.Messages
 			var toc = (ComplainListRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "tcldbid": foreach(var toi in toc) { toi.TargetClientDbId = TargetClientDbId; } break;
+				case "tcldbid": foreach (var toi in toc) { toi.TargetClientDbId = TargetClientDbId; } break;
 				}
 			}
 
@@ -5640,22 +5797,22 @@ namespace TSLib.Messages
 
 	public sealed partial class CustomDelete : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.CustomDelete;
-		
+
 
 		public ClientDbId ClientDbId { get; set; }
 		public str ExternalIdentity { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
 			case "ident": ExternalIdentity = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -5665,11 +5822,11 @@ namespace TSLib.Messages
 			var toc = (CustomDelete[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "ident": foreach(var toi in toc) { toi.ExternalIdentity = ExternalIdentity; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "ident": foreach (var toi in toc) { toi.ExternalIdentity = ExternalIdentity; } break;
 				}
 			}
 
@@ -5678,20 +5835,20 @@ namespace TSLib.Messages
 
 	public sealed partial class CustomInfoRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.CustomInfoRequest;
-		
+
 
 		public ClientDbId ClientDbId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+
 			}
 
 		}
@@ -5701,10 +5858,10 @@ namespace TSLib.Messages
 			var toc = (CustomInfoRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
 				}
 			}
 
@@ -5713,22 +5870,22 @@ namespace TSLib.Messages
 
 	public sealed partial class CustomSearch : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.CustomSearch;
-		
+
 
 		public str ExternalIdentity { get; set; }
 		public str Pattern { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "ident": ExternalIdentity = (str)TsString.Unescape(value); break;
 			case "pattern": Pattern = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -5738,11 +5895,11 @@ namespace TSLib.Messages
 			var toc = (CustomSearch[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "ident": foreach(var toi in toc) { toi.ExternalIdentity = ExternalIdentity; } break;
-				case "pattern": foreach(var toi in toc) { toi.Pattern = Pattern; } break;
+				case "ident": foreach (var toi in toc) { toi.ExternalIdentity = ExternalIdentity; } break;
+				case "pattern": foreach (var toi in toc) { toi.Pattern = Pattern; } break;
 				}
 			}
 
@@ -5751,24 +5908,24 @@ namespace TSLib.Messages
 
 	public sealed partial class CustomSet : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.CustomSet;
-		
+
 
 		public ClientDbId ClientDbId { get; set; }
 		public str ExternalIdentity { get; set; }
 		public str Value { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
 			case "ident": ExternalIdentity = (str)TsString.Unescape(value); break;
 			case "value": Value = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -5778,12 +5935,12 @@ namespace TSLib.Messages
 			var toc = (CustomSet[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "ident": foreach(var toi in toc) { toi.ExternalIdentity = ExternalIdentity; } break;
-				case "value": foreach(var toi in toc) { toi.Value = Value; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "ident": foreach (var toi in toc) { toi.ExternalIdentity = ExternalIdentity; } break;
+				case "value": foreach (var toi in toc) { toi.Value = Value; } break;
 				}
 			}
 
@@ -5792,22 +5949,22 @@ namespace TSLib.Messages
 
 	public sealed partial class Disconnect : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.Disconnect;
-		
+
 
 		public Reason? Reason { get; set; }
 		public str? ReasonMessage { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "reasonid": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) Reason = (Reason)oval; } break;
+			case "reasonid": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) Reason = (Reason)oval; } break;
 			case "reasonmsg": ReasonMessage = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -5817,11 +5974,11 @@ namespace TSLib.Messages
 			var toc = (Disconnect[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "reasonid": foreach(var toi in toc) { toi.Reason = Reason; } break;
-				case "reasonmsg": foreach(var toi in toc) { toi.ReasonMessage = ReasonMessage; } break;
+				case "reasonid": foreach (var toi in toc) { toi.Reason = Reason; } break;
+				case "reasonmsg": foreach (var toi in toc) { toi.ReasonMessage = ReasonMessage; } break;
 				}
 			}
 
@@ -5830,7 +5987,7 @@ namespace TSLib.Messages
 
 	public sealed partial class FileDownload : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.FileDownload;
 		public string? ReturnCode { get; set; }
 
@@ -5841,20 +5998,20 @@ namespace TSLib.Messages
 		public u8 Protocol { get; set; }
 		public u16 ServerFileTransferId { get; set; }
 		public u64 Size { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clientftfid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientFileTransferId = (u16)oval; } break;
+			case "clientftfid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientFileTransferId = (u16)oval; } break;
 			case "ftkey": FileTransferKey = (str)TsString.Unescape(value); break;
 			case "ip": Ip = (IpAddr)TsString.Unescape(value); break;
-			case "port": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) Port = (u16)oval; } break;
-			case "proto": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) Protocol = (u8)oval; } break;
-			case "serverftfid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ServerFileTransferId = (u16)oval; } break;
-			case "size": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Size = (u64)oval; } break;
+			case "port": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) Port = (u16)oval; } break;
+			case "proto": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) Protocol = (u8)oval; } break;
+			case "serverftfid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ServerFileTransferId = (u16)oval; } break;
+			case "size": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Size = (u64)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -5865,16 +6022,16 @@ namespace TSLib.Messages
 			var toc = (FileDownload[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clientftfid": foreach(var toi in toc) { toi.ClientFileTransferId = ClientFileTransferId; } break;
-				case "ftkey": foreach(var toi in toc) { toi.FileTransferKey = FileTransferKey; } break;
-				case "ip": foreach(var toi in toc) { toi.Ip = Ip; } break;
-				case "port": foreach(var toi in toc) { toi.Port = Port; } break;
-				case "proto": foreach(var toi in toc) { toi.Protocol = Protocol; } break;
-				case "serverftfid": foreach(var toi in toc) { toi.ServerFileTransferId = ServerFileTransferId; } break;
-				case "size": foreach(var toi in toc) { toi.Size = Size; } break;
+				case "clientftfid": foreach (var toi in toc) { toi.ClientFileTransferId = ClientFileTransferId; } break;
+				case "ftkey": foreach (var toi in toc) { toi.FileTransferKey = FileTransferKey; } break;
+				case "ip": foreach (var toi in toc) { toi.Ip = Ip; } break;
+				case "port": foreach (var toi in toc) { toi.Port = Port; } break;
+				case "proto": foreach (var toi in toc) { toi.Protocol = Protocol; } break;
+				case "serverftfid": foreach (var toi in toc) { toi.ServerFileTransferId = ServerFileTransferId; } break;
+				case "size": foreach (var toi in toc) { toi.Size = Size; } break;
 				}
 			}
 
@@ -5883,7 +6040,7 @@ namespace TSLib.Messages
 
 	public sealed partial class FileInfo : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.FileInfo;
 		public string? ReturnCode { get; set; }
 
@@ -5892,18 +6049,18 @@ namespace TSLib.Messages
 		public str Name { get; set; }
 		public str Path { get; set; }
 		public u64 Size { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "datetime": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) DateTime = Tools.FromUnix(oval); } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "datetime": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) DateTime = Tools.FromUnix(oval); } break;
 			case "name": Name = (str)TsString.Unescape(value); break;
 			case "path": Path = (str)TsString.Unescape(value); break;
-			case "size": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Size = (u64)oval; } break;
+			case "size": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Size = (u64)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -5914,14 +6071,14 @@ namespace TSLib.Messages
 			var toc = (FileInfo[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "datetime": foreach(var toi in toc) { toi.DateTime = DateTime; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "path": foreach(var toi in toc) { toi.Path = Path; } break;
-				case "size": foreach(var toi in toc) { toi.Size = Size; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "datetime": foreach (var toi in toc) { toi.DateTime = DateTime; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "path": foreach (var toi in toc) { toi.Path = Path; } break;
+				case "size": foreach (var toi in toc) { toi.Size = Size; } break;
 				}
 			}
 
@@ -5930,7 +6087,7 @@ namespace TSLib.Messages
 
 	public sealed partial class FileList : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.FileList;
 		public string? ReturnCode { get; set; }
 
@@ -5940,18 +6097,18 @@ namespace TSLib.Messages
 		public str Name { get; set; }
 		public str Path { get; set; }
 		public u64 Size { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "datetime": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) DateTime = Tools.FromUnix(oval); } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "datetime": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) DateTime = Tools.FromUnix(oval); } break;
 			case "name": Name = (str)TsString.Unescape(value); break;
 			case "path": Path = (str)TsString.Unescape(value); break;
-			case "size": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Size = (u64)oval; } break;
+			case "size": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Size = (u64)oval; } break;
 			case "type": IsFile = value.Length > 0 && value[0] != '0'; break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
@@ -5963,15 +6120,15 @@ namespace TSLib.Messages
 			var toc = (FileList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "datetime": foreach(var toi in toc) { toi.DateTime = DateTime; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "path": foreach(var toi in toc) { toi.Path = Path; } break;
-				case "size": foreach(var toi in toc) { toi.Size = Size; } break;
-				case "type": foreach(var toi in toc) { toi.IsFile = IsFile; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "datetime": foreach (var toi in toc) { toi.DateTime = DateTime; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "path": foreach (var toi in toc) { toi.Path = Path; } break;
+				case "size": foreach (var toi in toc) { toi.Size = Size; } break;
+				case "type": foreach (var toi in toc) { toi.IsFile = IsFile; } break;
 				}
 			}
 
@@ -5980,22 +6137,22 @@ namespace TSLib.Messages
 
 	public sealed partial class FileListFinished : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.FileListFinished;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public str Path { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
 			case "path": Path = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -6005,11 +6162,11 @@ namespace TSLib.Messages
 			var toc = (FileListFinished[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "path": foreach(var toi in toc) { toi.Path = Path; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "path": foreach (var toi in toc) { toi.Path = Path; } break;
 				}
 			}
 
@@ -6018,7 +6175,7 @@ namespace TSLib.Messages
 
 	public sealed partial class FileTransfer : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.FileTransfer;
 		public string? ReturnCode { get; set; }
 
@@ -6034,25 +6191,25 @@ namespace TSLib.Messages
 		public u64 Size { get; set; }
 		public i64 SizeDone { get; set; }
 		public i32 Status { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "average_speed": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) AverageSpeed = (f32)oval; } break;
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
-			case "clientftfid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientFileTransferId = (u16)oval; } break;
-			case "current_speed": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) CurrentSpeed = (f32)oval; } break;
+			case "average_speed": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) AverageSpeed = (f32)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "clientftfid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientFileTransferId = (u16)oval; } break;
+			case "current_speed": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) CurrentSpeed = (f32)oval; } break;
 			case "name": Name = (str)TsString.Unescape(value); break;
 			case "path": Path = (str)TsString.Unescape(value); break;
-			case "runtime": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) Runtime = TimeSpan.FromSeconds(oval); } break;
-			case "sender": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Sender = (u64)oval; } break;
-			case "serverftfid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ServerFileTransferId = (u16)oval; } break;
-			case "size": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Size = (u64)oval; } break;
-			case "sizedone": { if(Utf8Parser.TryParse(value, out i64 oval, out _)) SizeDone = (i64)oval; } break;
-			case "status": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) Status = (i32)oval; } break;
+			case "runtime": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) Runtime = TimeSpan.FromSeconds(oval); } break;
+			case "sender": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Sender = (u64)oval; } break;
+			case "serverftfid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ServerFileTransferId = (u16)oval; } break;
+			case "size": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Size = (u64)oval; } break;
+			case "sizedone": { if (Utf8Parser.TryParse(value, out i64 oval, out _)) SizeDone = (i64)oval; } break;
+			case "status": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) Status = (i32)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -6063,21 +6220,21 @@ namespace TSLib.Messages
 			var toc = (FileTransfer[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "average_speed": foreach(var toi in toc) { toi.AverageSpeed = AverageSpeed; } break;
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "clientftfid": foreach(var toi in toc) { toi.ClientFileTransferId = ClientFileTransferId; } break;
-				case "current_speed": foreach(var toi in toc) { toi.CurrentSpeed = CurrentSpeed; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "path": foreach(var toi in toc) { toi.Path = Path; } break;
-				case "runtime": foreach(var toi in toc) { toi.Runtime = Runtime; } break;
-				case "sender": foreach(var toi in toc) { toi.Sender = Sender; } break;
-				case "serverftfid": foreach(var toi in toc) { toi.ServerFileTransferId = ServerFileTransferId; } break;
-				case "size": foreach(var toi in toc) { toi.Size = Size; } break;
-				case "sizedone": foreach(var toi in toc) { toi.SizeDone = SizeDone; } break;
-				case "status": foreach(var toi in toc) { toi.Status = Status; } break;
+				case "average_speed": foreach (var toi in toc) { toi.AverageSpeed = AverageSpeed; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "clientftfid": foreach (var toi in toc) { toi.ClientFileTransferId = ClientFileTransferId; } break;
+				case "current_speed": foreach (var toi in toc) { toi.CurrentSpeed = CurrentSpeed; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "path": foreach (var toi in toc) { toi.Path = Path; } break;
+				case "runtime": foreach (var toi in toc) { toi.Runtime = Runtime; } break;
+				case "sender": foreach (var toi in toc) { toi.Sender = Sender; } break;
+				case "serverftfid": foreach (var toi in toc) { toi.ServerFileTransferId = ServerFileTransferId; } break;
+				case "size": foreach (var toi in toc) { toi.Size = Size; } break;
+				case "sizedone": foreach (var toi in toc) { toi.SizeDone = SizeDone; } break;
+				case "status": foreach (var toi in toc) { toi.Status = Status; } break;
 				}
 			}
 
@@ -6086,26 +6243,26 @@ namespace TSLib.Messages
 
 	public sealed partial class FileTransferStatus : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.FileTransferStatus;
-		
+
 
 		public u16 ClientFileTransferId { get; set; }
 		public str Message { get; set; }
 		public u64 Size { get; set; }
 		public Ts3ErrorCode Status { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clientftfid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientFileTransferId = (u16)oval; } break;
+			case "clientftfid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientFileTransferId = (u16)oval; } break;
 			case "msg": Message = (str)TsString.Unescape(value); break;
-			case "size": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Size = (u64)oval; } break;
-			case "status": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) Status = (Ts3ErrorCode)oval; } break;
-			
+			case "size": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Size = (u64)oval; } break;
+			case "status": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) Status = (Ts3ErrorCode)oval; } break;
+
 			}
 
 		}
@@ -6115,13 +6272,13 @@ namespace TSLib.Messages
 			var toc = (FileTransferStatus[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clientftfid": foreach(var toi in toc) { toi.ClientFileTransferId = ClientFileTransferId; } break;
-				case "msg": foreach(var toi in toc) { toi.Message = Message; } break;
-				case "size": foreach(var toi in toc) { toi.Size = Size; } break;
-				case "status": foreach(var toi in toc) { toi.Status = Status; } break;
+				case "clientftfid": foreach (var toi in toc) { toi.ClientFileTransferId = ClientFileTransferId; } break;
+				case "msg": foreach (var toi in toc) { toi.Message = Message; } break;
+				case "size": foreach (var toi in toc) { toi.Size = Size; } break;
+				case "status": foreach (var toi in toc) { toi.Status = Status; } break;
 				}
 			}
 
@@ -6130,7 +6287,7 @@ namespace TSLib.Messages
 
 	public sealed partial class FileUpload : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.FileUpload;
 		public string? ReturnCode { get; set; }
 
@@ -6141,20 +6298,20 @@ namespace TSLib.Messages
 		public u8 Protocol { get; set; }
 		public u64 SeekPosition { get; set; }
 		public u16 ServerFileTransferId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "clientftfid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientFileTransferId = (u16)oval; } break;
+			case "clientftfid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientFileTransferId = (u16)oval; } break;
 			case "ftkey": FileTransferKey = (str)TsString.Unescape(value); break;
 			case "ip": Ip = (IpAddr)TsString.Unescape(value); break;
-			case "port": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) Port = (u16)oval; } break;
-			case "proto": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) Protocol = (u8)oval; } break;
-			case "seekpos": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) SeekPosition = (u64)oval; } break;
-			case "serverftfid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ServerFileTransferId = (u16)oval; } break;
+			case "port": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) Port = (u16)oval; } break;
+			case "proto": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) Protocol = (u8)oval; } break;
+			case "seekpos": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) SeekPosition = (u64)oval; } break;
+			case "serverftfid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ServerFileTransferId = (u16)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -6165,16 +6322,16 @@ namespace TSLib.Messages
 			var toc = (FileUpload[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "clientftfid": foreach(var toi in toc) { toi.ClientFileTransferId = ClientFileTransferId; } break;
-				case "ftkey": foreach(var toi in toc) { toi.FileTransferKey = FileTransferKey; } break;
-				case "ip": foreach(var toi in toc) { toi.Ip = Ip; } break;
-				case "port": foreach(var toi in toc) { toi.Port = Port; } break;
-				case "proto": foreach(var toi in toc) { toi.Protocol = Protocol; } break;
-				case "seekpos": foreach(var toi in toc) { toi.SeekPosition = SeekPosition; } break;
-				case "serverftfid": foreach(var toi in toc) { toi.ServerFileTransferId = ServerFileTransferId; } break;
+				case "clientftfid": foreach (var toi in toc) { toi.ClientFileTransferId = ClientFileTransferId; } break;
+				case "ftkey": foreach (var toi in toc) { toi.FileTransferKey = FileTransferKey; } break;
+				case "ip": foreach (var toi in toc) { toi.Ip = Ip; } break;
+				case "port": foreach (var toi in toc) { toi.Port = Port; } break;
+				case "proto": foreach (var toi in toc) { toi.Protocol = Protocol; } break;
+				case "seekpos": foreach (var toi in toc) { toi.SeekPosition = SeekPosition; } break;
+				case "serverftfid": foreach (var toi in toc) { toi.ServerFileTransferId = ServerFileTransferId; } break;
 				}
 			}
 
@@ -6183,24 +6340,24 @@ namespace TSLib.Messages
 
 	public sealed partial class FtCreateDir : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.FtCreateDir;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public str ChannelPassword { get; set; }
 		public str DirectoryName { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
 			case "cpw": ChannelPassword = (str)TsString.Unescape(value); break;
 			case "dirname": DirectoryName = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -6210,12 +6367,12 @@ namespace TSLib.Messages
 			var toc = (FtCreateDir[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cpw": foreach(var toi in toc) { toi.ChannelPassword = ChannelPassword; } break;
-				case "dirname": foreach(var toi in toc) { toi.DirectoryName = DirectoryName; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cpw": foreach (var toi in toc) { toi.ChannelPassword = ChannelPassword; } break;
+				case "dirname": foreach (var toi in toc) { toi.DirectoryName = DirectoryName; } break;
 				}
 			}
 
@@ -6224,24 +6381,24 @@ namespace TSLib.Messages
 
 	public sealed partial class FtDeleteFile : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.FtDeleteFile;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public str ChannelPassword { get; set; }
 		public str Name { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
 			case "cpw": ChannelPassword = (str)TsString.Unescape(value); break;
 			case "name": Name = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -6251,12 +6408,12 @@ namespace TSLib.Messages
 			var toc = (FtDeleteFile[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cpw": foreach(var toi in toc) { toi.ChannelPassword = ChannelPassword; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cpw": foreach (var toi in toc) { toi.ChannelPassword = ChannelPassword; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
 				}
 			}
 
@@ -6265,24 +6422,24 @@ namespace TSLib.Messages
 
 	public sealed partial class FtFileInfoRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.FtFileInfoRequest;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public str ChannelPassword { get; set; }
 		public str Name { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
 			case "cpw": ChannelPassword = (str)TsString.Unescape(value); break;
 			case "name": Name = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -6292,12 +6449,12 @@ namespace TSLib.Messages
 			var toc = (FtFileInfoRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cpw": foreach(var toi in toc) { toi.ChannelPassword = ChannelPassword; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cpw": foreach (var toi in toc) { toi.ChannelPassword = ChannelPassword; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
 				}
 			}
 
@@ -6306,24 +6463,24 @@ namespace TSLib.Messages
 
 	public sealed partial class FtFileListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.FtFileListRequest;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public str ChannelPassword { get; set; }
 		public str Path { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
 			case "cpw": ChannelPassword = (str)TsString.Unescape(value); break;
 			case "path": Path = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -6333,12 +6490,12 @@ namespace TSLib.Messages
 			var toc = (FtFileListRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cpw": foreach(var toi in toc) { toi.ChannelPassword = ChannelPassword; } break;
-				case "path": foreach(var toi in toc) { toi.Path = Path; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cpw": foreach (var toi in toc) { toi.ChannelPassword = ChannelPassword; } break;
+				case "path": foreach (var toi in toc) { toi.Path = Path; } break;
 				}
 			}
 
@@ -6347,9 +6504,9 @@ namespace TSLib.Messages
 
 	public sealed partial class FtInitDownload : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.FtInitDownload;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public str ChannelPassword { get; set; }
@@ -6357,20 +6514,20 @@ namespace TSLib.Messages
 		public str Name { get; set; }
 		public u8 Protocol { get; set; }
 		public u64 SeekPosition { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "clientftfid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientFileTransferId = (u16)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "clientftfid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientFileTransferId = (u16)oval; } break;
 			case "cpw": ChannelPassword = (str)TsString.Unescape(value); break;
 			case "name": Name = (str)TsString.Unescape(value); break;
-			case "proto": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) Protocol = (u8)oval; } break;
-			case "seekpos": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) SeekPosition = (u64)oval; } break;
-			
+			case "proto": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) Protocol = (u8)oval; } break;
+			case "seekpos": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) SeekPosition = (u64)oval; } break;
+
 			}
 
 		}
@@ -6380,15 +6537,15 @@ namespace TSLib.Messages
 			var toc = (FtInitDownload[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "clientftfid": foreach(var toi in toc) { toi.ClientFileTransferId = ClientFileTransferId; } break;
-				case "cpw": foreach(var toi in toc) { toi.ChannelPassword = ChannelPassword; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "proto": foreach(var toi in toc) { toi.Protocol = Protocol; } break;
-				case "seekpos": foreach(var toi in toc) { toi.SeekPosition = SeekPosition; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "clientftfid": foreach (var toi in toc) { toi.ClientFileTransferId = ClientFileTransferId; } break;
+				case "cpw": foreach (var toi in toc) { toi.ChannelPassword = ChannelPassword; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "proto": foreach (var toi in toc) { toi.Protocol = Protocol; } break;
+				case "seekpos": foreach (var toi in toc) { toi.SeekPosition = SeekPosition; } break;
 				}
 			}
 
@@ -6397,9 +6554,9 @@ namespace TSLib.Messages
 
 	public sealed partial class FtInitUpload : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.FtInitUpload;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public str ChannelPassword { get; set; }
@@ -6409,22 +6566,22 @@ namespace TSLib.Messages
 		public u8 Protocol { get; set; }
 		public bool Resume { get; set; }
 		public u64 Size { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "clientftfid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientFileTransferId = (u16)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "clientftfid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientFileTransferId = (u16)oval; } break;
 			case "cpw": ChannelPassword = (str)TsString.Unescape(value); break;
 			case "name": Name = (str)TsString.Unescape(value); break;
 			case "overwrite": Overwrite = value.Length > 0 && value[0] != '0'; break;
-			case "proto": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) Protocol = (u8)oval; } break;
+			case "proto": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) Protocol = (u8)oval; } break;
 			case "resume": Resume = value.Length > 0 && value[0] != '0'; break;
-			case "size": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Size = (u64)oval; } break;
-			
+			case "size": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Size = (u64)oval; } break;
+
 			}
 
 		}
@@ -6434,17 +6591,17 @@ namespace TSLib.Messages
 			var toc = (FtInitUpload[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "clientftfid": foreach(var toi in toc) { toi.ClientFileTransferId = ClientFileTransferId; } break;
-				case "cpw": foreach(var toi in toc) { toi.ChannelPassword = ChannelPassword; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "overwrite": foreach(var toi in toc) { toi.Overwrite = Overwrite; } break;
-				case "proto": foreach(var toi in toc) { toi.Protocol = Protocol; } break;
-				case "resume": foreach(var toi in toc) { toi.Resume = Resume; } break;
-				case "size": foreach(var toi in toc) { toi.Size = Size; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "clientftfid": foreach (var toi in toc) { toi.ClientFileTransferId = ClientFileTransferId; } break;
+				case "cpw": foreach (var toi in toc) { toi.ChannelPassword = ChannelPassword; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "overwrite": foreach (var toi in toc) { toi.Overwrite = Overwrite; } break;
+				case "proto": foreach (var toi in toc) { toi.Protocol = Protocol; } break;
+				case "resume": foreach (var toi in toc) { toi.Resume = Resume; } break;
+				case "size": foreach (var toi in toc) { toi.Size = Size; } break;
 				}
 			}
 
@@ -6453,11 +6610,11 @@ namespace TSLib.Messages
 
 	public sealed partial class FtList : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.FtList;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -6470,9 +6627,9 @@ namespace TSLib.Messages
 
 	public sealed partial class FtRenameFile : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.FtRenameFile;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public str ChannelPassword { get; set; }
@@ -6480,20 +6637,20 @@ namespace TSLib.Messages
 		public str OldName { get; set; }
 		public ChannelId? TargetChannelId { get; set; }
 		public str? TargetChannelPassword { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
 			case "cpw": ChannelPassword = (str)TsString.Unescape(value); break;
 			case "newname": NewName = (str)TsString.Unescape(value); break;
 			case "oldname": OldName = (str)TsString.Unescape(value); break;
-			case "tcid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TargetChannelId = (ChannelId)oval; } break;
+			case "tcid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TargetChannelId = (ChannelId)oval; } break;
 			case "tcpw": TargetChannelPassword = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -6503,15 +6660,15 @@ namespace TSLib.Messages
 			var toc = (FtRenameFile[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cpw": foreach(var toi in toc) { toi.ChannelPassword = ChannelPassword; } break;
-				case "newname": foreach(var toi in toc) { toi.NewName = NewName; } break;
-				case "oldname": foreach(var toi in toc) { toi.OldName = OldName; } break;
-				case "tcid": foreach(var toi in toc) { toi.TargetChannelId = TargetChannelId; } break;
-				case "tcpw": foreach(var toi in toc) { toi.TargetChannelPassword = TargetChannelPassword; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cpw": foreach (var toi in toc) { toi.ChannelPassword = ChannelPassword; } break;
+				case "newname": foreach (var toi in toc) { toi.NewName = NewName; } break;
+				case "oldname": foreach (var toi in toc) { toi.OldName = OldName; } break;
+				case "tcid": foreach (var toi in toc) { toi.TargetChannelId = TargetChannelId; } break;
+				case "tcpw": foreach (var toi in toc) { toi.TargetChannelPassword = TargetChannelPassword; } break;
 				}
 			}
 
@@ -6520,22 +6677,22 @@ namespace TSLib.Messages
 
 	public sealed partial class FtStop : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.FtStop;
-		
+
 
 		public bool Delete { get; set; }
 		public u16 ServerFileTransferId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "delete": Delete = value.Length > 0 && value[0] != '0'; break;
-			case "serverftfid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ServerFileTransferId = (u16)oval; } break;
-			
+			case "serverftfid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ServerFileTransferId = (u16)oval; } break;
+
 			}
 
 		}
@@ -6545,11 +6702,11 @@ namespace TSLib.Messages
 			var toc = (FtStop[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "delete": foreach(var toi in toc) { toi.Delete = Delete; } break;
-				case "serverftfid": foreach(var toi in toc) { toi.ServerFileTransferId = ServerFileTransferId; } break;
+				case "delete": foreach (var toi in toc) { toi.Delete = Delete; } break;
+				case "serverftfid": foreach (var toi in toc) { toi.ServerFileTransferId = ServerFileTransferId; } break;
 				}
 			}
 
@@ -6558,20 +6715,20 @@ namespace TSLib.Messages
 
 	public sealed partial class GlobalMessage : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.GlobalMessage;
-		
+
 
 		public str Message { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "msg": Message = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -6581,10 +6738,10 @@ namespace TSLib.Messages
 			var toc = (GlobalMessage[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "msg": foreach(var toi in toc) { toi.Message = Message; } break;
+				case "msg": foreach (var toi in toc) { toi.Message = Message; } break;
 				}
 			}
 
@@ -6593,11 +6750,11 @@ namespace TSLib.Messages
 
 	public sealed partial class HostInfoRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.HostInfoRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -6610,24 +6767,24 @@ namespace TSLib.Messages
 
 	public sealed partial class InitIvExpand : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.InitIvExpand;
-		
+
 
 		public str Alpha { get; set; }
 		public str Beta { get; set; }
 		public str Omega { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "alpha": Alpha = (str)TsString.Unescape(value); break;
 			case "beta": Beta = (str)TsString.Unescape(value); break;
 			case "omega": Omega = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -6637,12 +6794,12 @@ namespace TSLib.Messages
 			var toc = (InitIvExpand[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "alpha": foreach(var toi in toc) { toi.Alpha = Alpha; } break;
-				case "beta": foreach(var toi in toc) { toi.Beta = Beta; } break;
-				case "omega": foreach(var toi in toc) { toi.Omega = Omega; } break;
+				case "alpha": foreach (var toi in toc) { toi.Alpha = Alpha; } break;
+				case "beta": foreach (var toi in toc) { toi.Beta = Beta; } break;
+				case "omega": foreach (var toi in toc) { toi.Omega = Omega; } break;
 				}
 			}
 
@@ -6651,9 +6808,9 @@ namespace TSLib.Messages
 
 	public sealed partial class InitIvExpand2 : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.InitIvExpand2;
-		
+
 
 		public str Beta { get; set; }
 		public str License { get; set; }
@@ -6661,11 +6818,11 @@ namespace TSLib.Messages
 		public bool Ot { get; set; }
 		public str Proof { get; set; }
 		public str Tvd { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "beta": Beta = (str)TsString.Unescape(value); break;
@@ -6674,7 +6831,7 @@ namespace TSLib.Messages
 			case "ot": Ot = value.Length > 0 && value[0] != '0'; break;
 			case "proof": Proof = (str)TsString.Unescape(value); break;
 			case "tvd": Tvd = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -6684,15 +6841,15 @@ namespace TSLib.Messages
 			var toc = (InitIvExpand2[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "beta": foreach(var toi in toc) { toi.Beta = Beta; } break;
-				case "l": foreach(var toi in toc) { toi.License = License; } break;
-				case "omega": foreach(var toi in toc) { toi.Omega = Omega; } break;
-				case "ot": foreach(var toi in toc) { toi.Ot = Ot; } break;
-				case "proof": foreach(var toi in toc) { toi.Proof = Proof; } break;
-				case "tvd": foreach(var toi in toc) { toi.Tvd = Tvd; } break;
+				case "beta": foreach (var toi in toc) { toi.Beta = Beta; } break;
+				case "l": foreach (var toi in toc) { toi.License = License; } break;
+				case "omega": foreach (var toi in toc) { toi.Omega = Omega; } break;
+				case "ot": foreach (var toi in toc) { toi.Ot = Ot; } break;
+				case "proof": foreach (var toi in toc) { toi.Proof = Proof; } break;
+				case "tvd": foreach (var toi in toc) { toi.Tvd = Tvd; } break;
 				}
 			}
 
@@ -6701,9 +6858,9 @@ namespace TSLib.Messages
 
 	public sealed partial class InitServer : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.InitServer;
-		
+
 
 		public str ActiveIntegrationsInfo { get; set; }
 		public bool AskForPrivilegekey { get; set; }
@@ -6762,14 +6919,14 @@ namespace TSLib.Messages
 		public DurationSeconds TempChannelDefaultDeleteDelay { get; set; }
 		public u64 VirtualServerId { get; set; }
 		public str WelcomeMessage { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "aclid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "aclid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "acn": ClientName = (str)TsString.Unescape(value); break;
 			case "client_active_integrations_info": ActiveIntegrationsInfo = (str)TsString.Unescape(value); break;
 			case "client_away": IsAway = value.Length > 0 && value[0] != '0'; break;
@@ -6781,11 +6938,11 @@ namespace TSLib.Messages
 			case "client_input_hardware": InputHardwareEnabled = value.Length > 0 && value[0] != '0'; break;
 			case "client_input_muted": InputMuted = value.Length > 0 && value[0] != '0'; break;
 			case "client_integrations": Integrations = (str)TsString.Unescape(value); break;
-			case "client_key_offset": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientKeyOffset = (u64)oval; } break;
+			case "client_key_offset": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientKeyOffset = (u64)oval; } break;
 			case "client_meta_data": Metadata = (str)TsString.Unescape(value); break;
 			case "client_myteamspeak_avatar": MyTeamSpeakAvatar = (str)TsString.Unescape(value); break;
 			case "client_myteamspeak_id": MyTeamSpeakId = (str)TsString.Unescape(value); break;
-			case "client_needed_serverquery_view_power": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NeededServerqueryViewPower = (i32)oval; } break;
+			case "client_needed_serverquery_view_power": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NeededServerqueryViewPower = (i32)oval; } break;
 			case "client_nickname": Name = (str)TsString.Unescape(value); break;
 			case "client_nickname_phonetic": PhoneticName = (str)TsString.Unescape(value); break;
 			case "client_output_hardware": OutputHardwareEnabled = value.Length > 0 && value[0] != '0'; break;
@@ -6795,38 +6952,74 @@ namespace TSLib.Messages
 			case "client_security_hash": SecurityHash = (str)TsString.Unescape(value); break;
 			case "client_server_password": Password = (str)TsString.Unescape(value); break;
 			case "client_signed_badges": SignedBadges = (str)TsString.Unescape(value); break;
-			case "client_talk_power": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) TalkPower = (i32)oval; } break;
+			case "client_talk_power": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) TalkPower = (i32)oval; } break;
 			case "client_version": ClientVersion = (str)TsString.Unescape(value); break;
 			case "client_version_sign": ClientVersionSign = (str)TsString.Unescape(value); break;
-			case "lt": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) LicenseType = (LicenseType)oval; } break;
-			case "pv": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ProtocolVersion = (u16)oval; } break;
+			case "lt": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) LicenseType = (LicenseType)oval; } break;
+			case "pv": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ProtocolVersion = (u16)oval; } break;
 			case "virtualserver_ask_for_privilegekey": AskForPrivilegekey = value.Length > 0 && value[0] != '0'; break;
-			case "virtualserver_channel_temp_delete_delay_default": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) TempChannelDefaultDeleteDelay = TimeSpan.FromSeconds(oval); } break;
-			case "virtualserver_codec_encryption_mode": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) CodecEncryptionMode = (CodecEncryptionMode)oval; } break;
-			case "virtualserver_created": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) ServerCreated = Tools.FromUnix(oval); } break;
-			case "virtualserver_default_channel_group": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) DefaultChannelGroup = (ChannelGroupId)oval; } break;
-			case "virtualserver_default_server_group": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) DefaultServerGroup = (ServerGroupId)oval; } break;
-			case "virtualserver_hostbanner_gfx_interval": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) HostbannerGfxInterval = TimeSpan.FromSeconds(oval); } break;
+			case "virtualserver_channel_temp_delete_delay_default": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) TempChannelDefaultDeleteDelay = TimeSpan.FromSeconds(oval); } break;
+			case "virtualserver_codec_encryption_mode": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) CodecEncryptionMode = (CodecEncryptionMode)oval; } break;
+			case "virtualserver_created": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) ServerCreated = Tools.FromUnix(oval); } break;
+			case "virtualserver_default_channel_group": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) DefaultChannelGroup = (ChannelGroupId)oval; } break;
+			case "virtualserver_default_server_group": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) DefaultServerGroup = (ServerGroupId)oval; } break;
+			case "virtualserver_hostbanner_gfx_interval": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) HostbannerGfxInterval = TimeSpan.FromSeconds(oval); } break;
 			case "virtualserver_hostbanner_gfx_url": HostbannerGfxUrl = (str)TsString.Unescape(value); break;
-			case "virtualserver_hostbanner_mode": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) HostbannerMode = (HostBannerMode)oval; } break;
+			case "virtualserver_hostbanner_mode": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) HostbannerMode = (HostBannerMode)oval; } break;
 			case "virtualserver_hostbanner_url": HostbannerUrl = (str)TsString.Unescape(value); break;
 			case "virtualserver_hostbutton_gfx_url": HostbuttonGfxUrl = (str)TsString.Unescape(value); break;
 			case "virtualserver_hostbutton_tooltip": HostbuttonTooltip = (str)TsString.Unescape(value); break;
 			case "virtualserver_hostbutton_url": HostbuttonUrl = (str)TsString.Unescape(value); break;
 			case "virtualserver_hostmessage": Hostmessage = (str)TsString.Unescape(value); break;
-			case "virtualserver_hostmessage_mode": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) HostmessageMode = (HostMessageMode)oval; } break;
-			case "virtualserver_icon_id": { if(!value.IsEmpty && value[0] == (u8)'-') { if(Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if(Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
-			case "virtualserver_id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) VirtualServerId = (u64)oval; } break;
-			case "virtualserver_ip": { if(value.Length == 0) ServerIp = Array.Empty<IpAddr>(); else { var ss = new SpanSplitter<byte>(); ss.First(value, (byte)','); int cnt = 0; for (int i = 0; i < value.Length; i++) if (value[i] == ',') cnt++; ServerIp = new IpAddr[cnt + 1]; for(int i = 0; i < cnt + 1; i++) { ServerIp[i] = (IpAddr)TsString.Unescape(ss.Trim(value)); if (i < cnt) value = ss.Next(value); } } } break;
-			case "virtualserver_maxclients": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) MaxClients = (u16)oval; } break;
+			case "virtualserver_hostmessage_mode": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) HostmessageMode = (HostMessageMode)oval; } break;
+			case "virtualserver_icon_id": { if (!value.IsEmpty && value[0] == (u8)'-') { if (Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if (Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
+			case "virtualserver_id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) VirtualServerId = (u64)oval; } break;
+			case "virtualserver_ip":
+				{
+					if (value.Length == 0)
+					{
+						ServerIp = Array.Empty<IpAddr>();
+					}
+					else
+					{
+						var ss = new SpanSplitter<byte>();
+						ss.First(value, (byte)',');
+						int cnt = 0;
+						for (int i = 0; i < value.Length; i++)
+						{
+							if (value[i] == ',')
+							{
+								cnt++;
+							}
+						}
+
+						ServerIp = new IpAddr[cnt + 1];
+						var currentSpan = value; // Capture initial span
+
+						for (int i = 0; i < cnt + 1; i++)
+						{
+							ServerIp[i] = (IpAddr)TsString.Unescape(ss.Trim(currentSpan));
+
+							if (i < cnt)
+							{
+								// Create a copy of the span for the next iteration
+								var nextSpan = currentSpan.Slice(ss.NextIndex + 1);
+								currentSpan = nextSpan;
+							}
+						}
+					}
+				}
+				break;
+
+			case "virtualserver_maxclients": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) MaxClients = (u16)oval; } break;
 			case "virtualserver_name": ServerName = (str)TsString.Unescape(value); break;
 			case "virtualserver_name_phonetic": ServerPhoneticName = (str)TsString.Unescape(value); break;
 			case "virtualserver_nickname": Nickname = (str)TsString.Unescape(value); break;
 			case "virtualserver_platform": ServerPlatform = (str)TsString.Unescape(value); break;
-			case "virtualserver_priority_speaker_dimm_modificator": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) PrioritySpeakerDimmModificator = (f32)oval; } break;
+			case "virtualserver_priority_speaker_dimm_modificator": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) PrioritySpeakerDimmModificator = (f32)oval; } break;
 			case "virtualserver_version": ServerVersion = (str)TsString.Unescape(value); break;
 			case "virtualserver_welcomemessage": WelcomeMessage = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -6836,66 +7029,66 @@ namespace TSLib.Messages
 			var toc = (InitServer[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "aclid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "acn": foreach(var toi in toc) { toi.ClientName = ClientName; } break;
-				case "client_active_integrations_info": foreach(var toi in toc) { toi.ActiveIntegrationsInfo = ActiveIntegrationsInfo; } break;
-				case "client_away": foreach(var toi in toc) { toi.IsAway = IsAway; } break;
-				case "client_away_message": foreach(var toi in toc) { toi.AwayMessage = AwayMessage; } break;
-				case "client_badges": foreach(var toi in toc) { toi.Badges = Badges; } break;
-				case "client_default_channel": foreach(var toi in toc) { toi.DefaultChannel = DefaultChannel; } break;
-				case "client_default_channel_password": foreach(var toi in toc) { toi.DefaultChannelPassword = DefaultChannelPassword; } break;
-				case "client_default_token": foreach(var toi in toc) { toi.DefaultToken = DefaultToken; } break;
-				case "client_input_hardware": foreach(var toi in toc) { toi.InputHardwareEnabled = InputHardwareEnabled; } break;
-				case "client_input_muted": foreach(var toi in toc) { toi.InputMuted = InputMuted; } break;
-				case "client_integrations": foreach(var toi in toc) { toi.Integrations = Integrations; } break;
-				case "client_key_offset": foreach(var toi in toc) { toi.ClientKeyOffset = ClientKeyOffset; } break;
-				case "client_meta_data": foreach(var toi in toc) { toi.Metadata = Metadata; } break;
-				case "client_myteamspeak_avatar": foreach(var toi in toc) { toi.MyTeamSpeakAvatar = MyTeamSpeakAvatar; } break;
-				case "client_myteamspeak_id": foreach(var toi in toc) { toi.MyTeamSpeakId = MyTeamSpeakId; } break;
-				case "client_needed_serverquery_view_power": foreach(var toi in toc) { toi.NeededServerqueryViewPower = NeededServerqueryViewPower; } break;
-				case "client_nickname": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "client_nickname_phonetic": foreach(var toi in toc) { toi.PhoneticName = PhoneticName; } break;
-				case "client_output_hardware": foreach(var toi in toc) { toi.OutputHardwareEnabled = OutputHardwareEnabled; } break;
-				case "client_output_muted": foreach(var toi in toc) { toi.OutputMuted = OutputMuted; } break;
-				case "client_outputonly_muted": foreach(var toi in toc) { toi.OutputOnlyMuted = OutputOnlyMuted; } break;
-				case "client_platform": foreach(var toi in toc) { toi.ClientPlatform = ClientPlatform; } break;
-				case "client_security_hash": foreach(var toi in toc) { toi.SecurityHash = SecurityHash; } break;
-				case "client_server_password": foreach(var toi in toc) { toi.Password = Password; } break;
-				case "client_signed_badges": foreach(var toi in toc) { toi.SignedBadges = SignedBadges; } break;
-				case "client_talk_power": foreach(var toi in toc) { toi.TalkPower = TalkPower; } break;
-				case "client_version": foreach(var toi in toc) { toi.ClientVersion = ClientVersion; } break;
-				case "client_version_sign": foreach(var toi in toc) { toi.ClientVersionSign = ClientVersionSign; } break;
-				case "lt": foreach(var toi in toc) { toi.LicenseType = LicenseType; } break;
-				case "pv": foreach(var toi in toc) { toi.ProtocolVersion = ProtocolVersion; } break;
-				case "virtualserver_ask_for_privilegekey": foreach(var toi in toc) { toi.AskForPrivilegekey = AskForPrivilegekey; } break;
-				case "virtualserver_channel_temp_delete_delay_default": foreach(var toi in toc) { toi.TempChannelDefaultDeleteDelay = TempChannelDefaultDeleteDelay; } break;
-				case "virtualserver_codec_encryption_mode": foreach(var toi in toc) { toi.CodecEncryptionMode = CodecEncryptionMode; } break;
-				case "virtualserver_created": foreach(var toi in toc) { toi.ServerCreated = ServerCreated; } break;
-				case "virtualserver_default_channel_group": foreach(var toi in toc) { toi.DefaultChannelGroup = DefaultChannelGroup; } break;
-				case "virtualserver_default_server_group": foreach(var toi in toc) { toi.DefaultServerGroup = DefaultServerGroup; } break;
-				case "virtualserver_hostbanner_gfx_interval": foreach(var toi in toc) { toi.HostbannerGfxInterval = HostbannerGfxInterval; } break;
-				case "virtualserver_hostbanner_gfx_url": foreach(var toi in toc) { toi.HostbannerGfxUrl = HostbannerGfxUrl; } break;
-				case "virtualserver_hostbanner_mode": foreach(var toi in toc) { toi.HostbannerMode = HostbannerMode; } break;
-				case "virtualserver_hostbanner_url": foreach(var toi in toc) { toi.HostbannerUrl = HostbannerUrl; } break;
-				case "virtualserver_hostbutton_gfx_url": foreach(var toi in toc) { toi.HostbuttonGfxUrl = HostbuttonGfxUrl; } break;
-				case "virtualserver_hostbutton_tooltip": foreach(var toi in toc) { toi.HostbuttonTooltip = HostbuttonTooltip; } break;
-				case "virtualserver_hostbutton_url": foreach(var toi in toc) { toi.HostbuttonUrl = HostbuttonUrl; } break;
-				case "virtualserver_hostmessage": foreach(var toi in toc) { toi.Hostmessage = Hostmessage; } break;
-				case "virtualserver_hostmessage_mode": foreach(var toi in toc) { toi.HostmessageMode = HostmessageMode; } break;
-				case "virtualserver_icon_id": foreach(var toi in toc) { toi.IconId = IconId; } break;
-				case "virtualserver_id": foreach(var toi in toc) { toi.VirtualServerId = VirtualServerId; } break;
-				case "virtualserver_ip": foreach(var toi in toc) { toi.ServerIp = ServerIp; } break;
-				case "virtualserver_maxclients": foreach(var toi in toc) { toi.MaxClients = MaxClients; } break;
-				case "virtualserver_name": foreach(var toi in toc) { toi.ServerName = ServerName; } break;
-				case "virtualserver_name_phonetic": foreach(var toi in toc) { toi.ServerPhoneticName = ServerPhoneticName; } break;
-				case "virtualserver_nickname": foreach(var toi in toc) { toi.Nickname = Nickname; } break;
-				case "virtualserver_platform": foreach(var toi in toc) { toi.ServerPlatform = ServerPlatform; } break;
-				case "virtualserver_priority_speaker_dimm_modificator": foreach(var toi in toc) { toi.PrioritySpeakerDimmModificator = PrioritySpeakerDimmModificator; } break;
-				case "virtualserver_version": foreach(var toi in toc) { toi.ServerVersion = ServerVersion; } break;
-				case "virtualserver_welcomemessage": foreach(var toi in toc) { toi.WelcomeMessage = WelcomeMessage; } break;
+				case "aclid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "acn": foreach (var toi in toc) { toi.ClientName = ClientName; } break;
+				case "client_active_integrations_info": foreach (var toi in toc) { toi.ActiveIntegrationsInfo = ActiveIntegrationsInfo; } break;
+				case "client_away": foreach (var toi in toc) { toi.IsAway = IsAway; } break;
+				case "client_away_message": foreach (var toi in toc) { toi.AwayMessage = AwayMessage; } break;
+				case "client_badges": foreach (var toi in toc) { toi.Badges = Badges; } break;
+				case "client_default_channel": foreach (var toi in toc) { toi.DefaultChannel = DefaultChannel; } break;
+				case "client_default_channel_password": foreach (var toi in toc) { toi.DefaultChannelPassword = DefaultChannelPassword; } break;
+				case "client_default_token": foreach (var toi in toc) { toi.DefaultToken = DefaultToken; } break;
+				case "client_input_hardware": foreach (var toi in toc) { toi.InputHardwareEnabled = InputHardwareEnabled; } break;
+				case "client_input_muted": foreach (var toi in toc) { toi.InputMuted = InputMuted; } break;
+				case "client_integrations": foreach (var toi in toc) { toi.Integrations = Integrations; } break;
+				case "client_key_offset": foreach (var toi in toc) { toi.ClientKeyOffset = ClientKeyOffset; } break;
+				case "client_meta_data": foreach (var toi in toc) { toi.Metadata = Metadata; } break;
+				case "client_myteamspeak_avatar": foreach (var toi in toc) { toi.MyTeamSpeakAvatar = MyTeamSpeakAvatar; } break;
+				case "client_myteamspeak_id": foreach (var toi in toc) { toi.MyTeamSpeakId = MyTeamSpeakId; } break;
+				case "client_needed_serverquery_view_power": foreach (var toi in toc) { toi.NeededServerqueryViewPower = NeededServerqueryViewPower; } break;
+				case "client_nickname": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "client_nickname_phonetic": foreach (var toi in toc) { toi.PhoneticName = PhoneticName; } break;
+				case "client_output_hardware": foreach (var toi in toc) { toi.OutputHardwareEnabled = OutputHardwareEnabled; } break;
+				case "client_output_muted": foreach (var toi in toc) { toi.OutputMuted = OutputMuted; } break;
+				case "client_outputonly_muted": foreach (var toi in toc) { toi.OutputOnlyMuted = OutputOnlyMuted; } break;
+				case "client_platform": foreach (var toi in toc) { toi.ClientPlatform = ClientPlatform; } break;
+				case "client_security_hash": foreach (var toi in toc) { toi.SecurityHash = SecurityHash; } break;
+				case "client_server_password": foreach (var toi in toc) { toi.Password = Password; } break;
+				case "client_signed_badges": foreach (var toi in toc) { toi.SignedBadges = SignedBadges; } break;
+				case "client_talk_power": foreach (var toi in toc) { toi.TalkPower = TalkPower; } break;
+				case "client_version": foreach (var toi in toc) { toi.ClientVersion = ClientVersion; } break;
+				case "client_version_sign": foreach (var toi in toc) { toi.ClientVersionSign = ClientVersionSign; } break;
+				case "lt": foreach (var toi in toc) { toi.LicenseType = LicenseType; } break;
+				case "pv": foreach (var toi in toc) { toi.ProtocolVersion = ProtocolVersion; } break;
+				case "virtualserver_ask_for_privilegekey": foreach (var toi in toc) { toi.AskForPrivilegekey = AskForPrivilegekey; } break;
+				case "virtualserver_channel_temp_delete_delay_default": foreach (var toi in toc) { toi.TempChannelDefaultDeleteDelay = TempChannelDefaultDeleteDelay; } break;
+				case "virtualserver_codec_encryption_mode": foreach (var toi in toc) { toi.CodecEncryptionMode = CodecEncryptionMode; } break;
+				case "virtualserver_created": foreach (var toi in toc) { toi.ServerCreated = ServerCreated; } break;
+				case "virtualserver_default_channel_group": foreach (var toi in toc) { toi.DefaultChannelGroup = DefaultChannelGroup; } break;
+				case "virtualserver_default_server_group": foreach (var toi in toc) { toi.DefaultServerGroup = DefaultServerGroup; } break;
+				case "virtualserver_hostbanner_gfx_interval": foreach (var toi in toc) { toi.HostbannerGfxInterval = HostbannerGfxInterval; } break;
+				case "virtualserver_hostbanner_gfx_url": foreach (var toi in toc) { toi.HostbannerGfxUrl = HostbannerGfxUrl; } break;
+				case "virtualserver_hostbanner_mode": foreach (var toi in toc) { toi.HostbannerMode = HostbannerMode; } break;
+				case "virtualserver_hostbanner_url": foreach (var toi in toc) { toi.HostbannerUrl = HostbannerUrl; } break;
+				case "virtualserver_hostbutton_gfx_url": foreach (var toi in toc) { toi.HostbuttonGfxUrl = HostbuttonGfxUrl; } break;
+				case "virtualserver_hostbutton_tooltip": foreach (var toi in toc) { toi.HostbuttonTooltip = HostbuttonTooltip; } break;
+				case "virtualserver_hostbutton_url": foreach (var toi in toc) { toi.HostbuttonUrl = HostbuttonUrl; } break;
+				case "virtualserver_hostmessage": foreach (var toi in toc) { toi.Hostmessage = Hostmessage; } break;
+				case "virtualserver_hostmessage_mode": foreach (var toi in toc) { toi.HostmessageMode = HostmessageMode; } break;
+				case "virtualserver_icon_id": foreach (var toi in toc) { toi.IconId = IconId; } break;
+				case "virtualserver_id": foreach (var toi in toc) { toi.VirtualServerId = VirtualServerId; } break;
+				case "virtualserver_ip": foreach (var toi in toc) { toi.ServerIp = ServerIp; } break;
+				case "virtualserver_maxclients": foreach (var toi in toc) { toi.MaxClients = MaxClients; } break;
+				case "virtualserver_name": foreach (var toi in toc) { toi.ServerName = ServerName; } break;
+				case "virtualserver_name_phonetic": foreach (var toi in toc) { toi.ServerPhoneticName = ServerPhoneticName; } break;
+				case "virtualserver_nickname": foreach (var toi in toc) { toi.Nickname = Nickname; } break;
+				case "virtualserver_platform": foreach (var toi in toc) { toi.ServerPlatform = ServerPlatform; } break;
+				case "virtualserver_priority_speaker_dimm_modificator": foreach (var toi in toc) { toi.PrioritySpeakerDimmModificator = PrioritySpeakerDimmModificator; } break;
+				case "virtualserver_version": foreach (var toi in toc) { toi.ServerVersion = ServerVersion; } break;
+				case "virtualserver_welcomemessage": foreach (var toi in toc) { toi.WelcomeMessage = WelcomeMessage; } break;
 				}
 			}
 
@@ -6904,11 +7097,11 @@ namespace TSLib.Messages
 
 	public sealed partial class InstanceEdit : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.InstanceEdit;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -6921,11 +7114,11 @@ namespace TSLib.Messages
 
 	public sealed partial class InstanceInfo : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.InstanceInfo;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -6938,22 +7131,22 @@ namespace TSLib.Messages
 
 	public sealed partial class LogAdd : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.LogAdd;
-		
+
 
 		public LogLevel LogLevel { get; set; }
 		public str LogMessage { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "loglevel": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) LogLevel = (LogLevel)oval; } break;
+			case "loglevel": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) LogLevel = (LogLevel)oval; } break;
 			case "logmsg": LogMessage = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -6963,11 +7156,11 @@ namespace TSLib.Messages
 			var toc = (LogAdd[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "loglevel": foreach(var toi in toc) { toi.LogLevel = LogLevel; } break;
-				case "logmsg": foreach(var toi in toc) { toi.LogMessage = LogMessage; } break;
+				case "loglevel": foreach (var toi in toc) { toi.LogLevel = LogLevel; } break;
+				case "logmsg": foreach (var toi in toc) { toi.LogMessage = LogMessage; } break;
 				}
 			}
 
@@ -6976,22 +7169,22 @@ namespace TSLib.Messages
 
 	public sealed partial class Login : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.Login;
-		
+
 
 		public str LoginName { get; set; }
 		public str LoginPassword { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "client_login_name": LoginName = (str)TsString.Unescape(value); break;
 			case "client_login_password": LoginPassword = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -7001,11 +7194,11 @@ namespace TSLib.Messages
 			var toc = (Login[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "client_login_name": foreach(var toi in toc) { toi.LoginName = LoginName; } break;
-				case "client_login_password": foreach(var toi in toc) { toi.LoginPassword = LoginPassword; } break;
+				case "client_login_name": foreach (var toi in toc) { toi.LoginName = LoginName; } break;
+				case "client_login_password": foreach (var toi in toc) { toi.LoginPassword = LoginPassword; } break;
 				}
 			}
 
@@ -7014,11 +7207,11 @@ namespace TSLib.Messages
 
 	public sealed partial class Logout : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.Logout;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -7031,26 +7224,26 @@ namespace TSLib.Messages
 
 	public sealed partial class LogView : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.LogView;
-		
+
 
 		public bool? InstanceLog { get; set; }
 		public u32? Lines { get; set; }
 		public u64? Offset { get; set; }
 		public bool? Reverse { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "begin_pos": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Offset = (u64)oval; } break;
+			case "begin_pos": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Offset = (u64)oval; } break;
 			case "instance": InstanceLog = value.Length > 0 && value[0] != '0'; break;
-			case "lines": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) Lines = (u32)oval; } break;
+			case "lines": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) Lines = (u32)oval; } break;
 			case "reverse": Reverse = value.Length > 0 && value[0] != '0'; break;
-			
+
 			}
 
 		}
@@ -7060,13 +7253,13 @@ namespace TSLib.Messages
 			var toc = (LogView[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "begin_pos": foreach(var toi in toc) { toi.Offset = Offset; } break;
-				case "instance": foreach(var toi in toc) { toi.InstanceLog = InstanceLog; } break;
-				case "lines": foreach(var toi in toc) { toi.Lines = Lines; } break;
-				case "reverse": foreach(var toi in toc) { toi.Reverse = Reverse; } break;
+				case "begin_pos": foreach (var toi in toc) { toi.Offset = Offset; } break;
+				case "instance": foreach (var toi in toc) { toi.InstanceLog = InstanceLog; } break;
+				case "lines": foreach (var toi in toc) { toi.Lines = Lines; } break;
+				case "reverse": foreach (var toi in toc) { toi.Reverse = Reverse; } break;
 				}
 			}
 
@@ -7075,7 +7268,7 @@ namespace TSLib.Messages
 
 	public sealed partial class OfflineMessage : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.OfflineMessage;
 		public string? ReturnCode { get; set; }
 
@@ -7084,18 +7277,18 @@ namespace TSLib.Messages
 		public u32 MessageId { get; set; }
 		public str Subject { get; set; }
 		public DateTime Timestamp { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
 			case "message": Message = (str)TsString.Unescape(value); break;
-			case "msgid": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) MessageId = (u32)oval; } break;
+			case "msgid": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) MessageId = (u32)oval; } break;
 			case "subject": Subject = (str)TsString.Unescape(value); break;
-			case "timestamp": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) Timestamp = Tools.FromUnix(oval); } break;
+			case "timestamp": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) Timestamp = Tools.FromUnix(oval); } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -7106,14 +7299,14 @@ namespace TSLib.Messages
 			var toc = (OfflineMessage[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
-				case "message": foreach(var toi in toc) { toi.Message = Message; } break;
-				case "msgid": foreach(var toi in toc) { toi.MessageId = MessageId; } break;
-				case "subject": foreach(var toi in toc) { toi.Subject = Subject; } break;
-				case "timestamp": foreach(var toi in toc) { toi.Timestamp = Timestamp; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "message": foreach (var toi in toc) { toi.Message = Message; } break;
+				case "msgid": foreach (var toi in toc) { toi.MessageId = MessageId; } break;
+				case "subject": foreach (var toi in toc) { toi.Subject = Subject; } break;
+				case "timestamp": foreach (var toi in toc) { toi.Timestamp = Timestamp; } break;
 				}
 			}
 
@@ -7122,24 +7315,24 @@ namespace TSLib.Messages
 
 	public sealed partial class OfflineMessageAdd : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.OfflineMessageAdd;
-		
+
 
 		public Uid ClientUid { get; set; }
 		public str Message { get; set; }
 		public str Subject { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
 			case "message": Message = (str)TsString.Unescape(value); break;
 			case "subject": Subject = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -7149,12 +7342,12 @@ namespace TSLib.Messages
 			var toc = (OfflineMessageAdd[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
-				case "message": foreach(var toi in toc) { toi.Message = Message; } break;
-				case "subject": foreach(var toi in toc) { toi.Subject = Subject; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "message": foreach (var toi in toc) { toi.Message = Message; } break;
+				case "subject": foreach (var toi in toc) { toi.Subject = Subject; } break;
 				}
 			}
 
@@ -7163,20 +7356,20 @@ namespace TSLib.Messages
 
 	public sealed partial class OfflineMessageDel : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.OfflineMessageDel;
-		
+
 
 		public u32 MessageId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "msgid": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) MessageId = (u32)oval; } break;
-			
+			case "msgid": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) MessageId = (u32)oval; } break;
+
 			}
 
 		}
@@ -7186,10 +7379,10 @@ namespace TSLib.Messages
 			var toc = (OfflineMessageDel[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "msgid": foreach(var toi in toc) { toi.MessageId = MessageId; } break;
+				case "msgid": foreach (var toi in toc) { toi.MessageId = MessageId; } break;
 				}
 			}
 
@@ -7198,20 +7391,20 @@ namespace TSLib.Messages
 
 	public sealed partial class OfflineMessageGet : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.OfflineMessageGet;
-		
+
 
 		public u32 MessageId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "msgid": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) MessageId = (u32)oval; } break;
-			
+			case "msgid": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) MessageId = (u32)oval; } break;
+
 			}
 
 		}
@@ -7221,10 +7414,10 @@ namespace TSLib.Messages
 			var toc = (OfflineMessageGet[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "msgid": foreach(var toi in toc) { toi.MessageId = MessageId; } break;
+				case "msgid": foreach (var toi in toc) { toi.MessageId = MessageId; } break;
 				}
 			}
 
@@ -7233,7 +7426,7 @@ namespace TSLib.Messages
 
 	public sealed partial class OfflineMessageList : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.OfflineMessageList;
 		public string? ReturnCode { get; set; }
 
@@ -7242,18 +7435,18 @@ namespace TSLib.Messages
 		public u32 MessageId { get; set; }
 		public str Subject { get; set; }
 		public DateTime Timestamp { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
 			case "flag_read": IsRead = value.Length > 0 && value[0] != '0'; break;
-			case "msgid": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) MessageId = (u32)oval; } break;
+			case "msgid": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) MessageId = (u32)oval; } break;
 			case "subject": Subject = (str)TsString.Unescape(value); break;
-			case "timestamp": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) Timestamp = Tools.FromUnix(oval); } break;
+			case "timestamp": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) Timestamp = Tools.FromUnix(oval); } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -7264,14 +7457,14 @@ namespace TSLib.Messages
 			var toc = (OfflineMessageList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
-				case "flag_read": foreach(var toi in toc) { toi.IsRead = IsRead; } break;
-				case "msgid": foreach(var toi in toc) { toi.MessageId = MessageId; } break;
-				case "subject": foreach(var toi in toc) { toi.Subject = Subject; } break;
-				case "timestamp": foreach(var toi in toc) { toi.Timestamp = Timestamp; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "flag_read": foreach (var toi in toc) { toi.IsRead = IsRead; } break;
+				case "msgid": foreach (var toi in toc) { toi.MessageId = MessageId; } break;
+				case "subject": foreach (var toi in toc) { toi.Subject = Subject; } break;
+				case "timestamp": foreach (var toi in toc) { toi.Timestamp = Timestamp; } break;
 				}
 			}
 
@@ -7280,11 +7473,11 @@ namespace TSLib.Messages
 
 	public sealed partial class OfflineMessageListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.OfflineMessageListRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -7297,22 +7490,22 @@ namespace TSLib.Messages
 
 	public sealed partial class OfflineMessageUpdateFlag : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.OfflineMessageUpdateFlag;
-		
+
 
 		public bool IsRead { get; set; }
 		public u32 MessageId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "flag": IsRead = value.Length > 0 && value[0] != '0'; break;
-			case "msgid": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) MessageId = (u32)oval; } break;
-			
+			case "msgid": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) MessageId = (u32)oval; } break;
+
 			}
 
 		}
@@ -7322,11 +7515,11 @@ namespace TSLib.Messages
 			var toc = (OfflineMessageUpdateFlag[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "flag": foreach(var toi in toc) { toi.IsRead = IsRead; } break;
-				case "msgid": foreach(var toi in toc) { toi.MessageId = MessageId; } break;
+				case "flag": foreach (var toi in toc) { toi.IsRead = IsRead; } break;
+				case "msgid": foreach (var toi in toc) { toi.MessageId = MessageId; } break;
 				}
 			}
 
@@ -7335,7 +7528,7 @@ namespace TSLib.Messages
 
 	public sealed partial class PermFind : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.PermFind;
 		public string? ReturnCode { get; set; }
 
@@ -7343,17 +7536,17 @@ namespace TSLib.Messages
 		public u64 Id2 { get; set; }
 		public Ts3Permission PermissionId { get; set; }
 		public PermissionType PermissionType { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "id1": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Id1 = (u64)oval; } break;
-			case "id2": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Id2 = (u64)oval; } break;
-			case "p": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
-			case "t": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionType = (PermissionType)oval; } break;
+			case "id1": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Id1 = (u64)oval; } break;
+			case "id2": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Id2 = (u64)oval; } break;
+			case "p": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "t": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionType = (PermissionType)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -7364,13 +7557,13 @@ namespace TSLib.Messages
 			var toc = (PermFind[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "id1": foreach(var toi in toc) { toi.Id1 = Id1; } break;
-				case "id2": foreach(var toi in toc) { toi.Id2 = Id2; } break;
-				case "p": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "t": foreach(var toi in toc) { toi.PermissionType = PermissionType; } break;
+				case "id1": foreach (var toi in toc) { toi.Id1 = Id1; } break;
+				case "id2": foreach (var toi in toc) { toi.Id2 = Id2; } break;
+				case "p": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "t": foreach (var toi in toc) { toi.PermissionType = PermissionType; } break;
 				}
 			}
 
@@ -7379,22 +7572,22 @@ namespace TSLib.Messages
 
 	public sealed partial class PermFindRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.PermFindRequest;
-		
+
 
 		public Ts3Permission? PermissionId { get; set; }
 		public str? PermissionNameId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -7404,11 +7597,11 @@ namespace TSLib.Messages
 			var toc = (PermFindRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
 				}
 			}
 
@@ -7417,20 +7610,20 @@ namespace TSLib.Messages
 
 	public sealed partial class PermIdByNameRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.PermIdByNameRequest;
-		
+
 
 		public str PermissionNameId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -7440,10 +7633,10 @@ namespace TSLib.Messages
 			var toc = (PermIdByNameRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
 				}
 			}
 
@@ -7452,7 +7645,7 @@ namespace TSLib.Messages
 
 	public sealed partial class PermList : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.PermList;
 		public string? ReturnCode { get; set; }
 
@@ -7460,16 +7653,16 @@ namespace TSLib.Messages
 		public str PermissionDescription { get; set; }
 		public Ts3Permission PermissionId { get; set; }
 		public str PermissionName { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "group_id_end": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) GroupIdEnd = ser.PermissionTransform.GetName(oval); } break;
+			case "group_id_end": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) GroupIdEnd = ser.PermissionTransform.GetName(oval); } break;
 			case "permdesc": PermissionDescription = (str)TsString.Unescape(value); break;
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permname": PermissionName = (str)TsString.Unescape(value); break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
@@ -7481,13 +7674,13 @@ namespace TSLib.Messages
 			var toc = (PermList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "group_id_end": foreach(var toi in toc) { toi.GroupIdEnd = GroupIdEnd; } break;
-				case "permdesc": foreach(var toi in toc) { toi.PermissionDescription = PermissionDescription; } break;
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permname": foreach(var toi in toc) { toi.PermissionName = PermissionName; } break;
+				case "group_id_end": foreach (var toi in toc) { toi.GroupIdEnd = GroupIdEnd; } break;
+				case "permdesc": foreach (var toi in toc) { toi.PermissionDescription = PermissionDescription; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permname": foreach (var toi in toc) { toi.PermissionName = PermissionName; } break;
 				}
 			}
 
@@ -7496,11 +7689,11 @@ namespace TSLib.Messages
 
 	public sealed partial class PermListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.PermListRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -7513,7 +7706,7 @@ namespace TSLib.Messages
 
 	public sealed partial class PermOverview : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.PermOverview;
 		public string? ReturnCode { get; set; }
 
@@ -7526,22 +7719,22 @@ namespace TSLib.Messages
 		public bool PermissionSkip { get; set; }
 		public PermissionType PermissionType { get; set; }
 		public i32 PermissionValue { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			case "id1": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Id1 = (u64)oval; } break;
-			case "id2": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Id2 = (u64)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "id1": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Id1 = (u64)oval; } break;
+			case "id2": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Id2 = (u64)oval; } break;
 			case "n": PermissionNegated = value.Length > 0 && value[0] != '0'; break;
-			case "p": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "p": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "s": PermissionSkip = value.Length > 0 && value[0] != '0'; break;
-			case "t": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionType = (PermissionType)oval; } break;
-			case "v": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
+			case "t": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionType = (PermissionType)oval; } break;
+			case "v": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -7552,18 +7745,18 @@ namespace TSLib.Messages
 			var toc = (PermOverview[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "id1": foreach(var toi in toc) { toi.Id1 = Id1; } break;
-				case "id2": foreach(var toi in toc) { toi.Id2 = Id2; } break;
-				case "n": foreach(var toi in toc) { toi.PermissionNegated = PermissionNegated; } break;
-				case "p": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "s": foreach(var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
-				case "t": foreach(var toi in toc) { toi.PermissionType = PermissionType; } break;
-				case "v": foreach(var toi in toc) { toi.PermissionValue = PermissionValue; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "id1": foreach (var toi in toc) { toi.Id1 = Id1; } break;
+				case "id2": foreach (var toi in toc) { toi.Id2 = Id2; } break;
+				case "n": foreach (var toi in toc) { toi.PermissionNegated = PermissionNegated; } break;
+				case "p": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "s": foreach (var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
+				case "t": foreach (var toi in toc) { toi.PermissionType = PermissionType; } break;
+				case "v": foreach (var toi in toc) { toi.PermissionValue = PermissionValue; } break;
 				}
 			}
 
@@ -7572,26 +7765,26 @@ namespace TSLib.Messages
 
 	public sealed partial class PermOverviewRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.PermOverviewRequest;
-		
+
 
 		public ChannelId ChannelId { get; set; }
 		public ClientDbId ClientDbId { get; set; }
 		public Ts3Permission? PermissionId { get; set; }
 		public str? PermissionNameId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -7601,13 +7794,13 @@ namespace TSLib.Messages
 			var toc = (PermOverviewRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
 				}
 			}
 
@@ -7616,20 +7809,20 @@ namespace TSLib.Messages
 
 	public sealed partial class PermRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.PermRequest;
-		
+
 
 		public Ts3Permission PermissionId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
-			
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+
 			}
 
 		}
@@ -7639,10 +7832,10 @@ namespace TSLib.Messages
 			var toc = (PermRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
 				}
 			}
 
@@ -7651,11 +7844,11 @@ namespace TSLib.Messages
 
 	public sealed partial class PermReset : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.PermReset;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -7668,22 +7861,22 @@ namespace TSLib.Messages
 
 	public sealed partial class PluginCommand : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.PluginCommand;
-		
+
 
 		public str Data { get; set; }
 		public str Name { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "data": Data = (str)TsString.Unescape(value); break;
 			case "name": Name = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -7693,11 +7886,11 @@ namespace TSLib.Messages
 			var toc = (PluginCommand[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "data": foreach(var toi in toc) { toi.Data = Data; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
+				case "data": foreach (var toi in toc) { toi.Data = Data; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
 				}
 			}
 
@@ -7706,24 +7899,24 @@ namespace TSLib.Messages
 
 	public sealed partial class PluginCommandRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.PluginCommandRequest;
-		
+
 
 		public str Data { get; set; }
 		public str Name { get; set; }
 		public PluginTargetMode Target { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "data": Data = (str)TsString.Unescape(value); break;
 			case "name": Name = (str)TsString.Unescape(value); break;
-			case "targetmode": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) Target = (PluginTargetMode)oval; } break;
-			
+			case "targetmode": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) Target = (PluginTargetMode)oval; } break;
+
 			}
 
 		}
@@ -7733,12 +7926,12 @@ namespace TSLib.Messages
 			var toc = (PluginCommandRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "data": foreach(var toi in toc) { toi.Data = Data; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "targetmode": foreach(var toi in toc) { toi.Target = Target; } break;
+				case "data": foreach (var toi in toc) { toi.Data = Data; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "targetmode": foreach (var toi in toc) { toi.Target = Target; } break;
 				}
 			}
 
@@ -7747,28 +7940,28 @@ namespace TSLib.Messages
 
 	public sealed partial class PrivilegeKeyAddRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.PrivilegeKeyAddRequest;
-		
+
 
 		public str? TokenCustomSet { get; set; }
 		public str? TokenDescription { get; set; }
 		public u64 TokenId1 { get; set; }
 		public ChannelId TokenId2 { get; set; }
 		public TokenType TokenType { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "tokencustomset": TokenCustomSet = (str)TsString.Unescape(value); break;
 			case "tokendescription": TokenDescription = (str)TsString.Unescape(value); break;
-			case "tokenid1": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TokenId1 = (u64)oval; } break;
-			case "tokenid2": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TokenId2 = (ChannelId)oval; } break;
-			case "tokentype": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) TokenType = (TokenType)oval; } break;
-			
+			case "tokenid1": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TokenId1 = (u64)oval; } break;
+			case "tokenid2": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TokenId2 = (ChannelId)oval; } break;
+			case "tokentype": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) TokenType = (TokenType)oval; } break;
+
 			}
 
 		}
@@ -7778,14 +7971,14 @@ namespace TSLib.Messages
 			var toc = (PrivilegeKeyAddRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "tokencustomset": foreach(var toi in toc) { toi.TokenCustomSet = TokenCustomSet; } break;
-				case "tokendescription": foreach(var toi in toc) { toi.TokenDescription = TokenDescription; } break;
-				case "tokenid1": foreach(var toi in toc) { toi.TokenId1 = TokenId1; } break;
-				case "tokenid2": foreach(var toi in toc) { toi.TokenId2 = TokenId2; } break;
-				case "tokentype": foreach(var toi in toc) { toi.TokenType = TokenType; } break;
+				case "tokencustomset": foreach (var toi in toc) { toi.TokenCustomSet = TokenCustomSet; } break;
+				case "tokendescription": foreach (var toi in toc) { toi.TokenDescription = TokenDescription; } break;
+				case "tokenid1": foreach (var toi in toc) { toi.TokenId1 = TokenId1; } break;
+				case "tokenid2": foreach (var toi in toc) { toi.TokenId2 = TokenId2; } break;
+				case "tokentype": foreach (var toi in toc) { toi.TokenType = TokenType; } break;
 				}
 			}
 
@@ -7794,20 +7987,20 @@ namespace TSLib.Messages
 
 	public sealed partial class PrivilegeKeyDelete : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.PrivilegeKeyDelete;
-		
+
 
 		public str Token { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "token": Token = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -7817,10 +8010,10 @@ namespace TSLib.Messages
 			var toc = (PrivilegeKeyDelete[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "token": foreach(var toi in toc) { toi.Token = Token; } break;
+				case "token": foreach (var toi in toc) { toi.Token = Token; } break;
 				}
 			}
 
@@ -7829,11 +8022,11 @@ namespace TSLib.Messages
 
 	public sealed partial class PrivilegeKeyListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.PrivilegeKeyListRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -7846,20 +8039,20 @@ namespace TSLib.Messages
 
 	public sealed partial class PrivilegeKeyUse : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.PrivilegeKeyUse;
-		
+
 
 		public str Token { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "token": Token = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -7869,10 +8062,10 @@ namespace TSLib.Messages
 			var toc = (PrivilegeKeyUse[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "token": foreach(var toi in toc) { toi.Token = Token; } break;
+				case "token": foreach (var toi in toc) { toi.Token = Token; } break;
 				}
 			}
 
@@ -7881,11 +8074,11 @@ namespace TSLib.Messages
 
 	public sealed partial class Quit : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.Quit;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -7898,24 +8091,24 @@ namespace TSLib.Messages
 
 	public sealed partial class SendTextMessage : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.SendTextMessage;
-		
+
 
 		public str Message { get; set; }
 		public TextMessageTargetMode Target { get; set; }
 		public ClientId? TargetClientId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "msg": Message = (str)TsString.Unescape(value); break;
-			case "target": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) TargetClientId = (ClientId)oval; } break;
-			case "targetmode": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) Target = (TextMessageTargetMode)oval; } break;
-			
+			case "target": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) TargetClientId = (ClientId)oval; } break;
+			case "targetmode": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) Target = (TextMessageTargetMode)oval; } break;
+
 			}
 
 		}
@@ -7925,12 +8118,12 @@ namespace TSLib.Messages
 			var toc = (SendTextMessage[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "msg": foreach(var toi in toc) { toi.Message = Message; } break;
-				case "target": foreach(var toi in toc) { toi.TargetClientId = TargetClientId; } break;
-				case "targetmode": foreach(var toi in toc) { toi.Target = Target; } break;
+				case "msg": foreach (var toi in toc) { toi.Message = Message; } break;
+				case "target": foreach (var toi in toc) { toi.TargetClientId = TargetClientId; } break;
+				case "targetmode": foreach (var toi in toc) { toi.Target = Target; } break;
 				}
 			}
 
@@ -7939,7 +8132,7 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerConnectionInfo : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerConnectionInfo;
 		public string? ReturnCode { get; set; }
 
@@ -7958,28 +8151,28 @@ namespace TSLib.Messages
 		public u64 PacketsReceivedTotal { get; set; }
 		public u64 PacketsSentTotal { get; set; }
 		public DurationMilliseconds Ping { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "connection_bandwidth_received_last_minute_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastMinuteTotal = (u64)oval; } break;
-			case "connection_bandwidth_received_last_second_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastSecondTotal = (u64)oval; } break;
-			case "connection_bandwidth_sent_last_minute_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastMinuteTotal = (u64)oval; } break;
-			case "connection_bandwidth_sent_last_second_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastSecondTotal = (u64)oval; } break;
-			case "connection_bytes_received_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BytesReceivedTotal = (u64)oval; } break;
-			case "connection_bytes_sent_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BytesSentTotal = (u64)oval; } break;
-			case "connection_connected_time": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) ConnectedTime = TimeSpan.FromMilliseconds(oval); } break;
-			case "connection_filetransfer_bandwidth_received": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) FiletransferBandwidthReceived = (u64)oval; } break;
-			case "connection_filetransfer_bandwidth_sent": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) FiletransferBandwidthSent = (u64)oval; } break;
-			case "connection_filetransfer_bytes_received_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) FiletransferBytesReceivedTotal = (u64)oval; } break;
-			case "connection_filetransfer_bytes_sent_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) FiletransferBytesSentTotal = (u64)oval; } break;
-			case "connection_packetloss_total": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) PacketlossTotal = (f32)oval; } break;
-			case "connection_packets_received_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsReceivedTotal = (u64)oval; } break;
-			case "connection_packets_sent_total": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsSentTotal = (u64)oval; } break;
-			case "connection_ping": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) Ping = TimeSpan.FromMilliseconds(oval); } break;
+			case "connection_bandwidth_received_last_minute_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastMinuteTotal = (u64)oval; } break;
+			case "connection_bandwidth_received_last_second_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthReceivedLastSecondTotal = (u64)oval; } break;
+			case "connection_bandwidth_sent_last_minute_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastMinuteTotal = (u64)oval; } break;
+			case "connection_bandwidth_sent_last_second_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BandwidthSentLastSecondTotal = (u64)oval; } break;
+			case "connection_bytes_received_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BytesReceivedTotal = (u64)oval; } break;
+			case "connection_bytes_sent_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BytesSentTotal = (u64)oval; } break;
+			case "connection_connected_time": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) ConnectedTime = TimeSpan.FromMilliseconds(oval); } break;
+			case "connection_filetransfer_bandwidth_received": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) FiletransferBandwidthReceived = (u64)oval; } break;
+			case "connection_filetransfer_bandwidth_sent": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) FiletransferBandwidthSent = (u64)oval; } break;
+			case "connection_filetransfer_bytes_received_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) FiletransferBytesReceivedTotal = (u64)oval; } break;
+			case "connection_filetransfer_bytes_sent_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) FiletransferBytesSentTotal = (u64)oval; } break;
+			case "connection_packetloss_total": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) PacketlossTotal = (f32)oval; } break;
+			case "connection_packets_received_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsReceivedTotal = (u64)oval; } break;
+			case "connection_packets_sent_total": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) PacketsSentTotal = (u64)oval; } break;
+			case "connection_ping": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) Ping = TimeSpan.FromMilliseconds(oval); } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -7990,24 +8183,24 @@ namespace TSLib.Messages
 			var toc = (ServerConnectionInfo[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "connection_bandwidth_received_last_minute_total": foreach(var toi in toc) { toi.BandwidthReceivedLastMinuteTotal = BandwidthReceivedLastMinuteTotal; } break;
-				case "connection_bandwidth_received_last_second_total": foreach(var toi in toc) { toi.BandwidthReceivedLastSecondTotal = BandwidthReceivedLastSecondTotal; } break;
-				case "connection_bandwidth_sent_last_minute_total": foreach(var toi in toc) { toi.BandwidthSentLastMinuteTotal = BandwidthSentLastMinuteTotal; } break;
-				case "connection_bandwidth_sent_last_second_total": foreach(var toi in toc) { toi.BandwidthSentLastSecondTotal = BandwidthSentLastSecondTotal; } break;
-				case "connection_bytes_received_total": foreach(var toi in toc) { toi.BytesReceivedTotal = BytesReceivedTotal; } break;
-				case "connection_bytes_sent_total": foreach(var toi in toc) { toi.BytesSentTotal = BytesSentTotal; } break;
-				case "connection_connected_time": foreach(var toi in toc) { toi.ConnectedTime = ConnectedTime; } break;
-				case "connection_filetransfer_bandwidth_received": foreach(var toi in toc) { toi.FiletransferBandwidthReceived = FiletransferBandwidthReceived; } break;
-				case "connection_filetransfer_bandwidth_sent": foreach(var toi in toc) { toi.FiletransferBandwidthSent = FiletransferBandwidthSent; } break;
-				case "connection_filetransfer_bytes_received_total": foreach(var toi in toc) { toi.FiletransferBytesReceivedTotal = FiletransferBytesReceivedTotal; } break;
-				case "connection_filetransfer_bytes_sent_total": foreach(var toi in toc) { toi.FiletransferBytesSentTotal = FiletransferBytesSentTotal; } break;
-				case "connection_packetloss_total": foreach(var toi in toc) { toi.PacketlossTotal = PacketlossTotal; } break;
-				case "connection_packets_received_total": foreach(var toi in toc) { toi.PacketsReceivedTotal = PacketsReceivedTotal; } break;
-				case "connection_packets_sent_total": foreach(var toi in toc) { toi.PacketsSentTotal = PacketsSentTotal; } break;
-				case "connection_ping": foreach(var toi in toc) { toi.Ping = Ping; } break;
+				case "connection_bandwidth_received_last_minute_total": foreach (var toi in toc) { toi.BandwidthReceivedLastMinuteTotal = BandwidthReceivedLastMinuteTotal; } break;
+				case "connection_bandwidth_received_last_second_total": foreach (var toi in toc) { toi.BandwidthReceivedLastSecondTotal = BandwidthReceivedLastSecondTotal; } break;
+				case "connection_bandwidth_sent_last_minute_total": foreach (var toi in toc) { toi.BandwidthSentLastMinuteTotal = BandwidthSentLastMinuteTotal; } break;
+				case "connection_bandwidth_sent_last_second_total": foreach (var toi in toc) { toi.BandwidthSentLastSecondTotal = BandwidthSentLastSecondTotal; } break;
+				case "connection_bytes_received_total": foreach (var toi in toc) { toi.BytesReceivedTotal = BytesReceivedTotal; } break;
+				case "connection_bytes_sent_total": foreach (var toi in toc) { toi.BytesSentTotal = BytesSentTotal; } break;
+				case "connection_connected_time": foreach (var toi in toc) { toi.ConnectedTime = ConnectedTime; } break;
+				case "connection_filetransfer_bandwidth_received": foreach (var toi in toc) { toi.FiletransferBandwidthReceived = FiletransferBandwidthReceived; } break;
+				case "connection_filetransfer_bandwidth_sent": foreach (var toi in toc) { toi.FiletransferBandwidthSent = FiletransferBandwidthSent; } break;
+				case "connection_filetransfer_bytes_received_total": foreach (var toi in toc) { toi.FiletransferBytesReceivedTotal = FiletransferBytesReceivedTotal; } break;
+				case "connection_filetransfer_bytes_sent_total": foreach (var toi in toc) { toi.FiletransferBytesSentTotal = FiletransferBytesSentTotal; } break;
+				case "connection_packetloss_total": foreach (var toi in toc) { toi.PacketlossTotal = PacketlossTotal; } break;
+				case "connection_packets_received_total": foreach (var toi in toc) { toi.PacketsReceivedTotal = PacketsReceivedTotal; } break;
+				case "connection_packets_sent_total": foreach (var toi in toc) { toi.PacketsSentTotal = PacketsSentTotal; } break;
+				case "connection_ping": foreach (var toi in toc) { toi.Ping = Ping; } break;
 				}
 			}
 
@@ -8016,11 +8209,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerConnectionInfoRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerConnectionInfoRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -8033,20 +8226,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerCreate : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerCreate;
-		
+
 
 		public str ServerName { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "virtualserver_name": ServerName = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -8056,10 +8249,10 @@ namespace TSLib.Messages
 			var toc = (ServerCreate[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "virtualserver_name": foreach(var toi in toc) { toi.ServerName = ServerName; } break;
+				case "virtualserver_name": foreach (var toi in toc) { toi.ServerName = ServerName; } break;
 				}
 			}
 
@@ -8068,20 +8261,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerDelete : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerDelete;
-		
+
 
 		public u32 ServerId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "sid": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) ServerId = (u32)oval; } break;
-			
+			case "sid": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) ServerId = (u32)oval; } break;
+
 			}
 
 		}
@@ -8091,10 +8284,10 @@ namespace TSLib.Messages
 			var toc = (ServerDelete[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "sid": foreach(var toi in toc) { toi.ServerId = ServerId; } break;
+				case "sid": foreach (var toi in toc) { toi.ServerId = ServerId; } break;
 				}
 			}
 
@@ -8103,9 +8296,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerEdit : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerEdit;
-		
+
 
 		public u32? AntifloodPointsTickReduce { get; set; }
 		public u32? AntifloodPointsToCommandBlock { get; set; }
@@ -8150,57 +8343,57 @@ namespace TSLib.Messages
 		public u64? UploadQuota { get; set; }
 		public bool? WeblistEnabled { get; set; }
 		public str? WelcomeMessage { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "sid": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) ServerId = (u32)oval; } break;
-			case "virtualserver_antiflood_points_needed_command_block": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) AntifloodPointsToCommandBlock = (u32)oval; } break;
-			case "virtualserver_antiflood_points_needed_ip_block": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) AntifloodPointsToIpBlock = (u32)oval; } break;
-			case "virtualserver_antiflood_points_tick_reduce": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) AntifloodPointsTickReduce = (u32)oval; } break;
-			case "virtualserver_channel_temp_delete_delay_default": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) TempChannelDefaultDeleteDelay = TimeSpan.FromSeconds(oval); } break;
-			case "virtualserver_codec_encryption_mode": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) CodecEncryptionMode = (CodecEncryptionMode)oval; } break;
-			case "virtualserver_complain_autoban_count": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) ComplainAutobanCount = (u32)oval; } break;
-			case "virtualserver_complain_autoban_time": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) ComplainAutobanTime = TimeSpan.FromSeconds(oval); } break;
-			case "virtualserver_complain_remove_time": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) ComplainRemoveTime = TimeSpan.FromSeconds(oval); } break;
-			case "virtualserver_default_channel_admin_group": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) DefaultChannelAdminGroup = (ChannelGroupId)oval; } break;
-			case "virtualserver_default_channel_group": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) DefaultChannelGroup = (ChannelGroupId)oval; } break;
-			case "virtualserver_default_server_group": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) DefaultServerGroup = (ServerGroupId)oval; } break;
-			case "virtualserver_download_quota": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) DownloadQuota = (u64)oval; } break;
-			case "virtualserver_hostbanner_gfx_interval": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) HostbannerGfxInterval = TimeSpan.FromSeconds(oval); } break;
+			case "sid": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) ServerId = (u32)oval; } break;
+			case "virtualserver_antiflood_points_needed_command_block": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) AntifloodPointsToCommandBlock = (u32)oval; } break;
+			case "virtualserver_antiflood_points_needed_ip_block": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) AntifloodPointsToIpBlock = (u32)oval; } break;
+			case "virtualserver_antiflood_points_tick_reduce": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) AntifloodPointsTickReduce = (u32)oval; } break;
+			case "virtualserver_channel_temp_delete_delay_default": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) TempChannelDefaultDeleteDelay = TimeSpan.FromSeconds(oval); } break;
+			case "virtualserver_codec_encryption_mode": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) CodecEncryptionMode = (CodecEncryptionMode)oval; } break;
+			case "virtualserver_complain_autoban_count": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) ComplainAutobanCount = (u32)oval; } break;
+			case "virtualserver_complain_autoban_time": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) ComplainAutobanTime = TimeSpan.FromSeconds(oval); } break;
+			case "virtualserver_complain_remove_time": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) ComplainRemoveTime = TimeSpan.FromSeconds(oval); } break;
+			case "virtualserver_default_channel_admin_group": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) DefaultChannelAdminGroup = (ChannelGroupId)oval; } break;
+			case "virtualserver_default_channel_group": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) DefaultChannelGroup = (ChannelGroupId)oval; } break;
+			case "virtualserver_default_server_group": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) DefaultServerGroup = (ServerGroupId)oval; } break;
+			case "virtualserver_download_quota": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) DownloadQuota = (u64)oval; } break;
+			case "virtualserver_hostbanner_gfx_interval": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) HostbannerGfxInterval = TimeSpan.FromSeconds(oval); } break;
 			case "virtualserver_hostbanner_gfx_url": HostbannerGfxUrl = (str)TsString.Unescape(value); break;
-			case "virtualserver_hostbanner_mode": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) HostbannerMode = (HostBannerMode)oval; } break;
+			case "virtualserver_hostbanner_mode": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) HostbannerMode = (HostBannerMode)oval; } break;
 			case "virtualserver_hostbanner_url": HostbannerUrl = (str)TsString.Unescape(value); break;
 			case "virtualserver_hostbutton_gfx_url": HostbuttonGfxUrl = (str)TsString.Unescape(value); break;
 			case "virtualserver_hostbutton_tooltip": HostbuttonTooltip = (str)TsString.Unescape(value); break;
 			case "virtualserver_hostbutton_url": HostbuttonUrl = (str)TsString.Unescape(value); break;
 			case "virtualserver_hostmessage": Hostmessage = (str)TsString.Unescape(value); break;
-			case "virtualserver_hostmessage_mode": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) HostmessageMode = (HostMessageMode)oval; } break;
-			case "virtualserver_icon_id": { if(!value.IsEmpty && value[0] == (u8)'-') { if(Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if(Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
+			case "virtualserver_hostmessage_mode": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) HostmessageMode = (HostMessageMode)oval; } break;
+			case "virtualserver_icon_id": { if (!value.IsEmpty && value[0] == (u8)'-') { if (Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if (Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
 			case "virtualserver_log_channel": LogChannel = value.Length > 0 && value[0] != '0'; break;
 			case "virtualserver_log_client": LogClient = value.Length > 0 && value[0] != '0'; break;
 			case "virtualserver_log_filetransfer": LogFileTransfer = value.Length > 0 && value[0] != '0'; break;
 			case "virtualserver_log_permissions": LogPermissions = value.Length > 0 && value[0] != '0'; break;
 			case "virtualserver_log_query": LogQuery = value.Length > 0 && value[0] != '0'; break;
 			case "virtualserver_log_server": LogServer = value.Length > 0 && value[0] != '0'; break;
-			case "virtualserver_max_download_total_bandwidth": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) MaxDownloadTotalBandwidth = (u64)oval; } break;
-			case "virtualserver_max_upload_total_bandwidth": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) MaxUploadTotalBandwidth = (u64)oval; } break;
-			case "virtualserver_maxclients": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) MaxClients = (u16)oval; } break;
-			case "virtualserver_min_clients_in_channel_before_forced_silence": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) MinClientsInChannelBeforeForcedSilence = (u32)oval; } break;
+			case "virtualserver_max_download_total_bandwidth": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) MaxDownloadTotalBandwidth = (u64)oval; } break;
+			case "virtualserver_max_upload_total_bandwidth": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) MaxUploadTotalBandwidth = (u64)oval; } break;
+			case "virtualserver_maxclients": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) MaxClients = (u16)oval; } break;
+			case "virtualserver_min_clients_in_channel_before_forced_silence": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) MinClientsInChannelBeforeForcedSilence = (u32)oval; } break;
 			case "virtualserver_name": ServerName = (str)TsString.Unescape(value); break;
 			case "virtualserver_name_phonetic": ServerPhoneticName = (str)TsString.Unescape(value); break;
-			case "virtualserver_needed_identity_security_level": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) IdentitySecurityLevel = (u8)oval; } break;
+			case "virtualserver_needed_identity_security_level": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) IdentitySecurityLevel = (u8)oval; } break;
 			case "virtualserver_nickname": Nickname = (str)TsString.Unescape(value); break;
 			case "virtualserver_password": ServerPassword = (str)TsString.Unescape(value); break;
-			case "virtualserver_priority_speaker_dimm_modificator": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) PrioritySpeakerDimmModificator = (f32)oval; } break;
-			case "virtualserver_reserved_slots": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ReservedSlots = (u16)oval; } break;
-			case "virtualserver_upload_quota": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) UploadQuota = (u64)oval; } break;
+			case "virtualserver_priority_speaker_dimm_modificator": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) PrioritySpeakerDimmModificator = (f32)oval; } break;
+			case "virtualserver_reserved_slots": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ReservedSlots = (u16)oval; } break;
+			case "virtualserver_upload_quota": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) UploadQuota = (u64)oval; } break;
 			case "virtualserver_weblist_enabled": WeblistEnabled = value.Length > 0 && value[0] != '0'; break;
 			case "virtualserver_welcomemessage": WelcomeMessage = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -8210,52 +8403,52 @@ namespace TSLib.Messages
 			var toc = (ServerEdit[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "sid": foreach(var toi in toc) { toi.ServerId = ServerId; } break;
-				case "virtualserver_antiflood_points_needed_command_block": foreach(var toi in toc) { toi.AntifloodPointsToCommandBlock = AntifloodPointsToCommandBlock; } break;
-				case "virtualserver_antiflood_points_needed_ip_block": foreach(var toi in toc) { toi.AntifloodPointsToIpBlock = AntifloodPointsToIpBlock; } break;
-				case "virtualserver_antiflood_points_tick_reduce": foreach(var toi in toc) { toi.AntifloodPointsTickReduce = AntifloodPointsTickReduce; } break;
-				case "virtualserver_channel_temp_delete_delay_default": foreach(var toi in toc) { toi.TempChannelDefaultDeleteDelay = TempChannelDefaultDeleteDelay; } break;
-				case "virtualserver_codec_encryption_mode": foreach(var toi in toc) { toi.CodecEncryptionMode = CodecEncryptionMode; } break;
-				case "virtualserver_complain_autoban_count": foreach(var toi in toc) { toi.ComplainAutobanCount = ComplainAutobanCount; } break;
-				case "virtualserver_complain_autoban_time": foreach(var toi in toc) { toi.ComplainAutobanTime = ComplainAutobanTime; } break;
-				case "virtualserver_complain_remove_time": foreach(var toi in toc) { toi.ComplainRemoveTime = ComplainRemoveTime; } break;
-				case "virtualserver_default_channel_admin_group": foreach(var toi in toc) { toi.DefaultChannelAdminGroup = DefaultChannelAdminGroup; } break;
-				case "virtualserver_default_channel_group": foreach(var toi in toc) { toi.DefaultChannelGroup = DefaultChannelGroup; } break;
-				case "virtualserver_default_server_group": foreach(var toi in toc) { toi.DefaultServerGroup = DefaultServerGroup; } break;
-				case "virtualserver_download_quota": foreach(var toi in toc) { toi.DownloadQuota = DownloadQuota; } break;
-				case "virtualserver_hostbanner_gfx_interval": foreach(var toi in toc) { toi.HostbannerGfxInterval = HostbannerGfxInterval; } break;
-				case "virtualserver_hostbanner_gfx_url": foreach(var toi in toc) { toi.HostbannerGfxUrl = HostbannerGfxUrl; } break;
-				case "virtualserver_hostbanner_mode": foreach(var toi in toc) { toi.HostbannerMode = HostbannerMode; } break;
-				case "virtualserver_hostbanner_url": foreach(var toi in toc) { toi.HostbannerUrl = HostbannerUrl; } break;
-				case "virtualserver_hostbutton_gfx_url": foreach(var toi in toc) { toi.HostbuttonGfxUrl = HostbuttonGfxUrl; } break;
-				case "virtualserver_hostbutton_tooltip": foreach(var toi in toc) { toi.HostbuttonTooltip = HostbuttonTooltip; } break;
-				case "virtualserver_hostbutton_url": foreach(var toi in toc) { toi.HostbuttonUrl = HostbuttonUrl; } break;
-				case "virtualserver_hostmessage": foreach(var toi in toc) { toi.Hostmessage = Hostmessage; } break;
-				case "virtualserver_hostmessage_mode": foreach(var toi in toc) { toi.HostmessageMode = HostmessageMode; } break;
-				case "virtualserver_icon_id": foreach(var toi in toc) { toi.IconId = IconId; } break;
-				case "virtualserver_log_channel": foreach(var toi in toc) { toi.LogChannel = LogChannel; } break;
-				case "virtualserver_log_client": foreach(var toi in toc) { toi.LogClient = LogClient; } break;
-				case "virtualserver_log_filetransfer": foreach(var toi in toc) { toi.LogFileTransfer = LogFileTransfer; } break;
-				case "virtualserver_log_permissions": foreach(var toi in toc) { toi.LogPermissions = LogPermissions; } break;
-				case "virtualserver_log_query": foreach(var toi in toc) { toi.LogQuery = LogQuery; } break;
-				case "virtualserver_log_server": foreach(var toi in toc) { toi.LogServer = LogServer; } break;
-				case "virtualserver_max_download_total_bandwidth": foreach(var toi in toc) { toi.MaxDownloadTotalBandwidth = MaxDownloadTotalBandwidth; } break;
-				case "virtualserver_max_upload_total_bandwidth": foreach(var toi in toc) { toi.MaxUploadTotalBandwidth = MaxUploadTotalBandwidth; } break;
-				case "virtualserver_maxclients": foreach(var toi in toc) { toi.MaxClients = MaxClients; } break;
-				case "virtualserver_min_clients_in_channel_before_forced_silence": foreach(var toi in toc) { toi.MinClientsInChannelBeforeForcedSilence = MinClientsInChannelBeforeForcedSilence; } break;
-				case "virtualserver_name": foreach(var toi in toc) { toi.ServerName = ServerName; } break;
-				case "virtualserver_name_phonetic": foreach(var toi in toc) { toi.ServerPhoneticName = ServerPhoneticName; } break;
-				case "virtualserver_needed_identity_security_level": foreach(var toi in toc) { toi.IdentitySecurityLevel = IdentitySecurityLevel; } break;
-				case "virtualserver_nickname": foreach(var toi in toc) { toi.Nickname = Nickname; } break;
-				case "virtualserver_password": foreach(var toi in toc) { toi.ServerPassword = ServerPassword; } break;
-				case "virtualserver_priority_speaker_dimm_modificator": foreach(var toi in toc) { toi.PrioritySpeakerDimmModificator = PrioritySpeakerDimmModificator; } break;
-				case "virtualserver_reserved_slots": foreach(var toi in toc) { toi.ReservedSlots = ReservedSlots; } break;
-				case "virtualserver_upload_quota": foreach(var toi in toc) { toi.UploadQuota = UploadQuota; } break;
-				case "virtualserver_weblist_enabled": foreach(var toi in toc) { toi.WeblistEnabled = WeblistEnabled; } break;
-				case "virtualserver_welcomemessage": foreach(var toi in toc) { toi.WelcomeMessage = WelcomeMessage; } break;
+				case "sid": foreach (var toi in toc) { toi.ServerId = ServerId; } break;
+				case "virtualserver_antiflood_points_needed_command_block": foreach (var toi in toc) { toi.AntifloodPointsToCommandBlock = AntifloodPointsToCommandBlock; } break;
+				case "virtualserver_antiflood_points_needed_ip_block": foreach (var toi in toc) { toi.AntifloodPointsToIpBlock = AntifloodPointsToIpBlock; } break;
+				case "virtualserver_antiflood_points_tick_reduce": foreach (var toi in toc) { toi.AntifloodPointsTickReduce = AntifloodPointsTickReduce; } break;
+				case "virtualserver_channel_temp_delete_delay_default": foreach (var toi in toc) { toi.TempChannelDefaultDeleteDelay = TempChannelDefaultDeleteDelay; } break;
+				case "virtualserver_codec_encryption_mode": foreach (var toi in toc) { toi.CodecEncryptionMode = CodecEncryptionMode; } break;
+				case "virtualserver_complain_autoban_count": foreach (var toi in toc) { toi.ComplainAutobanCount = ComplainAutobanCount; } break;
+				case "virtualserver_complain_autoban_time": foreach (var toi in toc) { toi.ComplainAutobanTime = ComplainAutobanTime; } break;
+				case "virtualserver_complain_remove_time": foreach (var toi in toc) { toi.ComplainRemoveTime = ComplainRemoveTime; } break;
+				case "virtualserver_default_channel_admin_group": foreach (var toi in toc) { toi.DefaultChannelAdminGroup = DefaultChannelAdminGroup; } break;
+				case "virtualserver_default_channel_group": foreach (var toi in toc) { toi.DefaultChannelGroup = DefaultChannelGroup; } break;
+				case "virtualserver_default_server_group": foreach (var toi in toc) { toi.DefaultServerGroup = DefaultServerGroup; } break;
+				case "virtualserver_download_quota": foreach (var toi in toc) { toi.DownloadQuota = DownloadQuota; } break;
+				case "virtualserver_hostbanner_gfx_interval": foreach (var toi in toc) { toi.HostbannerGfxInterval = HostbannerGfxInterval; } break;
+				case "virtualserver_hostbanner_gfx_url": foreach (var toi in toc) { toi.HostbannerGfxUrl = HostbannerGfxUrl; } break;
+				case "virtualserver_hostbanner_mode": foreach (var toi in toc) { toi.HostbannerMode = HostbannerMode; } break;
+				case "virtualserver_hostbanner_url": foreach (var toi in toc) { toi.HostbannerUrl = HostbannerUrl; } break;
+				case "virtualserver_hostbutton_gfx_url": foreach (var toi in toc) { toi.HostbuttonGfxUrl = HostbuttonGfxUrl; } break;
+				case "virtualserver_hostbutton_tooltip": foreach (var toi in toc) { toi.HostbuttonTooltip = HostbuttonTooltip; } break;
+				case "virtualserver_hostbutton_url": foreach (var toi in toc) { toi.HostbuttonUrl = HostbuttonUrl; } break;
+				case "virtualserver_hostmessage": foreach (var toi in toc) { toi.Hostmessage = Hostmessage; } break;
+				case "virtualserver_hostmessage_mode": foreach (var toi in toc) { toi.HostmessageMode = HostmessageMode; } break;
+				case "virtualserver_icon_id": foreach (var toi in toc) { toi.IconId = IconId; } break;
+				case "virtualserver_log_channel": foreach (var toi in toc) { toi.LogChannel = LogChannel; } break;
+				case "virtualserver_log_client": foreach (var toi in toc) { toi.LogClient = LogClient; } break;
+				case "virtualserver_log_filetransfer": foreach (var toi in toc) { toi.LogFileTransfer = LogFileTransfer; } break;
+				case "virtualserver_log_permissions": foreach (var toi in toc) { toi.LogPermissions = LogPermissions; } break;
+				case "virtualserver_log_query": foreach (var toi in toc) { toi.LogQuery = LogQuery; } break;
+				case "virtualserver_log_server": foreach (var toi in toc) { toi.LogServer = LogServer; } break;
+				case "virtualserver_max_download_total_bandwidth": foreach (var toi in toc) { toi.MaxDownloadTotalBandwidth = MaxDownloadTotalBandwidth; } break;
+				case "virtualserver_max_upload_total_bandwidth": foreach (var toi in toc) { toi.MaxUploadTotalBandwidth = MaxUploadTotalBandwidth; } break;
+				case "virtualserver_maxclients": foreach (var toi in toc) { toi.MaxClients = MaxClients; } break;
+				case "virtualserver_min_clients_in_channel_before_forced_silence": foreach (var toi in toc) { toi.MinClientsInChannelBeforeForcedSilence = MinClientsInChannelBeforeForcedSilence; } break;
+				case "virtualserver_name": foreach (var toi in toc) { toi.ServerName = ServerName; } break;
+				case "virtualserver_name_phonetic": foreach (var toi in toc) { toi.ServerPhoneticName = ServerPhoneticName; } break;
+				case "virtualserver_needed_identity_security_level": foreach (var toi in toc) { toi.IdentitySecurityLevel = IdentitySecurityLevel; } break;
+				case "virtualserver_nickname": foreach (var toi in toc) { toi.Nickname = Nickname; } break;
+				case "virtualserver_password": foreach (var toi in toc) { toi.ServerPassword = ServerPassword; } break;
+				case "virtualserver_priority_speaker_dimm_modificator": foreach (var toi in toc) { toi.PrioritySpeakerDimmModificator = PrioritySpeakerDimmModificator; } break;
+				case "virtualserver_reserved_slots": foreach (var toi in toc) { toi.ReservedSlots = ReservedSlots; } break;
+				case "virtualserver_upload_quota": foreach (var toi in toc) { toi.UploadQuota = UploadQuota; } break;
+				case "virtualserver_weblist_enabled": foreach (var toi in toc) { toi.WeblistEnabled = WeblistEnabled; } break;
+				case "virtualserver_welcomemessage": foreach (var toi in toc) { toi.WelcomeMessage = WelcomeMessage; } break;
 				}
 			}
 
@@ -8264,9 +8457,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerEdited : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerEdited;
-		
+
 
 		public CodecEncryptionMode? CodecEncryptionMode { get; set; }
 		public ChannelGroupId? DefaultChannelGroup { get; set; }
@@ -8288,34 +8481,34 @@ namespace TSLib.Messages
 		public str? ServerName { get; set; }
 		public str? ServerPhoneticName { get; set; }
 		public DurationSeconds? TempChannelDefaultDeleteDelay { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "invokerid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
+			case "invokerid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
 			case "invokername": InvokerName = (str)TsString.Unescape(value); break;
 			case "invokeruid": InvokerUid = (Uid)TsString.Unescape(value); break;
-			case "reasonid": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) Reason = (Reason)oval; } break;
-			case "virtualserver_channel_temp_delete_delay_default": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) TempChannelDefaultDeleteDelay = TimeSpan.FromSeconds(oval); } break;
-			case "virtualserver_codec_encryption_mode": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) CodecEncryptionMode = (CodecEncryptionMode)oval; } break;
-			case "virtualserver_default_channel_group": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) DefaultChannelGroup = (ChannelGroupId)oval; } break;
-			case "virtualserver_default_server_group": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) DefaultServerGroup = (ServerGroupId)oval; } break;
-			case "virtualserver_hostbanner_gfx_interval": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) HostbannerGfxInterval = TimeSpan.FromSeconds(oval); } break;
+			case "reasonid": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) Reason = (Reason)oval; } break;
+			case "virtualserver_channel_temp_delete_delay_default": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) TempChannelDefaultDeleteDelay = TimeSpan.FromSeconds(oval); } break;
+			case "virtualserver_codec_encryption_mode": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) CodecEncryptionMode = (CodecEncryptionMode)oval; } break;
+			case "virtualserver_default_channel_group": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) DefaultChannelGroup = (ChannelGroupId)oval; } break;
+			case "virtualserver_default_server_group": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) DefaultServerGroup = (ServerGroupId)oval; } break;
+			case "virtualserver_hostbanner_gfx_interval": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) HostbannerGfxInterval = TimeSpan.FromSeconds(oval); } break;
 			case "virtualserver_hostbanner_gfx_url": HostbannerGfxUrl = (str)TsString.Unescape(value); break;
-			case "virtualserver_hostbanner_mode": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) HostbannerMode = (HostBannerMode)oval; } break;
+			case "virtualserver_hostbanner_mode": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) HostbannerMode = (HostBannerMode)oval; } break;
 			case "virtualserver_hostbanner_url": HostbannerUrl = (str)TsString.Unescape(value); break;
 			case "virtualserver_hostbutton_gfx_url": HostbuttonGfxUrl = (str)TsString.Unescape(value); break;
 			case "virtualserver_hostbutton_tooltip": HostbuttonTooltip = (str)TsString.Unescape(value); break;
 			case "virtualserver_hostbutton_url": HostbuttonUrl = (str)TsString.Unescape(value); break;
-			case "virtualserver_icon_id": { if(!value.IsEmpty && value[0] == (u8)'-') { if(Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if(Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
+			case "virtualserver_icon_id": { if (!value.IsEmpty && value[0] == (u8)'-') { if (Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if (Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
 			case "virtualserver_name": ServerName = (str)TsString.Unescape(value); break;
 			case "virtualserver_name_phonetic": ServerPhoneticName = (str)TsString.Unescape(value); break;
 			case "virtualserver_nickname": Nickname = (str)TsString.Unescape(value); break;
-			case "virtualserver_priority_speaker_dimm_modificator": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) PrioritySpeakerDimmModificator = (f32)oval; } break;
-			
+			case "virtualserver_priority_speaker_dimm_modificator": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) PrioritySpeakerDimmModificator = (f32)oval; } break;
+
 			}
 
 		}
@@ -8325,29 +8518,29 @@ namespace TSLib.Messages
 			var toc = (ServerEdited[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "invokerid": foreach(var toi in toc) { toi.InvokerId = InvokerId; } break;
-				case "invokername": foreach(var toi in toc) { toi.InvokerName = InvokerName; } break;
-				case "invokeruid": foreach(var toi in toc) { toi.InvokerUid = InvokerUid; } break;
-				case "reasonid": foreach(var toi in toc) { toi.Reason = Reason; } break;
-				case "virtualserver_channel_temp_delete_delay_default": foreach(var toi in toc) { toi.TempChannelDefaultDeleteDelay = TempChannelDefaultDeleteDelay; } break;
-				case "virtualserver_codec_encryption_mode": foreach(var toi in toc) { toi.CodecEncryptionMode = CodecEncryptionMode; } break;
-				case "virtualserver_default_channel_group": foreach(var toi in toc) { toi.DefaultChannelGroup = DefaultChannelGroup; } break;
-				case "virtualserver_default_server_group": foreach(var toi in toc) { toi.DefaultServerGroup = DefaultServerGroup; } break;
-				case "virtualserver_hostbanner_gfx_interval": foreach(var toi in toc) { toi.HostbannerGfxInterval = HostbannerGfxInterval; } break;
-				case "virtualserver_hostbanner_gfx_url": foreach(var toi in toc) { toi.HostbannerGfxUrl = HostbannerGfxUrl; } break;
-				case "virtualserver_hostbanner_mode": foreach(var toi in toc) { toi.HostbannerMode = HostbannerMode; } break;
-				case "virtualserver_hostbanner_url": foreach(var toi in toc) { toi.HostbannerUrl = HostbannerUrl; } break;
-				case "virtualserver_hostbutton_gfx_url": foreach(var toi in toc) { toi.HostbuttonGfxUrl = HostbuttonGfxUrl; } break;
-				case "virtualserver_hostbutton_tooltip": foreach(var toi in toc) { toi.HostbuttonTooltip = HostbuttonTooltip; } break;
-				case "virtualserver_hostbutton_url": foreach(var toi in toc) { toi.HostbuttonUrl = HostbuttonUrl; } break;
-				case "virtualserver_icon_id": foreach(var toi in toc) { toi.IconId = IconId; } break;
-				case "virtualserver_name": foreach(var toi in toc) { toi.ServerName = ServerName; } break;
-				case "virtualserver_name_phonetic": foreach(var toi in toc) { toi.ServerPhoneticName = ServerPhoneticName; } break;
-				case "virtualserver_nickname": foreach(var toi in toc) { toi.Nickname = Nickname; } break;
-				case "virtualserver_priority_speaker_dimm_modificator": foreach(var toi in toc) { toi.PrioritySpeakerDimmModificator = PrioritySpeakerDimmModificator; } break;
+				case "invokerid": foreach (var toi in toc) { toi.InvokerId = InvokerId; } break;
+				case "invokername": foreach (var toi in toc) { toi.InvokerName = InvokerName; } break;
+				case "invokeruid": foreach (var toi in toc) { toi.InvokerUid = InvokerUid; } break;
+				case "reasonid": foreach (var toi in toc) { toi.Reason = Reason; } break;
+				case "virtualserver_channel_temp_delete_delay_default": foreach (var toi in toc) { toi.TempChannelDefaultDeleteDelay = TempChannelDefaultDeleteDelay; } break;
+				case "virtualserver_codec_encryption_mode": foreach (var toi in toc) { toi.CodecEncryptionMode = CodecEncryptionMode; } break;
+				case "virtualserver_default_channel_group": foreach (var toi in toc) { toi.DefaultChannelGroup = DefaultChannelGroup; } break;
+				case "virtualserver_default_server_group": foreach (var toi in toc) { toi.DefaultServerGroup = DefaultServerGroup; } break;
+				case "virtualserver_hostbanner_gfx_interval": foreach (var toi in toc) { toi.HostbannerGfxInterval = HostbannerGfxInterval; } break;
+				case "virtualserver_hostbanner_gfx_url": foreach (var toi in toc) { toi.HostbannerGfxUrl = HostbannerGfxUrl; } break;
+				case "virtualserver_hostbanner_mode": foreach (var toi in toc) { toi.HostbannerMode = HostbannerMode; } break;
+				case "virtualserver_hostbanner_url": foreach (var toi in toc) { toi.HostbannerUrl = HostbannerUrl; } break;
+				case "virtualserver_hostbutton_gfx_url": foreach (var toi in toc) { toi.HostbuttonGfxUrl = HostbuttonGfxUrl; } break;
+				case "virtualserver_hostbutton_tooltip": foreach (var toi in toc) { toi.HostbuttonTooltip = HostbuttonTooltip; } break;
+				case "virtualserver_hostbutton_url": foreach (var toi in toc) { toi.HostbuttonUrl = HostbuttonUrl; } break;
+				case "virtualserver_icon_id": foreach (var toi in toc) { toi.IconId = IconId; } break;
+				case "virtualserver_name": foreach (var toi in toc) { toi.ServerName = ServerName; } break;
+				case "virtualserver_name_phonetic": foreach (var toi in toc) { toi.ServerPhoneticName = ServerPhoneticName; } break;
+				case "virtualserver_nickname": foreach (var toi in toc) { toi.Nickname = Nickname; } break;
+				case "virtualserver_priority_speaker_dimm_modificator": foreach (var toi in toc) { toi.PrioritySpeakerDimmModificator = PrioritySpeakerDimmModificator; } break;
 				}
 			}
 
@@ -8356,22 +8549,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupAdd : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupAdd;
-		
+
 
 		public GroupType? GroupType { get; set; }
 		public str Name { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "name": Name = (str)TsString.Unescape(value); break;
-			case "type": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) GroupType = (GroupType)oval; } break;
-			
+			case "type": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) GroupType = (GroupType)oval; } break;
+
 			}
 
 		}
@@ -8381,11 +8574,11 @@ namespace TSLib.Messages
 			var toc = (ServerGroupAdd[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "type": foreach(var toi in toc) { toi.GroupType = GroupType; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "type": foreach (var toi in toc) { toi.GroupType = GroupType; } break;
 				}
 			}
 
@@ -8394,22 +8587,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupAddClient : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupAddClient;
-		
+
 
 		public ClientDbId ClientDbId { get; set; }
 		public ServerGroupId ServerGroupId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			case "sgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
-			
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "sgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
+
 			}
 
 		}
@@ -8419,11 +8612,11 @@ namespace TSLib.Messages
 			var toc = (ServerGroupAddClient[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "sgid": foreach(var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "sgid": foreach (var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
 				}
 			}
 
@@ -8432,9 +8625,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupAddPerm : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupAddPerm;
-		
+
 
 		public Ts3Permission? PermissionId { get; set; }
 		public str? PermissionNameId { get; set; }
@@ -8442,20 +8635,20 @@ namespace TSLib.Messages
 		public bool PermissionSkip { get; set; }
 		public i32 PermissionValue { get; set; }
 		public ServerGroupId ServerGroupId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permnegated": PermissionNegated = value.Length > 0 && value[0] != '0'; break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
 			case "permskip": PermissionSkip = value.Length > 0 && value[0] != '0'; break;
-			case "permvalue": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
-			case "sgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
-			
+			case "permvalue": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
+			case "sgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
+
 			}
 
 		}
@@ -8465,15 +8658,15 @@ namespace TSLib.Messages
 			var toc = (ServerGroupAddPerm[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permnegated": foreach(var toi in toc) { toi.PermissionNegated = PermissionNegated; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
-				case "permskip": foreach(var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
-				case "permvalue": foreach(var toi in toc) { toi.PermissionValue = PermissionValue; } break;
-				case "sgid": foreach(var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permnegated": foreach (var toi in toc) { toi.PermissionNegated = PermissionNegated; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "permskip": foreach (var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
+				case "permvalue": foreach (var toi in toc) { toi.PermissionValue = PermissionValue; } break;
+				case "sgid": foreach (var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
 				}
 			}
 
@@ -8482,19 +8675,19 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupAddResponse : IResponse
 	{
-		#pragma warning disable CS8618
-		
+#pragma warning disable CS8618
+
 		public string? ReturnCode { get; set; }
 
 		public ServerGroupId ServerGroupId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "sgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
+			case "sgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -8505,10 +8698,10 @@ namespace TSLib.Messages
 			var toc = (ServerGroupAddResponse[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "sgid": foreach(var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
+				case "sgid": foreach (var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
 				}
 			}
 
@@ -8517,9 +8710,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupAutoAddPerm : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupAutoAddPerm;
-		
+
 
 		public Ts3Permission? PermissionId { get; set; }
 		public str? PermissionNameId { get; set; }
@@ -8527,20 +8720,20 @@ namespace TSLib.Messages
 		public bool PermissionSkip { get; set; }
 		public i32 PermissionValue { get; set; }
 		public u32 ServerGroupType { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permnegated": PermissionNegated = value.Length > 0 && value[0] != '0'; break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
 			case "permskip": PermissionSkip = value.Length > 0 && value[0] != '0'; break;
-			case "permvalue": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
-			case "sgtype": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) ServerGroupType = (u32)oval; } break;
-			
+			case "permvalue": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
+			case "sgtype": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) ServerGroupType = (u32)oval; } break;
+
 			}
 
 		}
@@ -8550,15 +8743,15 @@ namespace TSLib.Messages
 			var toc = (ServerGroupAutoAddPerm[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permnegated": foreach(var toi in toc) { toi.PermissionNegated = PermissionNegated; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
-				case "permskip": foreach(var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
-				case "permvalue": foreach(var toi in toc) { toi.PermissionValue = PermissionValue; } break;
-				case "sgtype": foreach(var toi in toc) { toi.ServerGroupType = ServerGroupType; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permnegated": foreach (var toi in toc) { toi.PermissionNegated = PermissionNegated; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "permskip": foreach (var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
+				case "permvalue": foreach (var toi in toc) { toi.PermissionValue = PermissionValue; } break;
+				case "sgtype": foreach (var toi in toc) { toi.ServerGroupType = ServerGroupType; } break;
 				}
 			}
 
@@ -8567,24 +8760,24 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupAutoDelPerm : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupAutoDelPerm;
-		
+
 
 		public Ts3Permission? PermissionId { get; set; }
 		public str? PermissionNameId { get; set; }
 		public u32 ServerGroupType { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
-			case "sgtype": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) ServerGroupType = (u32)oval; } break;
-			
+			case "sgtype": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) ServerGroupType = (u32)oval; } break;
+
 			}
 
 		}
@@ -8594,12 +8787,12 @@ namespace TSLib.Messages
 			var toc = (ServerGroupAutoDelPerm[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
-				case "sgtype": foreach(var toi in toc) { toi.ServerGroupType = ServerGroupType; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "sgtype": foreach (var toi in toc) { toi.ServerGroupType = ServerGroupType; } break;
 				}
 			}
 
@@ -8608,7 +8801,7 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupClientList : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupClientList;
 		public string? ReturnCode { get; set; }
 
@@ -8616,17 +8809,17 @@ namespace TSLib.Messages
 		public str? Name { get; set; }
 		public ServerGroupId ServerGroupId { get; set; }
 		public Uid? Uid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
 			case "client_nickname": Name = (str)TsString.Unescape(value); break;
 			case "client_unique_identifier": Uid = (Uid)TsString.Unescape(value); break;
-			case "sgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
+			case "sgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -8637,13 +8830,13 @@ namespace TSLib.Messages
 			var toc = (ServerGroupClientList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "client_nickname": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "client_unique_identifier": foreach(var toi in toc) { toi.Uid = Uid; } break;
-				case "sgid": foreach(var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "client_nickname": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "client_unique_identifier": foreach (var toi in toc) { toi.Uid = Uid; } break;
+				case "sgid": foreach (var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
 				}
 			}
 
@@ -8652,20 +8845,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupClientListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupClientListRequest;
-		
+
 
 		public ServerGroupId ServerGroupId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "sgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
-			
+			case "sgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
+
 			}
 
 		}
@@ -8675,10 +8868,10 @@ namespace TSLib.Messages
 			var toc = (ServerGroupClientListRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "sgid": foreach(var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
+				case "sgid": foreach (var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
 				}
 			}
 
@@ -8687,26 +8880,26 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupCopy : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupCopy;
-		
+
 
 		public GroupType GroupType { get; set; }
 		public str Name { get; set; }
 		public ServerGroupId SourceServerGroupId { get; set; }
 		public ServerGroupId TargetServerGroupId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "name": Name = (str)TsString.Unescape(value); break;
-			case "ssgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) SourceServerGroupId = (ServerGroupId)oval; } break;
-			case "tsgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TargetServerGroupId = (ServerGroupId)oval; } break;
-			case "type": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) GroupType = (GroupType)oval; } break;
-			
+			case "ssgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) SourceServerGroupId = (ServerGroupId)oval; } break;
+			case "tsgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TargetServerGroupId = (ServerGroupId)oval; } break;
+			case "type": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) GroupType = (GroupType)oval; } break;
+
 			}
 
 		}
@@ -8716,13 +8909,13 @@ namespace TSLib.Messages
 			var toc = (ServerGroupCopy[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "ssgid": foreach(var toi in toc) { toi.SourceServerGroupId = SourceServerGroupId; } break;
-				case "tsgid": foreach(var toi in toc) { toi.TargetServerGroupId = TargetServerGroupId; } break;
-				case "type": foreach(var toi in toc) { toi.GroupType = GroupType; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "ssgid": foreach (var toi in toc) { toi.SourceServerGroupId = SourceServerGroupId; } break;
+				case "tsgid": foreach (var toi in toc) { toi.TargetServerGroupId = TargetServerGroupId; } break;
+				case "type": foreach (var toi in toc) { toi.GroupType = GroupType; } break;
 				}
 			}
 
@@ -8731,22 +8924,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupDel : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupDel;
-		
+
 
 		public bool Force { get; set; }
 		public ServerGroupId ServerGroupId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "force": Force = value.Length > 0 && value[0] != '0'; break;
-			case "sgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
-			
+			case "sgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
+
 			}
 
 		}
@@ -8756,11 +8949,11 @@ namespace TSLib.Messages
 			var toc = (ServerGroupDel[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "force": foreach(var toi in toc) { toi.Force = Force; } break;
-				case "sgid": foreach(var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
+				case "force": foreach (var toi in toc) { toi.Force = Force; } break;
+				case "sgid": foreach (var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
 				}
 			}
 
@@ -8769,22 +8962,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupDelClient : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupDelClient;
-		
+
 
 		public ClientDbId ClientDbId { get; set; }
 		public ServerGroupId ServerGroupId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			case "sgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
-			
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "sgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
+
 			}
 
 		}
@@ -8794,11 +8987,11 @@ namespace TSLib.Messages
 			var toc = (ServerGroupDelClient[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "sgid": foreach(var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "sgid": foreach (var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
 				}
 			}
 
@@ -8807,24 +9000,24 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupDelPerm : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupDelPerm;
-		
+
 
 		public Ts3Permission? PermissionId { get; set; }
 		public str? PermissionNameId { get; set; }
 		public ServerGroupId ServerGroupId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
-			case "sgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
-			
+			case "sgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
+
 			}
 
 		}
@@ -8834,12 +9027,12 @@ namespace TSLib.Messages
 			var toc = (ServerGroupDelPerm[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
-				case "sgid": foreach(var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "sgid": foreach (var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
 				}
 			}
 
@@ -8848,7 +9041,7 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupList : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupList;
 		public string? ReturnCode { get; set; }
 
@@ -8862,23 +9055,23 @@ namespace TSLib.Messages
 		public i32 NeededModifyPower { get; set; }
 		public ServerGroupId ServerGroupId { get; set; }
 		public i32 SortId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "iconid": { if(!value.IsEmpty && value[0] == (u8)'-') { if(Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if(Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
-			case "n_member_addp": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NeededMemberAddPower = (i32)oval; } break;
-			case "n_member_removep": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NeededMemberRemovePower = (i32)oval; } break;
-			case "n_modifyp": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NeededModifyPower = (i32)oval; } break;
+			case "iconid": { if (!value.IsEmpty && value[0] == (u8)'-') { if (Utf8Parser.TryParse(value, out i32 oval, out _)) IconId = oval; } else { if (Utf8Parser.TryParse(value, out u64 oval, out _)) IconId = unchecked((i32)oval); } } break;
+			case "n_member_addp": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NeededMemberAddPower = (i32)oval; } break;
+			case "n_member_removep": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NeededMemberRemovePower = (i32)oval; } break;
+			case "n_modifyp": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NeededModifyPower = (i32)oval; } break;
 			case "name": Name = (str)TsString.Unescape(value); break;
-			case "namemode": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) NamingMode = (GroupNamingMode)oval; } break;
+			case "namemode": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) NamingMode = (GroupNamingMode)oval; } break;
 			case "savedb": IsPermanent = value.Length > 0 && value[0] != '0'; break;
-			case "sgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
-			case "sortid": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) SortId = (i32)oval; } break;
-			case "type": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) GroupType = (GroupType)oval; } break;
+			case "sgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
+			case "sortid": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) SortId = (i32)oval; } break;
+			case "type": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) GroupType = (GroupType)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -8889,19 +9082,19 @@ namespace TSLib.Messages
 			var toc = (ServerGroupList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "iconid": foreach(var toi in toc) { toi.IconId = IconId; } break;
-				case "n_member_addp": foreach(var toi in toc) { toi.NeededMemberAddPower = NeededMemberAddPower; } break;
-				case "n_member_removep": foreach(var toi in toc) { toi.NeededMemberRemovePower = NeededMemberRemovePower; } break;
-				case "n_modifyp": foreach(var toi in toc) { toi.NeededModifyPower = NeededModifyPower; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "namemode": foreach(var toi in toc) { toi.NamingMode = NamingMode; } break;
-				case "savedb": foreach(var toi in toc) { toi.IsPermanent = IsPermanent; } break;
-				case "sgid": foreach(var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
-				case "sortid": foreach(var toi in toc) { toi.SortId = SortId; } break;
-				case "type": foreach(var toi in toc) { toi.GroupType = GroupType; } break;
+				case "iconid": foreach (var toi in toc) { toi.IconId = IconId; } break;
+				case "n_member_addp": foreach (var toi in toc) { toi.NeededMemberAddPower = NeededMemberAddPower; } break;
+				case "n_member_removep": foreach (var toi in toc) { toi.NeededMemberRemovePower = NeededMemberRemovePower; } break;
+				case "n_modifyp": foreach (var toi in toc) { toi.NeededModifyPower = NeededModifyPower; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "namemode": foreach (var toi in toc) { toi.NamingMode = NamingMode; } break;
+				case "savedb": foreach (var toi in toc) { toi.IsPermanent = IsPermanent; } break;
+				case "sgid": foreach (var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
+				case "sortid": foreach (var toi in toc) { toi.SortId = SortId; } break;
+				case "type": foreach (var toi in toc) { toi.GroupType = GroupType; } break;
 				}
 			}
 
@@ -8910,11 +9103,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupListRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -8927,7 +9120,7 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupPermList : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupPermList;
 		public string? ReturnCode { get; set; }
 
@@ -8937,19 +9130,19 @@ namespace TSLib.Messages
 		public bool PermissionSkip { get; set; }
 		public i32 PermissionValue { get; set; }
 		public ServerGroupId ServerGroupId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "permid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
+			case "permid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) PermissionId = ser.PermissionTransform.GetName(oval); } break;
 			case "permnegated": PermissionNegated = value.Length > 0 && value[0] != '0'; break;
 			case "permsid": PermissionNameId = (str)TsString.Unescape(value); break;
 			case "permskip": PermissionSkip = value.Length > 0 && value[0] != '0'; break;
-			case "permvalue": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
-			case "sgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
+			case "permvalue": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) PermissionValue = (i32)oval; } break;
+			case "sgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -8960,15 +9153,15 @@ namespace TSLib.Messages
 			var toc = (ServerGroupPermList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "permid": foreach(var toi in toc) { toi.PermissionId = PermissionId; } break;
-				case "permnegated": foreach(var toi in toc) { toi.PermissionNegated = PermissionNegated; } break;
-				case "permsid": foreach(var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
-				case "permskip": foreach(var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
-				case "permvalue": foreach(var toi in toc) { toi.PermissionValue = PermissionValue; } break;
-				case "sgid": foreach(var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
+				case "permid": foreach (var toi in toc) { toi.PermissionId = PermissionId; } break;
+				case "permnegated": foreach (var toi in toc) { toi.PermissionNegated = PermissionNegated; } break;
+				case "permsid": foreach (var toi in toc) { toi.PermissionNameId = PermissionNameId; } break;
+				case "permskip": foreach (var toi in toc) { toi.PermissionSkip = PermissionSkip; } break;
+				case "permvalue": foreach (var toi in toc) { toi.PermissionValue = PermissionValue; } break;
+				case "sgid": foreach (var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
 				}
 			}
 
@@ -8977,20 +9170,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupPermListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupPermListRequest;
-		
+
 
 		public ServerGroupId ServerGroupId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "sgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
-			
+			case "sgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
+
 			}
 
 		}
@@ -9000,10 +9193,10 @@ namespace TSLib.Messages
 			var toc = (ServerGroupPermListRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "sgid": foreach(var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
+				case "sgid": foreach (var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
 				}
 			}
 
@@ -9012,22 +9205,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupRename : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupRename;
-		
+
 
 		public str Name { get; set; }
 		public ServerGroupId ServerGroupId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "name": Name = (str)TsString.Unescape(value); break;
-			case "sgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
-			
+			case "sgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
+
 			}
 
 		}
@@ -9037,11 +9230,11 @@ namespace TSLib.Messages
 			var toc = (ServerGroupRename[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "sgid": foreach(var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "sgid": foreach (var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
 				}
 			}
 
@@ -9050,23 +9243,23 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupsByClientId : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupsByClientId;
 		public string? ReturnCode { get; set; }
 
 		public ClientDbId ClientDbId { get; set; }
 		public str Name { get; set; }
 		public ServerGroupId ServerGroupId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
 			case "name": Name = (str)TsString.Unescape(value); break;
-			case "sgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
+			case "sgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -9077,12 +9270,12 @@ namespace TSLib.Messages
 			var toc = (ServerGroupsByClientId[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "name": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "sgid": foreach(var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "name": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "sgid": foreach (var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
 				}
 			}
 
@@ -9091,20 +9284,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerGroupsByClientIdRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerGroupsByClientIdRequest;
-		
+
 
 		public ClientDbId ClientDbId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+
 			}
 
 		}
@@ -9114,10 +9307,10 @@ namespace TSLib.Messages
 			var toc = (ServerGroupsByClientIdRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
 				}
 			}
 
@@ -9126,20 +9319,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerIdGetByPort : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerIdGetByPort;
-		
+
 
 		public u16 VirtualServerPort { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "virtualserver_port": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) VirtualServerPort = (u16)oval; } break;
-			
+			case "virtualserver_port": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) VirtualServerPort = (u16)oval; } break;
+
 			}
 
 		}
@@ -9149,10 +9342,10 @@ namespace TSLib.Messages
 			var toc = (ServerIdGetByPort[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "virtualserver_port": foreach(var toi in toc) { toi.VirtualServerPort = VirtualServerPort; } break;
+				case "virtualserver_port": foreach (var toi in toc) { toi.VirtualServerPort = VirtualServerPort; } break;
 				}
 			}
 
@@ -9161,11 +9354,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerInfo : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerInfo;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -9178,11 +9371,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerListRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -9195,8 +9388,8 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerListResponse : IResponse
 	{
-		#pragma warning disable CS8618
-		
+#pragma warning disable CS8618
+
 		public string? ReturnCode { get; set; }
 
 		public bool? Autostart { get; set; }
@@ -9210,24 +9403,24 @@ namespace TSLib.Messages
 		public u16 VirtualServerPort { get; set; }
 		public str VirtualServerStatus { get; set; }
 		public Uid? VirtualServerUid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "virtualserver_autostart": Autostart = value.Length > 0 && value[0] != '0'; break;
-			case "virtualserver_clientsonline": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientsOnline = (u16)oval; } break;
-			case "virtualserver_id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) VirtualServerId = (u64)oval; } break;
+			case "virtualserver_clientsonline": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientsOnline = (u16)oval; } break;
+			case "virtualserver_id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) VirtualServerId = (u64)oval; } break;
 			case "virtualserver_machine_id": MachineId = (str)TsString.Unescape(value); break;
-			case "virtualserver_maxclients": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) MaxClients = (u16)oval; } break;
+			case "virtualserver_maxclients": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) MaxClients = (u16)oval; } break;
 			case "virtualserver_name": ServerName = (str)TsString.Unescape(value); break;
-			case "virtualserver_port": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) VirtualServerPort = (u16)oval; } break;
-			case "virtualserver_queryclientsonline": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) QueriesOnline = (u16)oval; } break;
+			case "virtualserver_port": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) VirtualServerPort = (u16)oval; } break;
+			case "virtualserver_queryclientsonline": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) QueriesOnline = (u16)oval; } break;
 			case "virtualserver_status": VirtualServerStatus = (str)TsString.Unescape(value); break;
 			case "virtualserver_unique_identifier": VirtualServerUid = (Uid)TsString.Unescape(value); break;
-			case "virtualserver_uptime": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) Uptime = TimeSpan.FromSeconds(oval); } break;
+			case "virtualserver_uptime": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) Uptime = TimeSpan.FromSeconds(oval); } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -9238,20 +9431,20 @@ namespace TSLib.Messages
 			var toc = (ServerListResponse[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "virtualserver_autostart": foreach(var toi in toc) { toi.Autostart = Autostart; } break;
-				case "virtualserver_clientsonline": foreach(var toi in toc) { toi.ClientsOnline = ClientsOnline; } break;
-				case "virtualserver_id": foreach(var toi in toc) { toi.VirtualServerId = VirtualServerId; } break;
-				case "virtualserver_machine_id": foreach(var toi in toc) { toi.MachineId = MachineId; } break;
-				case "virtualserver_maxclients": foreach(var toi in toc) { toi.MaxClients = MaxClients; } break;
-				case "virtualserver_name": foreach(var toi in toc) { toi.ServerName = ServerName; } break;
-				case "virtualserver_port": foreach(var toi in toc) { toi.VirtualServerPort = VirtualServerPort; } break;
-				case "virtualserver_queryclientsonline": foreach(var toi in toc) { toi.QueriesOnline = QueriesOnline; } break;
-				case "virtualserver_status": foreach(var toi in toc) { toi.VirtualServerStatus = VirtualServerStatus; } break;
-				case "virtualserver_unique_identifier": foreach(var toi in toc) { toi.VirtualServerUid = VirtualServerUid; } break;
-				case "virtualserver_uptime": foreach(var toi in toc) { toi.Uptime = Uptime; } break;
+				case "virtualserver_autostart": foreach (var toi in toc) { toi.Autostart = Autostart; } break;
+				case "virtualserver_clientsonline": foreach (var toi in toc) { toi.ClientsOnline = ClientsOnline; } break;
+				case "virtualserver_id": foreach (var toi in toc) { toi.VirtualServerId = VirtualServerId; } break;
+				case "virtualserver_machine_id": foreach (var toi in toc) { toi.MachineId = MachineId; } break;
+				case "virtualserver_maxclients": foreach (var toi in toc) { toi.MaxClients = MaxClients; } break;
+				case "virtualserver_name": foreach (var toi in toc) { toi.ServerName = ServerName; } break;
+				case "virtualserver_port": foreach (var toi in toc) { toi.VirtualServerPort = VirtualServerPort; } break;
+				case "virtualserver_queryclientsonline": foreach (var toi in toc) { toi.QueriesOnline = QueriesOnline; } break;
+				case "virtualserver_status": foreach (var toi in toc) { toi.VirtualServerStatus = VirtualServerStatus; } break;
+				case "virtualserver_unique_identifier": foreach (var toi in toc) { toi.VirtualServerUid = VirtualServerUid; } break;
+				case "virtualserver_uptime": foreach (var toi in toc) { toi.Uptime = Uptime; } break;
 				}
 			}
 
@@ -9260,23 +9453,23 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerLog : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerLog;
 		public string? ReturnCode { get; set; }
 
 		public u64 FileSize { get; set; }
 		public u64 LastOffset { get; set; }
 		public str License { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "file_size": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) FileSize = (u64)oval; } break;
+			case "file_size": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) FileSize = (u64)oval; } break;
 			case "l": License = (str)TsString.Unescape(value); break;
-			case "last_pos": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) LastOffset = (u64)oval; } break;
+			case "last_pos": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) LastOffset = (u64)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -9287,12 +9480,12 @@ namespace TSLib.Messages
 			var toc = (ServerLog[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "file_size": foreach(var toi in toc) { toi.FileSize = FileSize; } break;
-				case "l": foreach(var toi in toc) { toi.License = License; } break;
-				case "last_pos": foreach(var toi in toc) { toi.LastOffset = LastOffset; } break;
+				case "file_size": foreach (var toi in toc) { toi.FileSize = FileSize; } break;
+				case "l": foreach (var toi in toc) { toi.License = License; } break;
+				case "last_pos": foreach (var toi in toc) { toi.LastOffset = LastOffset; } break;
 				}
 			}
 
@@ -9301,22 +9494,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerNotifyRegister : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerNotifyRegister;
-		
+
 
 		public str EventType { get; set; }
 		public ChannelId? Id { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "event": EventType = (str)TsString.Unescape(value); break;
-			case "id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) Id = (ChannelId)oval; } break;
-			
+			case "id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) Id = (ChannelId)oval; } break;
+
 			}
 
 		}
@@ -9326,11 +9519,11 @@ namespace TSLib.Messages
 			var toc = (ServerNotifyRegister[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "event": foreach(var toi in toc) { toi.EventType = EventType; } break;
-				case "id": foreach(var toi in toc) { toi.Id = Id; } break;
+				case "event": foreach (var toi in toc) { toi.EventType = EventType; } break;
+				case "id": foreach (var toi in toc) { toi.Id = Id; } break;
 				}
 			}
 
@@ -9339,11 +9532,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerNotifyUnregister : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerNotifyUnregister;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -9356,20 +9549,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerProcessStop : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerProcessStop;
-		
+
 
 		public str? ReasonMessage { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "reasonmsg": ReasonMessage = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -9379,10 +9572,10 @@ namespace TSLib.Messages
 			var toc = (ServerProcessStop[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "reasonmsg": foreach(var toi in toc) { toi.ReasonMessage = ReasonMessage; } break;
+				case "reasonmsg": foreach (var toi in toc) { toi.ReasonMessage = ReasonMessage; } break;
 				}
 			}
 
@@ -9391,11 +9584,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerSnapshotCreate : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerSnapshotCreate;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -9408,11 +9601,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerSnapshotDeploy : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerSnapshotDeploy;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -9425,20 +9618,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerStart : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerStart;
-		
+
 
 		public u32 ServerId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "sid": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) ServerId = (u32)oval; } break;
-			
+			case "sid": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) ServerId = (u32)oval; } break;
+
 			}
 
 		}
@@ -9448,10 +9641,10 @@ namespace TSLib.Messages
 			var toc = (ServerStart[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "sid": foreach(var toi in toc) { toi.ServerId = ServerId; } break;
+				case "sid": foreach (var toi in toc) { toi.ServerId = ServerId; } break;
 				}
 			}
 
@@ -9460,22 +9653,22 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerStop : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerStop;
-		
+
 
 		public str? ReasonMessage { get; set; }
 		public u32 ServerId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "reasonmsg": ReasonMessage = (str)TsString.Unescape(value); break;
-			case "sid": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) ServerId = (u32)oval; } break;
-			
+			case "sid": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) ServerId = (u32)oval; } break;
+
 			}
 
 		}
@@ -9485,11 +9678,11 @@ namespace TSLib.Messages
 			var toc = (ServerStop[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "reasonmsg": foreach(var toi in toc) { toi.ReasonMessage = ReasonMessage; } break;
-				case "sid": foreach(var toi in toc) { toi.ServerId = ServerId; } break;
+				case "reasonmsg": foreach (var toi in toc) { toi.ReasonMessage = ReasonMessage; } break;
+				case "sid": foreach (var toi in toc) { toi.ServerId = ServerId; } break;
 				}
 			}
 
@@ -9498,28 +9691,28 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerTempPasswordAdd : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerTempPasswordAdd;
-		
+
 
 		public str Description { get; set; }
 		public DurationSeconds Duration { get; set; }
 		public str Password { get; set; }
 		public ChannelId TargetChannelId { get; set; }
 		public str TargetChannelPassword { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "desc": Description = (str)TsString.Unescape(value); break;
-			case "duration": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) Duration = TimeSpan.FromSeconds(oval); } break;
+			case "duration": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) Duration = TimeSpan.FromSeconds(oval); } break;
 			case "pw": Password = (str)TsString.Unescape(value); break;
-			case "tcid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TargetChannelId = (ChannelId)oval; } break;
+			case "tcid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TargetChannelId = (ChannelId)oval; } break;
 			case "tcpw": TargetChannelPassword = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -9529,14 +9722,14 @@ namespace TSLib.Messages
 			var toc = (ServerTempPasswordAdd[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "desc": foreach(var toi in toc) { toi.Description = Description; } break;
-				case "duration": foreach(var toi in toc) { toi.Duration = Duration; } break;
-				case "pw": foreach(var toi in toc) { toi.Password = Password; } break;
-				case "tcid": foreach(var toi in toc) { toi.TargetChannelId = TargetChannelId; } break;
-				case "tcpw": foreach(var toi in toc) { toi.TargetChannelPassword = TargetChannelPassword; } break;
+				case "desc": foreach (var toi in toc) { toi.Description = Description; } break;
+				case "duration": foreach (var toi in toc) { toi.Duration = Duration; } break;
+				case "pw": foreach (var toi in toc) { toi.Password = Password; } break;
+				case "tcid": foreach (var toi in toc) { toi.TargetChannelId = TargetChannelId; } break;
+				case "tcpw": foreach (var toi in toc) { toi.TargetChannelPassword = TargetChannelPassword; } break;
 				}
 			}
 
@@ -9545,20 +9738,20 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerTempPasswordDel : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerTempPasswordDel;
-		
+
 
 		public str Password { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "pw": Password = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -9568,10 +9761,10 @@ namespace TSLib.Messages
 			var toc = (ServerTempPasswordDel[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "pw": foreach(var toi in toc) { toi.Password = Password; } break;
+				case "pw": foreach (var toi in toc) { toi.Password = Password; } break;
 				}
 			}
 
@@ -9580,9 +9773,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerTempPasswordList : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerTempPasswordList;
-		
+
 
 		public str Description { get; set; }
 		public DateTime End { get; set; }
@@ -9592,22 +9785,22 @@ namespace TSLib.Messages
 		public ChannelId TargetChannelId { get; set; }
 		public str TargetChannelPassword { get; set; }
 		public Uid Uid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "desc": Description = (str)TsString.Unescape(value); break;
-			case "end": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) End = Tools.FromUnix(oval); } break;
+			case "end": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) End = Tools.FromUnix(oval); } break;
 			case "nickname": Nickname = (str)TsString.Unescape(value); break;
 			case "pw_clear": PasswordClear = (str)TsString.Unescape(value); break;
-			case "start": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) Start = Tools.FromUnix(oval); } break;
-			case "tcid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TargetChannelId = (ChannelId)oval; } break;
+			case "start": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) Start = Tools.FromUnix(oval); } break;
+			case "tcid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TargetChannelId = (ChannelId)oval; } break;
 			case "tcpw": TargetChannelPassword = (str)TsString.Unescape(value); break;
 			case "uid": Uid = (Uid)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -9617,17 +9810,17 @@ namespace TSLib.Messages
 			var toc = (ServerTempPasswordList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "desc": foreach(var toi in toc) { toi.Description = Description; } break;
-				case "end": foreach(var toi in toc) { toi.End = End; } break;
-				case "nickname": foreach(var toi in toc) { toi.Nickname = Nickname; } break;
-				case "pw_clear": foreach(var toi in toc) { toi.PasswordClear = PasswordClear; } break;
-				case "start": foreach(var toi in toc) { toi.Start = Start; } break;
-				case "tcid": foreach(var toi in toc) { toi.TargetChannelId = TargetChannelId; } break;
-				case "tcpw": foreach(var toi in toc) { toi.TargetChannelPassword = TargetChannelPassword; } break;
-				case "uid": foreach(var toi in toc) { toi.Uid = Uid; } break;
+				case "desc": foreach (var toi in toc) { toi.Description = Description; } break;
+				case "end": foreach (var toi in toc) { toi.End = End; } break;
+				case "nickname": foreach (var toi in toc) { toi.Nickname = Nickname; } break;
+				case "pw_clear": foreach (var toi in toc) { toi.PasswordClear = PasswordClear; } break;
+				case "start": foreach (var toi in toc) { toi.Start = Start; } break;
+				case "tcid": foreach (var toi in toc) { toi.TargetChannelId = TargetChannelId; } break;
+				case "tcpw": foreach (var toi in toc) { toi.TargetChannelPassword = TargetChannelPassword; } break;
+				case "uid": foreach (var toi in toc) { toi.Uid = Uid; } break;
 				}
 			}
 
@@ -9636,11 +9829,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerTempPasswordListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerTempPasswordListRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -9653,9 +9846,9 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerUpdated : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerUpdated;
-		
+
 
 		public u32 AntifloodPointsTickReduce { get; set; }
 		public u32 AntifloodPointsToCommandBlock { get; set; }
@@ -9705,29 +9898,29 @@ namespace TSLib.Messages
 		public u16 VirtualServerPort { get; set; }
 		public bool WeblistEnabled { get; set; }
 		public str WelcomeMessage { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "virtualserver_antiflood_points_needed_command_block": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) AntifloodPointsToCommandBlock = (u32)oval; } break;
-			case "virtualserver_antiflood_points_needed_ip_block": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) AntifloodPointsToIpBlock = (u32)oval; } break;
-			case "virtualserver_antiflood_points_needed_plugin_block": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) AntifloodPointsToPluginBlock = (u32)oval; } break;
-			case "virtualserver_antiflood_points_tick_reduce": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) AntifloodPointsTickReduce = (u32)oval; } break;
+			case "virtualserver_antiflood_points_needed_command_block": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) AntifloodPointsToCommandBlock = (u32)oval; } break;
+			case "virtualserver_antiflood_points_needed_ip_block": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) AntifloodPointsToIpBlock = (u32)oval; } break;
+			case "virtualserver_antiflood_points_needed_plugin_block": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) AntifloodPointsToPluginBlock = (u32)oval; } break;
+			case "virtualserver_antiflood_points_tick_reduce": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) AntifloodPointsTickReduce = (u32)oval; } break;
 			case "virtualserver_autostart": Autostart = value.Length > 0 && value[0] != '0'; break;
-			case "virtualserver_channelsonline": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelsOnline = (u64)oval; } break;
-			case "virtualserver_client_connections": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientConnections = (u64)oval; } break;
-			case "virtualserver_clientsonline": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientsOnline = (u16)oval; } break;
-			case "virtualserver_complain_autoban_count": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) ComplainAutobanCount = (u32)oval; } break;
-			case "virtualserver_complain_autoban_time": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) ComplainAutobanTime = TimeSpan.FromSeconds(oval); } break;
-			case "virtualserver_complain_remove_time": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) ComplainRemoveTime = TimeSpan.FromSeconds(oval); } break;
-			case "virtualserver_default_channel_admin_group": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) DefaultChannelAdminGroup = (ChannelGroupId)oval; } break;
-			case "virtualserver_download_quota": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) DownloadQuota = (u64)oval; } break;
+			case "virtualserver_channelsonline": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelsOnline = (u64)oval; } break;
+			case "virtualserver_client_connections": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientConnections = (u64)oval; } break;
+			case "virtualserver_clientsonline": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientsOnline = (u16)oval; } break;
+			case "virtualserver_complain_autoban_count": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) ComplainAutobanCount = (u32)oval; } break;
+			case "virtualserver_complain_autoban_time": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) ComplainAutobanTime = TimeSpan.FromSeconds(oval); } break;
+			case "virtualserver_complain_remove_time": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) ComplainRemoveTime = TimeSpan.FromSeconds(oval); } break;
+			case "virtualserver_default_channel_admin_group": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) DefaultChannelAdminGroup = (ChannelGroupId)oval; } break;
+			case "virtualserver_download_quota": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) DownloadQuota = (u64)oval; } break;
 			case "virtualserver_flag_password": HasPassword = value.Length > 0 && value[0] != '0'; break;
 			case "virtualserver_hostmessage": Hostmessage = (str)TsString.Unescape(value); break;
-			case "virtualserver_hostmessage_mode": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) HostmessageMode = (HostMessageMode)oval; } break;
+			case "virtualserver_hostmessage_mode": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) HostmessageMode = (HostMessageMode)oval; } break;
 			case "virtualserver_log_channel": LogChannel = value.Length > 0 && value[0] != '0'; break;
 			case "virtualserver_log_client": LogClient = value.Length > 0 && value[0] != '0'; break;
 			case "virtualserver_log_filetransfer": LogFileTransfer = value.Length > 0 && value[0] != '0'; break;
@@ -9735,32 +9928,32 @@ namespace TSLib.Messages
 			case "virtualserver_log_query": LogQuery = value.Length > 0 && value[0] != '0'; break;
 			case "virtualserver_log_server": LogServer = value.Length > 0 && value[0] != '0'; break;
 			case "virtualserver_machine_id": MachineId = (str)TsString.Unescape(value); break;
-			case "virtualserver_max_download_total_bandwidth": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) MaxDownloadTotalBandwidth = (u64)oval; } break;
-			case "virtualserver_max_upload_total_bandwidth": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) MaxUploadTotalBandwidth = (u64)oval; } break;
-			case "virtualserver_maxclients": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) MaxClients = (u16)oval; } break;
-			case "virtualserver_min_android_version": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) MinAndroidVersion = (u32)oval; } break;
-			case "virtualserver_min_client_version": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) MinClientVersion = (u32)oval; } break;
-			case "virtualserver_min_clients_in_channel_before_forced_silence": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) MinClientsInChannelBeforeForcedSilence = (u32)oval; } break;
-			case "virtualserver_min_ios_version": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) MinIosVersion = (u32)oval; } break;
-			case "virtualserver_month_bytes_downloaded": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BytesDownloadedMonth = (u64)oval; } break;
-			case "virtualserver_month_bytes_uploaded": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BytesUploadedMonth = (u64)oval; } break;
-			case "virtualserver_needed_identity_security_level": { if(Utf8Parser.TryParse(value, out u8 oval, out _)) IdentitySecurityLevel = (u8)oval; } break;
-			case "virtualserver_port": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) VirtualServerPort = (u16)oval; } break;
-			case "virtualserver_query_client_connections": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) QueryConnections = (u64)oval; } break;
-			case "virtualserver_queryclientsonline": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) QueriesOnline = (u16)oval; } break;
-			case "virtualserver_reserved_slots": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ReservedSlots = (u16)oval; } break;
-			case "virtualserver_total_bytes_downloaded": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BytesDownloadedTotal = (u64)oval; } break;
-			case "virtualserver_total_bytes_uploaded": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) BytesUploadedTotal = (u64)oval; } break;
-			case "virtualserver_total_packetloss_control": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) PacketlossTotalControl = (f32)oval; } break;
-			case "virtualserver_total_packetloss_keepalive": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) PacketlossTotalKeepalive = (f32)oval; } break;
-			case "virtualserver_total_packetloss_speech": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) PacketlossTotalSpeech = (f32)oval; } break;
-			case "virtualserver_total_packetloss_total": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) PacketlossTotal = (f32)oval; } break;
-			case "virtualserver_total_ping": { if(Utf8Parser.TryParse(value, out f32 oval, out _)) PingTotal = (f32)oval; } break;
-			case "virtualserver_upload_quota": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) UploadQuota = (u64)oval; } break;
-			case "virtualserver_uptime": { if(Utf8Parser.TryParse(value, out f64 oval, out _)) Uptime = TimeSpan.FromSeconds(oval); } break;
+			case "virtualserver_max_download_total_bandwidth": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) MaxDownloadTotalBandwidth = (u64)oval; } break;
+			case "virtualserver_max_upload_total_bandwidth": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) MaxUploadTotalBandwidth = (u64)oval; } break;
+			case "virtualserver_maxclients": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) MaxClients = (u16)oval; } break;
+			case "virtualserver_min_android_version": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) MinAndroidVersion = (u32)oval; } break;
+			case "virtualserver_min_client_version": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) MinClientVersion = (u32)oval; } break;
+			case "virtualserver_min_clients_in_channel_before_forced_silence": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) MinClientsInChannelBeforeForcedSilence = (u32)oval; } break;
+			case "virtualserver_min_ios_version": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) MinIosVersion = (u32)oval; } break;
+			case "virtualserver_month_bytes_downloaded": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BytesDownloadedMonth = (u64)oval; } break;
+			case "virtualserver_month_bytes_uploaded": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BytesUploadedMonth = (u64)oval; } break;
+			case "virtualserver_needed_identity_security_level": { if (Utf8Parser.TryParse(value, out u8 oval, out _)) IdentitySecurityLevel = (u8)oval; } break;
+			case "virtualserver_port": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) VirtualServerPort = (u16)oval; } break;
+			case "virtualserver_query_client_connections": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) QueryConnections = (u64)oval; } break;
+			case "virtualserver_queryclientsonline": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) QueriesOnline = (u16)oval; } break;
+			case "virtualserver_reserved_slots": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ReservedSlots = (u16)oval; } break;
+			case "virtualserver_total_bytes_downloaded": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BytesDownloadedTotal = (u64)oval; } break;
+			case "virtualserver_total_bytes_uploaded": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) BytesUploadedTotal = (u64)oval; } break;
+			case "virtualserver_total_packetloss_control": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) PacketlossTotalControl = (f32)oval; } break;
+			case "virtualserver_total_packetloss_keepalive": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) PacketlossTotalKeepalive = (f32)oval; } break;
+			case "virtualserver_total_packetloss_speech": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) PacketlossTotalSpeech = (f32)oval; } break;
+			case "virtualserver_total_packetloss_total": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) PacketlossTotal = (f32)oval; } break;
+			case "virtualserver_total_ping": { if (Utf8Parser.TryParse(value, out f32 oval, out _)) PingTotal = (f32)oval; } break;
+			case "virtualserver_upload_quota": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) UploadQuota = (u64)oval; } break;
+			case "virtualserver_uptime": { if (Utf8Parser.TryParse(value, out f64 oval, out _)) Uptime = TimeSpan.FromSeconds(oval); } break;
 			case "virtualserver_weblist_enabled": WeblistEnabled = value.Length > 0 && value[0] != '0'; break;
 			case "virtualserver_welcomemessage": WelcomeMessage = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -9770,57 +9963,57 @@ namespace TSLib.Messages
 			var toc = (ServerUpdated[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "virtualserver_antiflood_points_needed_command_block": foreach(var toi in toc) { toi.AntifloodPointsToCommandBlock = AntifloodPointsToCommandBlock; } break;
-				case "virtualserver_antiflood_points_needed_ip_block": foreach(var toi in toc) { toi.AntifloodPointsToIpBlock = AntifloodPointsToIpBlock; } break;
-				case "virtualserver_antiflood_points_needed_plugin_block": foreach(var toi in toc) { toi.AntifloodPointsToPluginBlock = AntifloodPointsToPluginBlock; } break;
-				case "virtualserver_antiflood_points_tick_reduce": foreach(var toi in toc) { toi.AntifloodPointsTickReduce = AntifloodPointsTickReduce; } break;
-				case "virtualserver_autostart": foreach(var toi in toc) { toi.Autostart = Autostart; } break;
-				case "virtualserver_channelsonline": foreach(var toi in toc) { toi.ChannelsOnline = ChannelsOnline; } break;
-				case "virtualserver_client_connections": foreach(var toi in toc) { toi.ClientConnections = ClientConnections; } break;
-				case "virtualserver_clientsonline": foreach(var toi in toc) { toi.ClientsOnline = ClientsOnline; } break;
-				case "virtualserver_complain_autoban_count": foreach(var toi in toc) { toi.ComplainAutobanCount = ComplainAutobanCount; } break;
-				case "virtualserver_complain_autoban_time": foreach(var toi in toc) { toi.ComplainAutobanTime = ComplainAutobanTime; } break;
-				case "virtualserver_complain_remove_time": foreach(var toi in toc) { toi.ComplainRemoveTime = ComplainRemoveTime; } break;
-				case "virtualserver_default_channel_admin_group": foreach(var toi in toc) { toi.DefaultChannelAdminGroup = DefaultChannelAdminGroup; } break;
-				case "virtualserver_download_quota": foreach(var toi in toc) { toi.DownloadQuota = DownloadQuota; } break;
-				case "virtualserver_flag_password": foreach(var toi in toc) { toi.HasPassword = HasPassword; } break;
-				case "virtualserver_hostmessage": foreach(var toi in toc) { toi.Hostmessage = Hostmessage; } break;
-				case "virtualserver_hostmessage_mode": foreach(var toi in toc) { toi.HostmessageMode = HostmessageMode; } break;
-				case "virtualserver_log_channel": foreach(var toi in toc) { toi.LogChannel = LogChannel; } break;
-				case "virtualserver_log_client": foreach(var toi in toc) { toi.LogClient = LogClient; } break;
-				case "virtualserver_log_filetransfer": foreach(var toi in toc) { toi.LogFileTransfer = LogFileTransfer; } break;
-				case "virtualserver_log_permissions": foreach(var toi in toc) { toi.LogPermissions = LogPermissions; } break;
-				case "virtualserver_log_query": foreach(var toi in toc) { toi.LogQuery = LogQuery; } break;
-				case "virtualserver_log_server": foreach(var toi in toc) { toi.LogServer = LogServer; } break;
-				case "virtualserver_machine_id": foreach(var toi in toc) { toi.MachineId = MachineId; } break;
-				case "virtualserver_max_download_total_bandwidth": foreach(var toi in toc) { toi.MaxDownloadTotalBandwidth = MaxDownloadTotalBandwidth; } break;
-				case "virtualserver_max_upload_total_bandwidth": foreach(var toi in toc) { toi.MaxUploadTotalBandwidth = MaxUploadTotalBandwidth; } break;
-				case "virtualserver_maxclients": foreach(var toi in toc) { toi.MaxClients = MaxClients; } break;
-				case "virtualserver_min_android_version": foreach(var toi in toc) { toi.MinAndroidVersion = MinAndroidVersion; } break;
-				case "virtualserver_min_client_version": foreach(var toi in toc) { toi.MinClientVersion = MinClientVersion; } break;
-				case "virtualserver_min_clients_in_channel_before_forced_silence": foreach(var toi in toc) { toi.MinClientsInChannelBeforeForcedSilence = MinClientsInChannelBeforeForcedSilence; } break;
-				case "virtualserver_min_ios_version": foreach(var toi in toc) { toi.MinIosVersion = MinIosVersion; } break;
-				case "virtualserver_month_bytes_downloaded": foreach(var toi in toc) { toi.BytesDownloadedMonth = BytesDownloadedMonth; } break;
-				case "virtualserver_month_bytes_uploaded": foreach(var toi in toc) { toi.BytesUploadedMonth = BytesUploadedMonth; } break;
-				case "virtualserver_needed_identity_security_level": foreach(var toi in toc) { toi.IdentitySecurityLevel = IdentitySecurityLevel; } break;
-				case "virtualserver_port": foreach(var toi in toc) { toi.VirtualServerPort = VirtualServerPort; } break;
-				case "virtualserver_query_client_connections": foreach(var toi in toc) { toi.QueryConnections = QueryConnections; } break;
-				case "virtualserver_queryclientsonline": foreach(var toi in toc) { toi.QueriesOnline = QueriesOnline; } break;
-				case "virtualserver_reserved_slots": foreach(var toi in toc) { toi.ReservedSlots = ReservedSlots; } break;
-				case "virtualserver_total_bytes_downloaded": foreach(var toi in toc) { toi.BytesDownloadedTotal = BytesDownloadedTotal; } break;
-				case "virtualserver_total_bytes_uploaded": foreach(var toi in toc) { toi.BytesUploadedTotal = BytesUploadedTotal; } break;
-				case "virtualserver_total_packetloss_control": foreach(var toi in toc) { toi.PacketlossTotalControl = PacketlossTotalControl; } break;
-				case "virtualserver_total_packetloss_keepalive": foreach(var toi in toc) { toi.PacketlossTotalKeepalive = PacketlossTotalKeepalive; } break;
-				case "virtualserver_total_packetloss_speech": foreach(var toi in toc) { toi.PacketlossTotalSpeech = PacketlossTotalSpeech; } break;
-				case "virtualserver_total_packetloss_total": foreach(var toi in toc) { toi.PacketlossTotal = PacketlossTotal; } break;
-				case "virtualserver_total_ping": foreach(var toi in toc) { toi.PingTotal = PingTotal; } break;
-				case "virtualserver_upload_quota": foreach(var toi in toc) { toi.UploadQuota = UploadQuota; } break;
-				case "virtualserver_uptime": foreach(var toi in toc) { toi.Uptime = Uptime; } break;
-				case "virtualserver_weblist_enabled": foreach(var toi in toc) { toi.WeblistEnabled = WeblistEnabled; } break;
-				case "virtualserver_welcomemessage": foreach(var toi in toc) { toi.WelcomeMessage = WelcomeMessage; } break;
+				case "virtualserver_antiflood_points_needed_command_block": foreach (var toi in toc) { toi.AntifloodPointsToCommandBlock = AntifloodPointsToCommandBlock; } break;
+				case "virtualserver_antiflood_points_needed_ip_block": foreach (var toi in toc) { toi.AntifloodPointsToIpBlock = AntifloodPointsToIpBlock; } break;
+				case "virtualserver_antiflood_points_needed_plugin_block": foreach (var toi in toc) { toi.AntifloodPointsToPluginBlock = AntifloodPointsToPluginBlock; } break;
+				case "virtualserver_antiflood_points_tick_reduce": foreach (var toi in toc) { toi.AntifloodPointsTickReduce = AntifloodPointsTickReduce; } break;
+				case "virtualserver_autostart": foreach (var toi in toc) { toi.Autostart = Autostart; } break;
+				case "virtualserver_channelsonline": foreach (var toi in toc) { toi.ChannelsOnline = ChannelsOnline; } break;
+				case "virtualserver_client_connections": foreach (var toi in toc) { toi.ClientConnections = ClientConnections; } break;
+				case "virtualserver_clientsonline": foreach (var toi in toc) { toi.ClientsOnline = ClientsOnline; } break;
+				case "virtualserver_complain_autoban_count": foreach (var toi in toc) { toi.ComplainAutobanCount = ComplainAutobanCount; } break;
+				case "virtualserver_complain_autoban_time": foreach (var toi in toc) { toi.ComplainAutobanTime = ComplainAutobanTime; } break;
+				case "virtualserver_complain_remove_time": foreach (var toi in toc) { toi.ComplainRemoveTime = ComplainRemoveTime; } break;
+				case "virtualserver_default_channel_admin_group": foreach (var toi in toc) { toi.DefaultChannelAdminGroup = DefaultChannelAdminGroup; } break;
+				case "virtualserver_download_quota": foreach (var toi in toc) { toi.DownloadQuota = DownloadQuota; } break;
+				case "virtualserver_flag_password": foreach (var toi in toc) { toi.HasPassword = HasPassword; } break;
+				case "virtualserver_hostmessage": foreach (var toi in toc) { toi.Hostmessage = Hostmessage; } break;
+				case "virtualserver_hostmessage_mode": foreach (var toi in toc) { toi.HostmessageMode = HostmessageMode; } break;
+				case "virtualserver_log_channel": foreach (var toi in toc) { toi.LogChannel = LogChannel; } break;
+				case "virtualserver_log_client": foreach (var toi in toc) { toi.LogClient = LogClient; } break;
+				case "virtualserver_log_filetransfer": foreach (var toi in toc) { toi.LogFileTransfer = LogFileTransfer; } break;
+				case "virtualserver_log_permissions": foreach (var toi in toc) { toi.LogPermissions = LogPermissions; } break;
+				case "virtualserver_log_query": foreach (var toi in toc) { toi.LogQuery = LogQuery; } break;
+				case "virtualserver_log_server": foreach (var toi in toc) { toi.LogServer = LogServer; } break;
+				case "virtualserver_machine_id": foreach (var toi in toc) { toi.MachineId = MachineId; } break;
+				case "virtualserver_max_download_total_bandwidth": foreach (var toi in toc) { toi.MaxDownloadTotalBandwidth = MaxDownloadTotalBandwidth; } break;
+				case "virtualserver_max_upload_total_bandwidth": foreach (var toi in toc) { toi.MaxUploadTotalBandwidth = MaxUploadTotalBandwidth; } break;
+				case "virtualserver_maxclients": foreach (var toi in toc) { toi.MaxClients = MaxClients; } break;
+				case "virtualserver_min_android_version": foreach (var toi in toc) { toi.MinAndroidVersion = MinAndroidVersion; } break;
+				case "virtualserver_min_client_version": foreach (var toi in toc) { toi.MinClientVersion = MinClientVersion; } break;
+				case "virtualserver_min_clients_in_channel_before_forced_silence": foreach (var toi in toc) { toi.MinClientsInChannelBeforeForcedSilence = MinClientsInChannelBeforeForcedSilence; } break;
+				case "virtualserver_min_ios_version": foreach (var toi in toc) { toi.MinIosVersion = MinIosVersion; } break;
+				case "virtualserver_month_bytes_downloaded": foreach (var toi in toc) { toi.BytesDownloadedMonth = BytesDownloadedMonth; } break;
+				case "virtualserver_month_bytes_uploaded": foreach (var toi in toc) { toi.BytesUploadedMonth = BytesUploadedMonth; } break;
+				case "virtualserver_needed_identity_security_level": foreach (var toi in toc) { toi.IdentitySecurityLevel = IdentitySecurityLevel; } break;
+				case "virtualserver_port": foreach (var toi in toc) { toi.VirtualServerPort = VirtualServerPort; } break;
+				case "virtualserver_query_client_connections": foreach (var toi in toc) { toi.QueryConnections = QueryConnections; } break;
+				case "virtualserver_queryclientsonline": foreach (var toi in toc) { toi.QueriesOnline = QueriesOnline; } break;
+				case "virtualserver_reserved_slots": foreach (var toi in toc) { toi.ReservedSlots = ReservedSlots; } break;
+				case "virtualserver_total_bytes_downloaded": foreach (var toi in toc) { toi.BytesDownloadedTotal = BytesDownloadedTotal; } break;
+				case "virtualserver_total_bytes_uploaded": foreach (var toi in toc) { toi.BytesUploadedTotal = BytesUploadedTotal; } break;
+				case "virtualserver_total_packetloss_control": foreach (var toi in toc) { toi.PacketlossTotalControl = PacketlossTotalControl; } break;
+				case "virtualserver_total_packetloss_keepalive": foreach (var toi in toc) { toi.PacketlossTotalKeepalive = PacketlossTotalKeepalive; } break;
+				case "virtualserver_total_packetloss_speech": foreach (var toi in toc) { toi.PacketlossTotalSpeech = PacketlossTotalSpeech; } break;
+				case "virtualserver_total_packetloss_total": foreach (var toi in toc) { toi.PacketlossTotal = PacketlossTotal; } break;
+				case "virtualserver_total_ping": foreach (var toi in toc) { toi.PingTotal = PingTotal; } break;
+				case "virtualserver_upload_quota": foreach (var toi in toc) { toi.UploadQuota = UploadQuota; } break;
+				case "virtualserver_uptime": foreach (var toi in toc) { toi.Uptime = Uptime; } break;
+				case "virtualserver_weblist_enabled": foreach (var toi in toc) { toi.WeblistEnabled = WeblistEnabled; } break;
+				case "virtualserver_welcomemessage": foreach (var toi in toc) { toi.WelcomeMessage = WelcomeMessage; } break;
 				}
 			}
 
@@ -9829,11 +10022,11 @@ namespace TSLib.Messages
 
 	public sealed partial class ServerVariablesRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.ServerVariablesRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -9846,24 +10039,24 @@ namespace TSLib.Messages
 
 	public sealed partial class SetClientChannelGroup : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.SetClientChannelGroup;
-		
+
 
 		public ChannelGroupId ChannelGroup { get; set; }
 		public ChannelId ChannelId { get; set; }
 		public ClientDbId ClientDbId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
-			case "cid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			
+			case "cgid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelGroup = (ChannelGroupId)oval; } break;
+			case "cid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+
 			}
 
 		}
@@ -9873,12 +10066,12 @@ namespace TSLib.Messages
 			var toc = (SetClientChannelGroup[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cgid": foreach(var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
-				case "cid": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "cgid": foreach (var toi in toc) { toi.ChannelGroup = ChannelGroup; } break;
+				case "cid": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
 				}
 			}
 
@@ -9887,7 +10080,7 @@ namespace TSLib.Messages
 
 	public sealed partial class TextMessage : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.TextMessage;
 		public string? ReturnCode { get; set; }
 
@@ -9897,19 +10090,19 @@ namespace TSLib.Messages
 		public str Message { get; set; }
 		public TextMessageTargetMode Target { get; set; }
 		public ClientId? TargetClientId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "invokerid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
+			case "invokerid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) InvokerId = (ClientId)oval; } break;
 			case "invokername": InvokerName = (str)TsString.Unescape(value); break;
 			case "invokeruid": InvokerUid = (Uid)TsString.Unescape(value); break;
 			case "msg": Message = (str)TsString.Unescape(value); break;
-			case "target": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) TargetClientId = (ClientId)oval; } break;
-			case "targetmode": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) Target = (TextMessageTargetMode)oval; } break;
+			case "target": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) TargetClientId = (ClientId)oval; } break;
+			case "targetmode": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) Target = (TextMessageTargetMode)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -9920,15 +10113,15 @@ namespace TSLib.Messages
 			var toc = (TextMessage[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "invokerid": foreach(var toi in toc) { toi.InvokerId = InvokerId; } break;
-				case "invokername": foreach(var toi in toc) { toi.InvokerName = InvokerName; } break;
-				case "invokeruid": foreach(var toi in toc) { toi.InvokerUid = InvokerUid; } break;
-				case "msg": foreach(var toi in toc) { toi.Message = Message; } break;
-				case "target": foreach(var toi in toc) { toi.TargetClientId = TargetClientId; } break;
-				case "targetmode": foreach(var toi in toc) { toi.Target = Target; } break;
+				case "invokerid": foreach (var toi in toc) { toi.InvokerId = InvokerId; } break;
+				case "invokername": foreach (var toi in toc) { toi.InvokerName = InvokerName; } break;
+				case "invokeruid": foreach (var toi in toc) { toi.InvokerUid = InvokerUid; } break;
+				case "msg": foreach (var toi in toc) { toi.Message = Message; } break;
+				case "target": foreach (var toi in toc) { toi.TargetClientId = TargetClientId; } break;
+				case "targetmode": foreach (var toi in toc) { toi.Target = Target; } break;
 				}
 			}
 
@@ -9937,16 +10130,16 @@ namespace TSLib.Messages
 
 	public sealed partial class TokenAdd : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.TokenAdd;
 		public string? ReturnCode { get; set; }
 
 		public str Token { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "token": Token = (str)TsString.Unescape(value); break;
@@ -9960,10 +10153,10 @@ namespace TSLib.Messages
 			var toc = (TokenAdd[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "token": foreach(var toi in toc) { toi.Token = Token; } break;
+				case "token": foreach (var toi in toc) { toi.Token = Token; } break;
 				}
 			}
 
@@ -9972,28 +10165,28 @@ namespace TSLib.Messages
 
 	public sealed partial class TokenAddRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.TokenAddRequest;
-		
+
 
 		public str? TokenCustomSet { get; set; }
 		public str? TokenDescription { get; set; }
 		public u64 TokenId1 { get; set; }
 		public ChannelId TokenId2 { get; set; }
 		public TokenType TokenType { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "tokencustomset": TokenCustomSet = (str)TsString.Unescape(value); break;
 			case "tokendescription": TokenDescription = (str)TsString.Unescape(value); break;
-			case "tokenid1": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TokenId1 = (u64)oval; } break;
-			case "tokenid2": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TokenId2 = (ChannelId)oval; } break;
-			case "tokentype": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) TokenType = (TokenType)oval; } break;
-			
+			case "tokenid1": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TokenId1 = (u64)oval; } break;
+			case "tokenid2": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TokenId2 = (ChannelId)oval; } break;
+			case "tokentype": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) TokenType = (TokenType)oval; } break;
+
 			}
 
 		}
@@ -10003,14 +10196,14 @@ namespace TSLib.Messages
 			var toc = (TokenAddRequest[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "tokencustomset": foreach(var toi in toc) { toi.TokenCustomSet = TokenCustomSet; } break;
-				case "tokendescription": foreach(var toi in toc) { toi.TokenDescription = TokenDescription; } break;
-				case "tokenid1": foreach(var toi in toc) { toi.TokenId1 = TokenId1; } break;
-				case "tokenid2": foreach(var toi in toc) { toi.TokenId2 = TokenId2; } break;
-				case "tokentype": foreach(var toi in toc) { toi.TokenType = TokenType; } break;
+				case "tokencustomset": foreach (var toi in toc) { toi.TokenCustomSet = TokenCustomSet; } break;
+				case "tokendescription": foreach (var toi in toc) { toi.TokenDescription = TokenDescription; } break;
+				case "tokenid1": foreach (var toi in toc) { toi.TokenId1 = TokenId1; } break;
+				case "tokenid2": foreach (var toi in toc) { toi.TokenId2 = TokenId2; } break;
+				case "tokentype": foreach (var toi in toc) { toi.TokenType = TokenType; } break;
 				}
 			}
 
@@ -10019,20 +10212,20 @@ namespace TSLib.Messages
 
 	public sealed partial class TokenDelete : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.TokenDelete;
-		
+
 
 		public str Token { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "token": Token = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -10042,10 +10235,10 @@ namespace TSLib.Messages
 			var toc = (TokenDelete[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "token": foreach(var toi in toc) { toi.Token = Token; } break;
+				case "token": foreach (var toi in toc) { toi.Token = Token; } break;
 				}
 			}
 
@@ -10054,7 +10247,7 @@ namespace TSLib.Messages
 
 	public sealed partial class TokenList : INotification, IResponse
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.TokenList;
 		public string? ReturnCode { get; set; }
 
@@ -10064,19 +10257,19 @@ namespace TSLib.Messages
 		public u64 TokenId1 { get; set; }
 		public ChannelId TokenId2 { get; set; }
 		public TokenType TokenType { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "token": Token = (str)TsString.Unescape(value); break;
-			case "token_created": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) TokenCreateTime = Tools.FromUnix(oval); } break;
+			case "token_created": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) TokenCreateTime = Tools.FromUnix(oval); } break;
 			case "token_description": TokenDescription = (str)TsString.Unescape(value); break;
-			case "token_id1": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TokenId1 = (u64)oval; } break;
-			case "token_id2": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) TokenId2 = (ChannelId)oval; } break;
-			case "token_type": { if(Utf8Parser.TryParse(value, out i32 oval, out _)) TokenType = (TokenType)oval; } break;
+			case "token_id1": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TokenId1 = (u64)oval; } break;
+			case "token_id2": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) TokenId2 = (ChannelId)oval; } break;
+			case "token_type": { if (Utf8Parser.TryParse(value, out i32 oval, out _)) TokenType = (TokenType)oval; } break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -10087,15 +10280,15 @@ namespace TSLib.Messages
 			var toc = (TokenList[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "token": foreach(var toi in toc) { toi.Token = Token; } break;
-				case "token_created": foreach(var toi in toc) { toi.TokenCreateTime = TokenCreateTime; } break;
-				case "token_description": foreach(var toi in toc) { toi.TokenDescription = TokenDescription; } break;
-				case "token_id1": foreach(var toi in toc) { toi.TokenId1 = TokenId1; } break;
-				case "token_id2": foreach(var toi in toc) { toi.TokenId2 = TokenId2; } break;
-				case "token_type": foreach(var toi in toc) { toi.TokenType = TokenType; } break;
+				case "token": foreach (var toi in toc) { toi.Token = Token; } break;
+				case "token_created": foreach (var toi in toc) { toi.TokenCreateTime = TokenCreateTime; } break;
+				case "token_description": foreach (var toi in toc) { toi.TokenDescription = TokenDescription; } break;
+				case "token_id1": foreach (var toi in toc) { toi.TokenId1 = TokenId1; } break;
+				case "token_id2": foreach (var toi in toc) { toi.TokenId2 = TokenId2; } break;
+				case "token_type": foreach (var toi in toc) { toi.TokenType = TokenType; } break;
 				}
 			}
 
@@ -10104,11 +10297,11 @@ namespace TSLib.Messages
 
 	public sealed partial class TokenListRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.TokenListRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -10121,20 +10314,20 @@ namespace TSLib.Messages
 
 	public sealed partial class TokenUse : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.TokenUse;
-		
+
 
 		public str Token { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
 			case "token": Token = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -10144,10 +10337,10 @@ namespace TSLib.Messages
 			var toc = (TokenUse[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "token": foreach(var toi in toc) { toi.Token = Token; } break;
+				case "token": foreach (var toi in toc) { toi.Token = Token; } break;
 				}
 			}
 
@@ -10156,9 +10349,9 @@ namespace TSLib.Messages
 
 	public sealed partial class TokenUsed : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.TokenUsed;
-		
+
 
 		public ClientDbId ClientDbId { get; set; }
 		public ClientId ClientId { get; set; }
@@ -10167,21 +10360,21 @@ namespace TSLib.Messages
 		public str Token1 { get; set; }
 		public str Token2 { get; set; }
 		public str TokenCustomSet { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "cldbid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
-			case "clid": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "cldbid": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ClientDbId = (ClientDbId)oval; } break;
+			case "clid": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "cluid": ClientUid = (Uid)TsString.Unescape(value); break;
 			case "token": Token = (str)TsString.Unescape(value); break;
 			case "token1": Token1 = (str)TsString.Unescape(value); break;
 			case "token2": Token2 = (str)TsString.Unescape(value); break;
 			case "tokencustomset": TokenCustomSet = (str)TsString.Unescape(value); break;
-			
+
 			}
 
 		}
@@ -10191,16 +10384,16 @@ namespace TSLib.Messages
 			var toc = (TokenUsed[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
-				case "clid": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "cluid": foreach(var toi in toc) { toi.ClientUid = ClientUid; } break;
-				case "token": foreach(var toi in toc) { toi.Token = Token; } break;
-				case "token1": foreach(var toi in toc) { toi.Token1 = Token1; } break;
-				case "token2": foreach(var toi in toc) { toi.Token2 = Token2; } break;
-				case "tokencustomset": foreach(var toi in toc) { toi.TokenCustomSet = TokenCustomSet; } break;
+				case "cldbid": foreach (var toi in toc) { toi.ClientDbId = ClientDbId; } break;
+				case "clid": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "cluid": foreach (var toi in toc) { toi.ClientUid = ClientUid; } break;
+				case "token": foreach (var toi in toc) { toi.Token = Token; } break;
+				case "token1": foreach (var toi in toc) { toi.Token1 = Token1; } break;
+				case "token2": foreach (var toi in toc) { toi.Token2 = Token2; } break;
+				case "tokencustomset": foreach (var toi in toc) { toi.TokenCustomSet = TokenCustomSet; } break;
 				}
 			}
 
@@ -10209,22 +10402,22 @@ namespace TSLib.Messages
 
 	public sealed partial class Use : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.Use;
-		
+
 
 		public u16? Port { get; set; }
 		public u32? ServerId { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "port": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) Port = (u16)oval; } break;
-			case "sid": { if(Utf8Parser.TryParse(value, out u32 oval, out _)) ServerId = (u32)oval; } break;
-			
+			case "port": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) Port = (u16)oval; } break;
+			case "sid": { if (Utf8Parser.TryParse(value, out u32 oval, out _)) ServerId = (u32)oval; } break;
+
 			}
 
 		}
@@ -10234,11 +10427,11 @@ namespace TSLib.Messages
 			var toc = (Use[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "port": foreach(var toi in toc) { toi.Port = Port; } break;
-				case "sid": foreach(var toi in toc) { toi.ServerId = ServerId; } break;
+				case "port": foreach (var toi in toc) { toi.Port = Port; } break;
+				case "sid": foreach (var toi in toc) { toi.ServerId = ServerId; } break;
 				}
 			}
 
@@ -10247,11 +10440,11 @@ namespace TSLib.Messages
 
 	public sealed partial class VersionRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.VersionRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -10264,8 +10457,8 @@ namespace TSLib.Messages
 
 	public sealed partial class WhoAmI : IResponse
 	{
-		#pragma warning disable CS8618
-		
+#pragma warning disable CS8618
+
 		public string? ReturnCode { get; set; }
 
 		public ChannelId ChannelId { get; set; }
@@ -10279,22 +10472,22 @@ namespace TSLib.Messages
 		public u16 VirtualServerPort { get; set; }
 		public str VirtualServerStatus { get; set; }
 		public Uid VirtualServerUid { get; set; }
-		#pragma warning restore CS8618
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
-			switch(name)
+			switch (name)
 			{
 
-			case "client_channel_id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
-			case "client_database_id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) DatabaseId = (ClientDbId)oval; } break;
-			case "client_id": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
+			case "client_channel_id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) ChannelId = (ChannelId)oval; } break;
+			case "client_database_id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) DatabaseId = (ClientDbId)oval; } break;
+			case "client_id": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) ClientId = (ClientId)oval; } break;
 			case "client_login_name": LoginName = (str)TsString.Unescape(value); break;
 			case "client_nickname": Name = (str)TsString.Unescape(value); break;
-			case "client_origin_server_id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) OriginServerId = (u64)oval; } break;
+			case "client_origin_server_id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) OriginServerId = (u64)oval; } break;
 			case "client_unique_identifier": Uid = (Uid)TsString.Unescape(value); break;
-			case "virtualserver_id": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) VirtualServerId = (u64)oval; } break;
-			case "virtualserver_port": { if(Utf8Parser.TryParse(value, out u16 oval, out _)) VirtualServerPort = (u16)oval; } break;
+			case "virtualserver_id": { if (Utf8Parser.TryParse(value, out u64 oval, out _)) VirtualServerId = (u64)oval; } break;
+			case "virtualserver_port": { if (Utf8Parser.TryParse(value, out u16 oval, out _)) VirtualServerPort = (u16)oval; } break;
 			case "virtualserver_status": VirtualServerStatus = (str)TsString.Unescape(value); break;
 			case "virtualserver_unique_identifier": VirtualServerUid = (Uid)TsString.Unescape(value); break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
@@ -10307,20 +10500,20 @@ namespace TSLib.Messages
 			var toc = (WhoAmI[])to;
 			foreach (var fld in flds)
 			{
-				switch(fld)
+				switch (fld)
 				{
 
-				case "client_channel_id": foreach(var toi in toc) { toi.ChannelId = ChannelId; } break;
-				case "client_database_id": foreach(var toi in toc) { toi.DatabaseId = DatabaseId; } break;
-				case "client_id": foreach(var toi in toc) { toi.ClientId = ClientId; } break;
-				case "client_login_name": foreach(var toi in toc) { toi.LoginName = LoginName; } break;
-				case "client_nickname": foreach(var toi in toc) { toi.Name = Name; } break;
-				case "client_origin_server_id": foreach(var toi in toc) { toi.OriginServerId = OriginServerId; } break;
-				case "client_unique_identifier": foreach(var toi in toc) { toi.Uid = Uid; } break;
-				case "virtualserver_id": foreach(var toi in toc) { toi.VirtualServerId = VirtualServerId; } break;
-				case "virtualserver_port": foreach(var toi in toc) { toi.VirtualServerPort = VirtualServerPort; } break;
-				case "virtualserver_status": foreach(var toi in toc) { toi.VirtualServerStatus = VirtualServerStatus; } break;
-				case "virtualserver_unique_identifier": foreach(var toi in toc) { toi.VirtualServerUid = VirtualServerUid; } break;
+				case "client_channel_id": foreach (var toi in toc) { toi.ChannelId = ChannelId; } break;
+				case "client_database_id": foreach (var toi in toc) { toi.DatabaseId = DatabaseId; } break;
+				case "client_id": foreach (var toi in toc) { toi.ClientId = ClientId; } break;
+				case "client_login_name": foreach (var toi in toc) { toi.LoginName = LoginName; } break;
+				case "client_nickname": foreach (var toi in toc) { toi.Name = Name; } break;
+				case "client_origin_server_id": foreach (var toi in toc) { toi.OriginServerId = OriginServerId; } break;
+				case "client_unique_identifier": foreach (var toi in toc) { toi.Uid = Uid; } break;
+				case "virtualserver_id": foreach (var toi in toc) { toi.VirtualServerId = VirtualServerId; } break;
+				case "virtualserver_port": foreach (var toi in toc) { toi.VirtualServerPort = VirtualServerPort; } break;
+				case "virtualserver_status": foreach (var toi in toc) { toi.VirtualServerStatus = VirtualServerStatus; } break;
+				case "virtualserver_unique_identifier": foreach (var toi in toc) { toi.VirtualServerUid = VirtualServerUid; } break;
 				}
 			}
 
@@ -10329,11 +10522,11 @@ namespace TSLib.Messages
 
 	public sealed partial class WhoAmIRequest : INotification
 	{
-		#pragma warning disable CS8618
+#pragma warning disable CS8618
 		public NotificationType NotifyType { get; } = NotificationType.WhoAmIRequest;
-		
 
-		#pragma warning restore CS8618
+
+#pragma warning restore CS8618
 
 		public void SetField(string name, ReadOnlySpan<byte> value, Deserializer ser)
 		{
@@ -10785,7 +10978,7 @@ namespace TSLib.Messages
 	{
 		public static NotificationType GetToClientNotificationType(string name)
 		{
-			switch(name)
+			switch (name)
 			{
 			case "notifybanlist": return NotificationType.BanList;
 			case "notifychannelchanged": return NotificationType.ChannelChanged;
@@ -10865,7 +11058,7 @@ namespace TSLib.Messages
 
 		public static NotificationType GetToServerNotificationType(string name)
 		{
-			switch(name)
+			switch (name)
 			{
 			case "banadd": return NotificationType.BanAdd;
 			case "banclient": return NotificationType.BanClient;
@@ -11017,7 +11210,7 @@ namespace TSLib.Messages
 
 		public static INotification GenerateNotificationType(NotificationType name)
 		{
-			switch(name)
+			switch (name)
 			{
 			case NotificationType.BanAdd: return new BanAdd();
 			case NotificationType.BanClient: return new BanClient();
@@ -11242,7 +11435,7 @@ namespace TSLib.Messages
 
 		public static INotification[] InstatiateNotificationArray(NotificationType name, int len)
 		{
-			switch(name)
+			switch (name)
 			{
 			case NotificationType.BanAdd: { var arr = new BanAdd[len]; for (int i = 0; i < len; i++) arr[i] = new BanAdd(); return arr; }
 			case NotificationType.BanClient: { var arr = new BanClient[len]; for (int i = 0; i < len; i++) arr[i] = new BanClient(); return arr; }
