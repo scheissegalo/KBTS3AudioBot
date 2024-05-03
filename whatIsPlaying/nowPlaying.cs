@@ -79,8 +79,21 @@ Dein [b][color=#24336b]North[/color][color=#0095db]Industries[/color][/b] - Secu
 		private async Task Start(object sender, EventArgs e)
 		{
 			var self = serverView.OwnClient;
-			string currentTitle = await YouTube.getTitleFromUrl(playManager.CurrentPlayData.SourceLink);
-			await ts3Client.SendChannelMessage("Playing [b]"+currentTitle + "[/b]");
+			try
+			{
+				string currentTitle = await YouTube.getTitleFromUrl(playManager.CurrentPlayData.SourceLink);
+				if (!string.IsNullOrEmpty(currentTitle))
+				{
+					await ts3Client.SendChannelMessage("Playing [b]" + currentTitle + "[/b]");
+				}
+			}
+			catch (Exception ex)
+			{
+				await ts3Client.SendChannelMessage("Error resolving trackname "+ex.Message);
+			}
+
+
+			
 			//await ts3Client.SendChannelMessage("Song wird abgespielt");
 		}
 
@@ -97,6 +110,10 @@ To play music use the following commands:
 [b][color=red]!add [/color][color=blue]<your link>[/color][/b]The song is appended to the current playlist.
 [b][color=red]!yts [/color][color=blue]'your searchtext'[/color][/b] To search on YouTube. [b][color=green][/color][/b]
 [b][color=red]!ytp [/color][color=blue]'your searchtext'[/color][/b] To search on YouTube and play the first result. [b][color=green][/color][/b]
+
+[b]Please use the new method insead for better audio:[/b]
+[b][color=red]!byt [/color][color=blue]'your youtube link'[/color][/b][b][color=green] To play YouTube link. [/color][/b]
+[b][color=red]!byts [/color][color=blue]'your searchtext'[/color][/b][b][color=green] To search on YouTube and play the first result. [/color][/b]
 
 [b][color=red]!help[/color][/b] for detailed help." + msgFoot;
 			try
@@ -142,7 +159,7 @@ To play music use the following commands:
 				var filename = Path.GetFileName(file);
 				//Console.WriteLine("File found:"+ filename);
 				await playManager.Play(invoker, filename);
-				return filename+" gefunden und wird abgespielt!";
+				return filename + " gefunden und wird abgespielt!";
 			}
 			else
 			{
@@ -158,7 +175,7 @@ To play music use the following commands:
 			if (file != null)
 			{
 				var filename = Path.GetFileName(file);
-				Console.WriteLine("File found:" + filename + " Path: "+ file);
+				Console.WriteLine("File found:" + filename + " Path: " + file);
 				await playManager.Play(invoker, filename);
 				return filename + " gefunden und wird abgespielt!";
 			}

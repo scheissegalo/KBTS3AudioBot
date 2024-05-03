@@ -7,6 +7,9 @@ using TSLib;
 using TSLib.Full;
 using TSLib.Messages;
 using System.Collections.Generic;
+using NAudio.Wave;
+using System;
+
 
 namespace NewUserCheck
 {
@@ -41,8 +44,10 @@ namespace NewUserCheck
 			//}
 			//TSuserDB newData = new TSuserDB();
 			//TSuserDB.DeleteAllData(jsonFilePath);
-
+			//tsFullClient.SendAudio
+			//ReadAudioFile();
 		}
+
 
 		private async Task<string> CheckAdminsOnline(ushort cID)
 		{
@@ -106,7 +111,7 @@ sound Dateien abspielen, sind wir gezwungen alle neuen Benutzer erstmal genau un
 
 [b][color=red]Um in einer der Kanäle zu gelangen musst du jemand der Online ist anschreiben.[/color][/b]
 Momentan Online:
-"+ allAdmins + @"
+" + allAdmins + @"
 
 [URL=https://klabausterbeere.xyz]Home[/URL] | [URL=https://klabausterbeere.xyz/ts-viewer/]TS-Viewer[/URL] | [URL=https://klabausterbeere.xyz/ts-invites/#regeln]Regeln[/URL] | [URL=https://sinusbot.klabausterbeere.xyz/]Sinusbot GUI[/URL] | [URL=https://klabausterbeere.xyz/kb-chat-free/]KB-Chat[/URL] | [URL=https://meet.klabausterbeere.xyz/]KB-Meet[/URL]
 

@@ -36,7 +36,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExternalAPI", "ExternalAPI\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controls", "Controls\Controls.csproj", "{E948BF53-8181-4B50-9641-7443FADD8C57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{AF67CC0C-02A9-4518-B575-A961F4B0CF91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{AF67CC0C-02A9-4518-B575-A961F4B0CF91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterYouTube", "BetterYouTube\BetterYouTube.csproj", "{C43B4105-DA8C-4095-9076-275314A148C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -100,6 +102,10 @@ Global
 		{AF67CC0C-02A9-4518-B575-A961F4B0CF91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF67CC0C-02A9-4518-B575-A961F4B0CF91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF67CC0C-02A9-4518-B575-A961F4B0CF91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C43B4105-DA8C-4095-9076-275314A148C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C43B4105-DA8C-4095-9076-275314A148C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C43B4105-DA8C-4095-9076-275314A148C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C43B4105-DA8C-4095-9076-275314A148C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
