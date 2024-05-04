@@ -100,7 +100,7 @@ namespace BetterYouTube
 		public string DownloadAudio(string videoUrl)
 		{
 			string filename = null;
-			const int timeout = 30000; // Timeout in milliseconds (10 seconds)
+			const int timeout = 90000; // 1 min 30 sec
 			string downloadDirectory = "mp3"; // Directory where files will be saved
 
 			try
@@ -108,11 +108,14 @@ namespace BetterYouTube
 				// Ensure the download directory exists
 				Directory.CreateDirectory(downloadDirectory);
 
+				// Define the output path using the title of the video
+				string outputPath = $"{downloadDirectory}/%(title)s.%(ext)s";
+
 				// First process to get the output filename
 				ProcessStartInfo startInfo = new ProcessStartInfo()
 				{
-					FileName = "yt-dlp.exe",
-					Arguments = $"--get-filename -o \"{downloadDirectory}\\%(title)s.%(ext)s\" {videoUrl}", // Get filename with directory
+					FileName = "/home/berni/.local/bin/yt-dlp",
+					Arguments = $"--get-filename -o \"{outputPath}\" {videoUrl}", // Adjusted for Linux
 					RedirectStandardOutput = true,
 					RedirectStandardError = true,
 					UseShellExecute = false,
@@ -128,6 +131,8 @@ namespace BetterYouTube
 						throw new TimeoutException("The process exceeded the time limit for getting the filename.");
 					}
 					filename = process.StandardOutput.ReadLine().Trim(); // Read the filename from output
+																		 // Replace the incorrect directory separator if any residue
+					filename = filename.Replace('\\', '/');
 				}
 
 				// Modify the filename to reflect the desired output format
@@ -149,6 +154,7 @@ namespace BetterYouTube
 
 				// Extract only the filename from the path
 				string onlyFileName = Path.GetFileName(filename);
+				//string onlyFileName = Path.GetFileName(filename);
 
 				Console.WriteLine("Downloaded file: " + onlyFileName);
 				return onlyFileName; // Return only the filename without the directory
