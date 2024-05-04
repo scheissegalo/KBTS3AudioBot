@@ -12,6 +12,7 @@ using TS3AudioBot.Plugins;
 //using TSLib.Messages;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BetterYouTube
 {
@@ -21,6 +22,7 @@ namespace BetterYouTube
 		private PlayManager playManager;
 		//private Ts3Client ts3Client;
 		//private Connection serverView;
+		static string myOS;
 
 		//Ts3Client ts3Client, Connection serverView, TsFullClient tsFull, 
 		public BetterYouTube(PlayManager playManager)
@@ -35,8 +37,9 @@ namespace BetterYouTube
 		[Command("byt")]
 		public static async Task<string> CommandBYT(PlayManager playManager, InvokerData invoker, string ytlink)
 		{
+			//return "my OS: " + myos;
 			string cleanYTLink = LinkCleaner.CleanLink(ytlink);
-			YTDlpHandler hdl = new YTDlpHandler();
+			YTDlpHandler hdl = new YTDlpHandler(myOS);
 			string filename = hdl.DownloadAudio(cleanYTLink);
 			//return filename;
 			if (!string.IsNullOrEmpty(filename))
@@ -57,7 +60,7 @@ namespace BetterYouTube
 		public static async Task<string> CommandBYTS(PlayManager playManager, InvokerData invoker, string searchQuery)
 		{
 			//DownloadAndPlayFirstSearchResult
-			YTDlpHandler hdl = new YTDlpHandler();
+			YTDlpHandler hdl = new YTDlpHandler(myOS);
 			string filename = hdl.DownloadAndPlayFirstSearchResult(searchQuery);
 			//return filename;
 			if (!string.IsNullOrEmpty(filename))
@@ -75,7 +78,21 @@ namespace BetterYouTube
 
 		public void Initialize()
 		{
-
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				//Console.WriteLine("Running on Windows");
+				myOS = "WINDOWS";
+			}
+			else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+			{
+				//Console.WriteLine("Running on Linux");
+				myOS = "LINUX";
+			}
+			else
+			{
+				//Console.WriteLine("Running on an unsupported platform");
+				myOS = "NA";
+			}
 		}
 
 		public void Dispose()
@@ -87,6 +104,13 @@ namespace BetterYouTube
 
 	public class YTDlpHandler
 	{
+		string myOS;
+		public YTDlpHandler(string myos)
+		{
+			myOS = myos;
+			//Console.WriteLine("Initializes with OS: " + myOS);
+		}
+
 		public string DownloadAndPlayFirstSearchResult(string searchQuery)
 		{
 			string searchFormatted = searchQuery.Replace(" ", "+"); // Format the search query for URL
@@ -108,48 +132,96 @@ namespace BetterYouTube
 				// Ensure the download directory exists
 				Directory.CreateDirectory(downloadDirectory);
 
-				// Define the output path using the title of the video
-				string outputPath = $"{downloadDirectory}/%(title)s.%(ext)s";
 
-				// First process to get the output filename
-				ProcessStartInfo startInfo = new ProcessStartInfo()
+				if (myOS == "WINDOWS")
 				{
-					FileName = "/home/berni/.local/bin/yt-dlp",
-					Arguments = $"--get-filename -o \"{outputPath}\" {videoUrl}", // Adjusted for Linux
-					RedirectStandardOutput = true,
-					RedirectStandardError = true,
-					UseShellExecute = false,
-					CreateNoWindow = true
-				};
-
-				using (Process process = new Process() { StartInfo = startInfo })
-				{
-					process.Start();
-					if (!process.WaitForExit(timeout)) // Wait for 10 seconds
+					// First process to get the output filename
+					ProcessStartInfo startInfo = new ProcessStartInfo()
 					{
-						process.Kill(); // Terminate process if it runs longer than the timeout
-						throw new TimeoutException("The process exceeded the time limit for getting the filename.");
-					}
-					filename = process.StandardOutput.ReadLine().Trim(); // Read the filename from output
-																		 // Replace the incorrect directory separator if any residue
-					filename = filename.Replace('\\', '/');
-				}
+						FileName = "yt-dlp.exe",
+						Arguments = $"--get-filename -o \"{downloadDirectory}\\%(title)s.%(ext)s\" {videoUrl}", // Get filename with directory
+						RedirectStandardOutput = true,
+						RedirectStandardError = true,
+						UseShellExecute = false,
+						CreateNoWindow = true
+					};
 
-				// Modify the filename to reflect the desired output format
-				if (!string.IsNullOrEmpty(filename))
-				{
-					filename = Regex.Replace(filename, @"\.\w+$", ".mp3"); // Replace existing extension with .mp3
-
-					startInfo.Arguments = $"-x --audio-format mp3 -o \"{filename}\" {videoUrl}"; // Download audio with full path
 					using (Process process = new Process() { StartInfo = startInfo })
 					{
 						process.Start();
-						if (!process.WaitForExit(timeout)) // Wait for 10 seconds
+						if (!process.WaitForExit(timeout))
 						{
 							process.Kill(); // Terminate process if it runs longer than the timeout
-							throw new TimeoutException("The process exceeded the time limit for downloading.");
+							throw new TimeoutException("The process exceeded the time limit for getting the filename.");
+						}
+						filename = process.StandardOutput.ReadLine().Trim(); // Read the filename from output
+					}
+
+					// Modify the filename to reflect the desired output format
+					if (!string.IsNullOrEmpty(filename))
+					{
+						filename = Regex.Replace(filename, @"\.\w+$", ".mp3"); // Replace existing extension with .mp3
+
+						startInfo.Arguments = $"-x --audio-format mp3 -o \"{filename}\" {videoUrl}"; // Download audio with full path
+						using (Process process = new Process() { StartInfo = startInfo })
+						{
+							process.Start();
+							if (!process.WaitForExit(timeout)) // Wait for 10 seconds
+							{
+								process.Kill(); // Terminate process if it runs longer than the timeout
+								throw new TimeoutException("The process exceeded the time limit for downloading.");
+							}
 						}
 					}
+				}
+				else if (myOS == "LINUX")
+				{
+					// Define the output path using the title of the video
+					string outputPath = $"{downloadDirectory}/%(title)s.%(ext)s";
+
+					ProcessStartInfo startInfo = new ProcessStartInfo()
+					{
+						FileName = "/home/berni/.local/bin/yt-dlp",
+						Arguments = $"--get-filename -o \"{outputPath}\" {videoUrl}", // Adjusted for Linux
+						RedirectStandardOutput = true,
+						RedirectStandardError = true,
+						UseShellExecute = false,
+						CreateNoWindow = true
+					};
+
+					using (Process process = new Process() { StartInfo = startInfo })
+					{
+						process.Start();
+						if (!process.WaitForExit(timeout))
+						{
+							process.Kill(); // Terminate process if it runs longer than the timeout
+							throw new TimeoutException("The process exceeded the time limit for getting the filename.");
+						}
+						filename = process.StandardOutput.ReadLine().Trim(); // Read the filename from output
+																			 // Replace the incorrect directory separator if any residue
+						filename = filename.Replace('\\', '/');
+					}
+
+					// Modify the filename to reflect the desired output format
+					if (!string.IsNullOrEmpty(filename))
+					{
+						filename = Regex.Replace(filename, @"\.\w+$", ".mp3"); // Replace existing extension with .mp3
+
+						startInfo.Arguments = $"-x --audio-format mp3 -o \"{filename}\" {videoUrl}"; // Download audio with full path
+						using (Process process = new Process() { StartInfo = startInfo })
+						{
+							process.Start();
+							if (!process.WaitForExit(timeout))
+							{
+								process.Kill(); // Terminate process if it runs longer than the timeout
+								throw new TimeoutException("The process exceeded the time limit for downloading.");
+							}
+						}
+					}
+				}
+				else
+				{
+					throw new Exception("OS not Supported");
 				}
 
 				// Extract only the filename from the path

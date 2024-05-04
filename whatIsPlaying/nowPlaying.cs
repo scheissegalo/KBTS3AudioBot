@@ -81,6 +81,7 @@ Dein [b][color=#24336b]North[/color][color=#0095db]Industries[/color][/b] - Secu
 			var self = serverView.OwnClient;
 			try
 			{
+				//await Task.Delay(500);
 				string currentTitle = await YouTube.getTitleFromUrl(playManager.CurrentPlayData.SourceLink);
 				if (!string.IsNullOrEmpty(currentTitle))
 				{
@@ -89,11 +90,11 @@ Dein [b][color=#24336b]North[/color][color=#0095db]Industries[/color][/b] - Secu
 			}
 			catch (Exception ex)
 			{
-				await ts3Client.SendChannelMessage("Error resolving trackname "+ex.Message);
+				//await ts3Client.SendChannelMessage("Error resolving trackname " + ex.Message);
 			}
 
 
-			
+
 			//await ts3Client.SendChannelMessage("Song wird abgespielt");
 		}
 
