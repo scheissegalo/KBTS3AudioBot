@@ -11,6 +11,8 @@ using LiteDB;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace RankingSystem
 {
@@ -94,16 +96,65 @@ namespace RankingSystem
 
 		public void Initialize()
 		{
-			//readAndLoadJson();
 			InitDB();
 			StartLoop();
+			//TestListData();
+			//ImportData("exportedData.json");
 		}
+
+		public void ImportData(string jsonFilePath)
+		{
+			try
+			{
+				// Initialize the LiteDB database
+				using (var db = new LiteDatabase(@"new_rank_users.db"))
+				{
+					// Get the 'users' collection (or create it if it doesn't exist)
+					var col = db.GetCollection<User>("users");
+
+					// Read JSON data from file
+					var jsonData = System.IO.File.ReadAllText(jsonFilePath);
+					var jsonObject = JObject.Parse(jsonData);
+					var usersArray = (JArray)jsonObject["users"];
+
+					var users = new List<User>();
+
+					foreach (var userToken in usersArray)
+					{
+						var user = new User
+						{
+							Id = userToken["_id"].ToString(),
+							UserID = userToken["UserID"].ToString(),
+							Time = (long)userToken["Time"],
+							OnlineTime = TimeSpan.FromTicks((long)userToken["OnlineTime"]["$numberLong"]),
+						};
+
+						users.Add(user);
+					}
+
+					// Insert users into the new database
+					col.InsertBulk(users);
+
+					// Ensure the 'UserID' field is indexed for faster queries
+					col.EnsureIndex(x => x.UserID);
+
+					Console.WriteLine($"Successfully imported {users.Count} users into the new database.");
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Exception occurred: {ex.Message}");
+				Console.WriteLine(ex.ToString());
+			}
+		}
+
+
 
 		[Command("rank")]
 		public static async Task<string> CommandRank(ClientCall invoker, string querystring)
 		{
 			// Retrieve the user's data from the database
-			var db = new LiteDatabase("rank_users.db");
+			var db = new LiteDatabase("rank_users.db;Upgrade=true;");
 			var usersCollection = db.GetCollection<User>("users");
 
 			var user = usersCollection.FindOne(x => x.UserID == invoker.ClientUid.ToString());
@@ -131,7 +182,7 @@ namespace RankingSystem
 		public static async Task<string> CommandRank(ClientCall invoker, string DBuser, string query)
 		{
 			// Retrieve the user's data from the database
-			var db = new LiteDatabase("rank_users.db");
+			var db = new LiteDatabase("rank_users.db;Upgrade=true;");
 			var usersCollection = db.GetCollection<User>("users");
 
 			var user = usersCollection.FindOne(x => x.Name == DBuser);
@@ -162,7 +213,7 @@ namespace RankingSystem
 		public static async Task<string> CommandRankDelete(ClientCall invoker)
 		{
 			// Retrieve the user's data from the database
-			var db = new LiteDatabase("rank_users.db");
+			var db = new LiteDatabase("rank_users.db;Upgrade=true;");
 			var usersCollection = db.GetCollection<User>("users");
 			//usersCollection.Delete(Query.All());
 
@@ -170,10 +221,42 @@ namespace RankingSystem
 			//}
 		}
 
+		[Command("importdb")]
+		public static async Task<string> ImportDataBase(ClientCall invoker)
+		{
+			try
+			{
+				var jsonData = System.IO.File.ReadAllText("exportedData.json");
+				var jsonObj = JsonConvert.DeserializeObject<JObject>(jsonData);
+
+				using (var newDb = new LiteDatabase(@"newDatabase.db"))
+				{
+					foreach (var collection in jsonObj.Properties())
+					{
+						var collectionName = collection.Name;
+						var collectionData = collection.Value.ToObject<List<BsonDocument>>();
+
+						var dbCollection = newDb.GetCollection<BsonDocument>(collectionName);
+						dbCollection.InsertBulk(collectionData);
+					}
+				}
+
+				Console.WriteLine("Data import completed.");
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"An error occurred: {ex.Message}");
+			}
+
+			return "Data import completed";
+			//}
+		}
+
+
 		public void readAndLoadJson()
 		{
 			string jsonFilePath = "tunausers.json"; // replace with your file path
-			string databaseFolderPath = "oldusers.db"; // replace with your database folder path
+			string databaseFolderPath = "oldusers.db;Upgrade=true;"; // replace with your database folder path
 
 			var users = ReadUsersFromJson(jsonFilePath);
 
@@ -277,167 +360,177 @@ namespace RankingSystem
 
 			try
 			{
-				// Get a collection (or create it if it doesn't exist)
-				var db = new LiteDatabase("rank_users.db");
-				var DBusers = db.GetCollection<User>("users");
-
-				foreach (var user in allUsers.Value)
+				// Initialize the LiteDB database using the recommended approach
+				using (var db = new LiteDatabase(@"Filename=rank_users.db;Upgrade=true;"))
 				{
-					var fulluser = await tsFullClient.ClientInfo(user.ClientId);
-					bool skipClient = false;
 
-					if (fulluser)
+					// Get a collection (or create it if it doesn't exist)
+					//var connectionString = "Filename=rank_users.db;Upgrade=true;";
+					//var db = new LiteDatabase(connectionString);
+					var DBusers = db.GetCollection<User>("users");
+
+					if (DBusers == null)
 					{
-						//Console.WriteLine("Database Fulluser Is not null "+ fulluser.Value.Name.ToString());
-					}
-					else
-					{
-						//Console.WriteLine("Database Fulluser is null!");
-						//LogToFile(logFilePath, "A user was null in Database");
-						continue;
+						//Console.WriteLine("Database collection 'users' is null!");
+						return;
 					}
 
-					if (fulluser.Value.ClientType.Equals(ClientType.Full))
-					{
-						foreach (var sg in excludedGroups)
-						{
-							ServerGroupId newSG = (ServerGroupId)sg;
-							if (fulluser.Value.ServerGroups.Contains(newSG))
-							{
-								skipClient = true;
-								break;
-							}
-						}
+					//Console.WriteLine($"Collection 'users' contains {DBusers.Count()} documents.");
 
-						if (skipClient)
+					foreach (var user in allUsers.Value)
+					{
+						var fulluser = await tsFullClient.ClientInfo(user.ClientId);
+						var userClientID = fulluser.Value.Uid;
+						bool skipClient = false;
+
+						//Console.WriteLine("Currently selected User: " + userClientID);
+
+						if (fulluser == null)
 						{
+							//Console.WriteLine("Fulluser is null!");
 							continue;
 						}
 
-						//Console.WriteLine("*********** USER ***********");
-						//Console.WriteLine("Valid Client");
-
-
-						// Check if the user is already being tracked
-						if (!_users.ContainsKey(fulluser.Value.Uid.ToString()))
+						if (fulluser.Value == null)
 						{
-							// Not Yet tracked User
-							var existingUser = DBusers.FindOne(u => u.UserID == fulluser.Value.Uid.ToString());
-							if (existingUser != null)
-							{
-								// Update the existing user object with the latest information
-								existingUser.Name = fulluser.Value.Name;
-								existingUser.Nickname = fulluser.Value.Name;
-								existingUser.LastUpdate = DateTime.Now;
-
-								DBusers.Update(existingUser);
-								_users.Add(existingUser.UserID, existingUser);
-								//Console.WriteLine("Existing user loadet: " + existingUser.Name);
-							}
-							else
-							{
-								// Create a new User object for the user
-								var NewUser = new User
-								{
-									Id = fulluser.Value.Uid.ToString(),
-									Name = fulluser.Value.Name,
-									UserID = fulluser.Value.Uid.ToString(),
-									Time = 0,
-									Nickname = fulluser.Value.Name,
-									OnlineTime = TimeSpan.Zero,
-									IsAfk = false,
-									IsAlone = false,
-									LastUpdate = DateTime.Now,
-									RankGroup = (ServerGroupId)23,
-									RankGroupInt = 23
-								};
-								var newId = await tsFullClient.GetClientDbIdFromUid((Uid)NewUser.UserID);
-								await tsFullClient.ServerGroupAddClient(GetServerGroup(NewUser.OnlineTime), newId.Value.ClientDbId);
-								_users.Add(NewUser.UserID, NewUser);
-								// Add to DB
-								DBusers.Insert(NewUser);
-								//Console.WriteLine("New User Created: " + NewUser.Name);
-							}
+							//Console.WriteLine("Fulluser.Value is null!");
+							continue;
 						}
 
-						//Console.WriteLine("Update AFK");
-						// Update the user's online time and AFK/alone status
-						var UpdateUser = _users[fulluser.Value.Uid.ToString()];
-
-						// If Channel has more that 1 user
-						if (GetUserCountFromChannelId(fulluser.Value.ChannelId) > 1)
+						if (fulluser.Value.Uid == null)
 						{
-							UpdateUser.IsAlone = false;
-							//Console.WriteLine("User is NOT Alone in Channel");
+							//Console.WriteLine("fulluser.Value.Uid is null!");
+							continue;
+						}
+
+						if (fulluser)
+						{
+							//Console.WriteLine("Database Fulluser Is not null "+ fulluser.Value.Name.ToString());
 						}
 						else
 						{
-							UpdateUser.IsAlone = true;
-							//Console.WriteLine("User is Alone in Channel");
+							//Console.WriteLine("Database Fulluser is null!");
+							//LogToFile(logFilePath, "A user was null in Database");
+							continue;
 						}
 
-						// If user is AFK or Span Channel
-						if (fulluser.Value.ChannelId == (ChannelId)18 || fulluser.Value.ChannelId == (ChannelId)1)
+						if (fulluser.Value.ClientType.Equals(ClientType.Full))
 						{
-							UpdateUser.IsAfk = true;
-							//Console.WriteLine("User is AFK");
-						}
-						else
-						{
-							UpdateUser.IsAfk = false;
-							//Console.WriteLine("User is NOT AFK");
-						}
-						var usrStatus = DBusers.FindOne(u => u.UserID == fulluser.Value.Uid.ToString());
-						// Check if the user is in the AFK channel or alone in their channel and skip
-						if (!UpdateUser.IsAfk && !UpdateUser.IsAlone)
-						{
-							if (usrStatus.UpdateTime)
+							foreach (var sg in excludedGroups)
 							{
-								UpdateUser.OnlineTime = usrStatus.OnlineTime;
-								UpdateUser.UpdateTime = false;
-								await ts3Client.SendServerMessage("[b][color=red]" + UpdateUser.Name + " online time changed! " + usrStatus.OnlineTime.TotalDays + " Days, " + usrStatus.OnlineTime.Hours + " hours and " + usrStatus.OnlineTime.Minutes + " minutes[/color][/b]");
-							}
-							else
-							{
-								// Update the user's time in DB
-								UpdateUser.OnlineTime += (DateTime.Now - UpdateUser.LastUpdate);
-							}
-							// Update the user's online time with the time since the last update
+								//Console.WriteLine("Is a bot and should be skipped");
 
-
-
-							// Get current Server Group check if user already has grroup addet
-
-							//Console.WriteLine("DB Group: " + UpdateUser.RankGroupInt+" Need group: "+ GetServerGroup(UpdateUser.OnlineTime).Value.ToString());
-
-							//UpdateUser.RankGroupInt = GetServerGroup(UpdateUser.OnlineTime).Value;
-
-							var response = await tsFullClient.GetClientDbIdFromUid((Uid)UpdateUser.UserID);
-							if (response.Ok)
-							{
-								var userGroups = await tsFullClient.ServerGroupsByClientDbId(response.Value.ClientDbId);
-								bool hasGroup = false;
-								var newId = response.Value;
-
-								foreach (var serverGroupInfo in _serverGroupList)
+								ServerGroupId newSG = (ServerGroupId)sg;
+								if (fulluser.Value.ServerGroups.Contains(newSG))
 								{
-									if (UpdateUser.RankGroupInt == serverGroupInfo.ServerGroup.Value) { continue; }
-									hasGroup = userGroups.Value.Any(g => g.ServerGroupId == serverGroupInfo.ServerGroup);
-									if (hasGroup)
+									skipClient = true;
+									break;
+								}
+							}
+
+							if (skipClient)
+							{
+								//Console.WriteLine("Is a bot and should be skipped");
+								continue;
+							}
+							// Check if the user is already being tracked
+							if (!_users.ContainsKey(fulluser.Value.Uid.ToString()))
+							{
+
+								var existingUser = DBusers.FindOne(u => u.UserID == userClientID.ToString());
+								// Try using another query method
+								//var existingUser = DBusers.Query().Where(u => u.UserID == userClientID.ToString()).FirstOrDefault();
+
+								if (existingUser != null)
+								{
+									// Update the existing user object with the latest information
+									existingUser.Name = fulluser.Value.Name;
+									existingUser.Nickname = fulluser.Value.Name;
+									existingUser.LastUpdate = DateTime.Now;
+
+									DBusers.Update(existingUser);
+									_users.Add(existingUser.UserID, existingUser);
+									//Console.WriteLine("Existing user loadet: " + existingUser.Name);
+								}
+								else
+								{
+									// Create a new User object for the user
+									var NewUser = new User
 									{
-										//Console.WriteLine("Group removed");
-										// if user has Old Group Remove it
-										await tsFullClient.ServerGroupDelClient(serverGroupInfo.ServerGroup, newId.ClientDbId);
-									}
+										Id = fulluser.Value.Uid.ToString(),
+										Name = fulluser.Value.Name,
+										UserID = fulluser.Value.Uid.ToString(),
+										Time = 0,
+										Nickname = fulluser.Value.Name,
+										OnlineTime = TimeSpan.Zero,
+										IsAfk = false,
+										IsAlone = false,
+										LastUpdate = DateTime.Now,
+										RankGroup = (ServerGroupId)23,
+										RankGroupInt = 23
+									};
+									var newId = await tsFullClient.GetClientDbIdFromUid((Uid)NewUser.UserID);
+									await tsFullClient.ServerGroupAddClient(GetServerGroup(NewUser.OnlineTime), newId.Value.ClientDbId);
+									_users.Add(NewUser.UserID, NewUser);
+									// Add to DB
+									DBusers.Insert(NewUser);
+									//Console.WriteLine("New User Created: " + NewUser.Name);
+								}
+							}
+
+							//Console.WriteLine("Update AFK");
+							// Update the user's online time and AFK/alone status
+							var UpdateUser = _users[fulluser.Value.Uid.ToString()];
+
+							// If Channel has more that 1 user
+							if (GetUserCountFromChannelId(fulluser.Value.ChannelId) > 1)
+							{
+								UpdateUser.IsAlone = false;
+								//Console.WriteLine("User is NOT Alone in Channel");
+							}
+							else
+							{
+								UpdateUser.IsAlone = true;
+								//Console.WriteLine("User is Alone in Channel");
+							}
+
+							// If user is AFK or Span Channel
+							if (fulluser.Value.ChannelId == (ChannelId)18 || fulluser.Value.ChannelId == (ChannelId)1)
+							{
+								UpdateUser.IsAfk = true;
+								//Console.WriteLine("User is AFK");
+							}
+							else
+							{
+								UpdateUser.IsAfk = false;
+								//Console.WriteLine("User is NOT AFK");
+							}
+							var usrStatus = DBusers.FindOne(u => u.UserID == fulluser.Value.Uid.ToString());
+							// Check if the user is in the AFK channel or alone in their channel and skip
+							if (!UpdateUser.IsAfk && !UpdateUser.IsAlone)
+							{
+								if (usrStatus.UpdateTime)
+								{
+									UpdateUser.OnlineTime = usrStatus.OnlineTime;
+									UpdateUser.UpdateTime = false;
+									await ts3Client.SendServerMessage("[b][color=red]" + UpdateUser.Name + " online time changed! " + usrStatus.OnlineTime.TotalDays + " Days, " + usrStatus.OnlineTime.Hours + " hours and " + usrStatus.OnlineTime.Minutes + " minutes[/color][/b]");
+								}
+								else
+								{
+									// Update the user's time in DB
+									UpdateUser.OnlineTime += (DateTime.Now - UpdateUser.LastUpdate);
 								}
 
-								if (UpdateUser.RankGroupInt != GetServerGroup(UpdateUser.OnlineTime).Value)
+								var response = await tsFullClient.GetClientDbIdFromUid((Uid)UpdateUser.UserID);
+								if (response.Ok)
 								{
-									UpdateUser.RankGroupInt = GetServerGroup(UpdateUser.OnlineTime).Value;
+									var userGroups = await tsFullClient.ServerGroupsByClientDbId(response.Value.ClientDbId);
+									bool hasGroup = false;
+									var newId = response.Value;
 
 									foreach (var serverGroupInfo in _serverGroupList)
 									{
-										//if (UpdateUser.RankGroupInt == serverGroupInfo.ServerGroup.Value) { continue; }
+										if (UpdateUser.RankGroupInt == serverGroupInfo.ServerGroup.Value) { continue; }
 										hasGroup = userGroups.Value.Any(g => g.ServerGroupId == serverGroupInfo.ServerGroup);
 										if (hasGroup)
 										{
@@ -446,149 +539,116 @@ namespace RankingSystem
 											await tsFullClient.ServerGroupDelClient(serverGroupInfo.ServerGroup, newId.ClientDbId);
 										}
 									}
-									//Console.WriteLine("Server Group addet");
-									await tsFullClient.ServerGroupAddClient(GetServerGroup(UpdateUser.OnlineTime), newId.ClientDbId);
-								}
-								//Check if user has group attached
-								bool hasRightGroup = userGroups.Value.Any(g => g.ServerGroupId == GetServerGroup(UpdateUser.OnlineTime));
-								if (hasRightGroup)
-								{
-									//Console.WriteLine("User has right group attached "+ GetServerGroup(UpdateUser.OnlineTime));
+
+									if (UpdateUser.RankGroupInt != GetServerGroup(UpdateUser.OnlineTime).Value)
+									{
+										UpdateUser.RankGroupInt = GetServerGroup(UpdateUser.OnlineTime).Value;
+
+										foreach (var serverGroupInfo in _serverGroupList)
+										{
+											//if (UpdateUser.RankGroupInt == serverGroupInfo.ServerGroup.Value) { continue; }
+											hasGroup = userGroups.Value.Any(g => g.ServerGroupId == serverGroupInfo.ServerGroup);
+											if (hasGroup)
+											{
+												//Console.WriteLine("Group removed");
+												// if user has Old Group Remove it
+												await tsFullClient.ServerGroupDelClient(serverGroupInfo.ServerGroup, newId.ClientDbId);
+											}
+										}
+										//Console.WriteLine("Server Group addet");
+										await tsFullClient.ServerGroupAddClient(GetServerGroup(UpdateUser.OnlineTime), newId.ClientDbId);
+									}
+									//Check if user has group attached
+									bool hasRightGroup = userGroups.Value.Any(g => g.ServerGroupId == GetServerGroup(UpdateUser.OnlineTime));
+									if (hasRightGroup)
+									{
+										//Console.WriteLine("User has right group attached "+ GetServerGroup(UpdateUser.OnlineTime));
+									}
+									else
+									{
+										//Console.WriteLine("Reattaching group "+ GetServerGroup(UpdateUser.OnlineTime));
+										await tsFullClient.ServerGroupAddClient(GetServerGroup(UpdateUser.OnlineTime), newId.ClientDbId);
+									}
+
 								}
 								else
 								{
-									//Console.WriteLine("Reattaching group "+ GetServerGroup(UpdateUser.OnlineTime));
-									await tsFullClient.ServerGroupAddClient(GetServerGroup(UpdateUser.OnlineTime), newId.ClientDbId);
+									Console.WriteLine("Update Server Group Failed");
 								}
+
+								// Update the user's last update time
+								UpdateUser.LastUpdate = DateTime.Now;
+
+								//Console.WriteLine(fulluser.Value.Name + " Online Time: " + Math.Round(UpdateUser.OnlineTime.TotalDays)+" Tage");
+
+								// Save the user's data to the database
+								DBusers.Update(UpdateUser);
+								//Console.WriteLine("Database updated!");
 
 							}
 							else
 							{
-								Console.WriteLine("Update Server Group Failed");
+								//Console.WriteLine("Ignoring AFK or Alone User");
 							}
-
-							// Update the user's last update time
-							UpdateUser.LastUpdate = DateTime.Now;
-
-							//Console.WriteLine(fulluser.Value.Name + " Online Time: " + Math.Round(UpdateUser.OnlineTime.TotalDays)+" Tage");
-
-							// Save the user's data to the database
-							DBusers.Update(UpdateUser);
-							//Console.WriteLine("Database updated!");
+							//Console.WriteLine("*********** USER ***********");
 
 						}
-						else
-						{
-							//Console.WriteLine("Ignoring AFK or Alone User");
-						}
-						//Console.WriteLine("*********** USER ***********");
 
 					}
 
-				}
 
-				//// Remove any user from _users that was not found in allUsers
-				//var usersToRemove = new List<string>();
-				//foreach (var user in _users.Values)
-				//{
-				//	bool deleteClient = true;
-				//	foreach (var TSuser in allUsers.Value)
-				//	{
-				//		var fulluser = await tsFullClient.ClientInfo(TSuser.ClientId);
+					var usersToRemove = new List<string>();
 
-				//		if (fulluser)
-				//		{
-				//			Console.WriteLine("Fulluser is not null! Database " + fulluser.Value.Name.ToString());
-				//		}
-				//		else
-				//		{
-				//			Console.WriteLine("Fulluser is null! Database");
-				//			//LogToFile(logFilePath, "A user was not null in Database");
-				//			return;
-				//		}
-
-				//		if (user.Id == fulluser.Value.Uid.ToString()) // NULL
-				//		{
-				//			if (user.IsAfk || user.IsAlone)
-				//			{
-				//				deleteClient = true;
-				//				//Console.WriteLine(user.Name + " User AFK Continue");
-				//				continue;
-
-				//			}
-				//			else
-				//			{
-				//				//Console.WriteLine(user.Name + " User found Continue");
-				//				deleteClient = false;
-				//				break;
-				//			}
-				//		}
-
-				//	}
-				//	if (deleteClient)
-				//	{
-				//		usersToRemove.Add(user.UserID);
-				//		//_users.Remove(user.UserID);
-
-				//	}
-				//}
-				//foreach (var userId in usersToRemove)
-				//{
-				//	_users.Remove(userId);
-				//	//Console.WriteLine(userId + " deleted from _user");
-				//}
-
-				var usersToRemove = new List<string>();
-
-				foreach (var user in _users.Values)
-				{
-					bool deleteClient = false;
-
-					foreach (var TSuser in allUsers.Value)
+					foreach (var user in _users.Values)
 					{
-						var fulluser = await tsFullClient.ClientInfo(TSuser.ClientId);
+						bool deleteClient = false;
 
-						if (fulluser)
+						foreach (var TSuser in allUsers.Value)
 						{
-							//Console.WriteLine("Fulluser is not null! Database " + fulluser.Value.Name.ToString());
+							var fulluser = await tsFullClient.ClientInfo(TSuser.ClientId);
 
-							if (user.Id == fulluser.Value.Uid.ToString())
+							if (fulluser)
 							{
-								//foundInAllUsers = true;
+								//Console.WriteLine("Fulluser is not null! Database " + fulluser.Value.Name.ToString());
 
-								if (user.IsAfk || user.IsAlone)
+								if (user.Id == fulluser.Value.Uid.ToString())
 								{
-									Console.WriteLine(user.Name + " - User AFK Continue");
-									deleteClient = true;
-								}
-								else
-								{
-									Console.WriteLine(user.Name + " - User in Party adding Points");
-									deleteClient = false;
-								}
+									//foundInAllUsers = true;
 
-								break; // No need to continue searching in allUsers if a match is found
+									if (user.IsAfk || user.IsAlone)
+									{
+										Console.WriteLine(user.Name + " - User AFK Continue");
+										deleteClient = true;
+									}
+									else
+									{
+										Console.WriteLine(user.Name + " - User in Party adding Points");
+										deleteClient = false;
+									}
+
+									break; // No need to continue searching in allUsers if a match is found
+								}
+							}
+							else
+							{
+								Console.WriteLine("Fulluser is null! Database");
+								//return;
 							}
 						}
-						else
+
+						if (deleteClient)
 						{
-							Console.WriteLine("Fulluser is null! Database");
-							//return;
+							usersToRemove.Add(user.UserID);
+							//_users.Remove(user.UserID);
+
 						}
 					}
 
-					if (deleteClient)
+					foreach (var userId in usersToRemove)
 					{
-						usersToRemove.Add(user.UserID);
-						//_users.Remove(user.UserID);
-
+						_users.Remove(userId);
+						// Console.WriteLine(userId + " deleted from _users");
 					}
-				}
-
-				foreach (var userId in usersToRemove)
-				{
-					_users.Remove(userId);
-					// Console.WriteLine(userId + " deleted from _users");
 				}
 			}
 			catch (Exception ex)
@@ -601,6 +661,7 @@ namespace RankingSystem
 			}
 
 		}
+
 
 		private int GetUserCountFromChannelId(ChannelId ChanId)
 		{
@@ -636,7 +697,7 @@ namespace RankingSystem
 			try
 			{
 				// Replace "your_database_name" with the name of your own database file
-				using (var db = new LiteDatabase("rank_users.db"))
+				using (var db = new LiteDatabase("rank_users.db;Upgrade=true;"))
 				{
 					// Get a collection (or create it if it doesn't exist)
 					var users = db.GetCollection<User>("users");
@@ -733,7 +794,7 @@ namespace RankingSystem
 		public string Id { get; set; }
 		public string Name { get; set; }
 		public string UserID { get; set; }
-		public int Time { get; set; }
+		public long Time { get; set; }
 		public string Nickname { get; set; }
 		public TimeSpan OnlineTime { get; set; }
 		public bool IsAfk { get; set; }

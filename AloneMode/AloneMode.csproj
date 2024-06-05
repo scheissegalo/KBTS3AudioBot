@@ -1,21 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\TS3AudioBot\TS3AudioBot.csproj" />
     <ProjectReference Include="..\TSLib\TSLib.csproj" />
   </ItemGroup>
-
   <Target Name="CustomAfterBuild" AfterTargets="Build">
     <Message Text="After party stardet" Importance="high" />
     <ItemGroup>
       <PluginFiles Include="$(TargetDir)$(TargetName).dll" />
     </ItemGroup>
-    <Message Text="Copying @(PluginFiles) to $(SolutionDir)TS3AudioBot\bin\Debug\netcoreapp3.1\Plugins\" Importance="high" />
-    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(SolutionDir)TS3AudioBot\bin\Debug\netcoreapp3.1\Plugins\" />
+    <Message Text="Copying @(PluginFiles) to $(SolutionDir)TS3AudioBot\bin\Debug\net6.0\Plugins\" Importance="high" />
+    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(SolutionDir)TS3AudioBot\bin\Debug\net6.0\Plugins\" />
   </Target>
-
 </Project>

@@ -6,12 +6,9 @@ using TS3AudioBot.CommandSystem;
 using TS3AudioBot.Plugins;
 using TSLib.Full.Book;
 using TSLib;
-using TSLib.Commands;
 using TSLib.Full;
 using TSLib.Messages;
-using TS3AudioBot.Config;
 using System.Collections.Generic;
-using Heijden.DNS;
 using System.IO;
 using System.Linq;
 using LiteDB;
@@ -59,7 +56,7 @@ namespace whatIsPlaying
 
 -----------------------------------------
 
-Dein [b][color=#24336b]North[/color][color=#0095db]Industries[/color][/b] - Secure Gaming Services
+[b][color=#24336b]North[/color][color=#0095db]Industries[/color][/b] - Secure Gaming Services
 [URL=https://north-industries.com]Home[/URL] | [URL=https://north-industries.com/ts-viewer/]TS-Viewer[/URL] | [URL=north-industries.com/ts-invites/#regeln]Guidelines/Help[/URL]";
 		}
 
