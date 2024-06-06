@@ -28,7 +28,7 @@ namespace TS3AudioBot.History
 		private const string AudioLogEntriesTable = "audioLogEntries";
 		private const string ResourceTitleQueryColumn = "lowTitle";
 
-		private readonly LiteCollection<AudioLogEntry> audioLogEntries;
+		private readonly ILiteCollection<AudioLogEntry> audioLogEntries;
 		private readonly LinkedList<int> unusedIds = new LinkedList<int>();
 		private readonly object dbLock = new object();
 		private readonly ConfHistory config;
@@ -185,6 +185,41 @@ namespace TS3AudioBot.History
 		/// The entries are sorted by last playtime descending.</summary>
 		/// <param name="search">All search criteria.</param>
 		/// <returns>A list of all found entries.</returns>
+		//public IEnumerable<AudioLogEntry> Search(SeachQuery search)
+		//{
+		//	if (search is null)
+		//		throw new ArgumentNullException(nameof(search));
+
+		//	if (search.MaxResults <= 0)
+		//		return Array.Empty<AudioLogEntry>();
+
+		//	var query = Query.All(nameof(AudioLogEntry.Timestamp), Query.Descending);
+
+		//	if (!string.IsNullOrEmpty(search.TitlePart))
+		//	{
+		//		var titleLower = search.TitlePart.ToLowerInvariant();
+		//		query = Query.And(query,
+		//			BsonExpression.Create($"{ResourceTitleQueryColumn} LIKE '%{titleLower}%'"));
+		//		//Query.Where(ResourceTitleQueryColumn, val => val.AsString.Contains(titleLower)));
+
+		//	}
+
+		//	if (search.UserUid != null)
+		//		query = Query.And(query, BsonExpression.Create($"{nameof(AudioLogEntry.Timestamp)} >= @0", search.LastInvokedAfter.Value));
+
+		//	//query = Query.And(query, Query.EQ(nameof(AudioLogEntry.UserUid), search.UserUid));
+
+		//	if (search.LastInvokedAfter != null)
+		//		query = Query.And(query, BsonExpression.Create($"{nameof(AudioLogEntry.UserUid)} = @0", search.UserUid));
+		//	//query = Query.And(query, Query.GTE(nameof(AudioLogEntry.Timestamp), search.LastInvokedAfter.Value));
+
+		//	return audioLogEntries.Find(query, 0, search.MaxResults);
+		//}
+
+		/// <summary>Gets all Entries matching the search criteria.
+		/// The entries are sorted by last playtime descending.</summary>
+		/// <param name="search">All search criteria.</param>
+		/// <returns>A list of all found entries.</returns>
 		public IEnumerable<AudioLogEntry> Search(SeachQuery search)
 		{
 			if (search is null)
@@ -193,23 +228,39 @@ namespace TS3AudioBot.History
 			if (search.MaxResults <= 0)
 				return Array.Empty<AudioLogEntry>();
 
-			var query = Query.All(nameof(AudioLogEntry.Timestamp), Query.Descending);
+			// List to hold individual conditions
+			var conditions = new List<string>();
 
 			if (!string.IsNullOrEmpty(search.TitlePart))
 			{
 				var titleLower = search.TitlePart.ToLowerInvariant();
-				query = Query.And(query,
-					Query.Where(ResourceTitleQueryColumn, val => val.AsString.Contains(titleLower)));
+				conditions.Add($"LOWER($.{ResourceTitleQueryColumn}) LIKE '%{titleLower}%'");
 			}
 
 			if (search.UserUid != null)
-				query = Query.And(query, Query.EQ(nameof(AudioLogEntry.UserUid), search.UserUid));
+			{
+				conditions.Add($"$.{nameof(AudioLogEntry.UserUid)} = \"{search.UserUid}\"");
+			}
 
 			if (search.LastInvokedAfter != null)
-				query = Query.And(query, Query.GTE(nameof(AudioLogEntry.Timestamp), search.LastInvokedAfter.Value));
+			{
+				conditions.Add($"$.{nameof(AudioLogEntry.Timestamp)} >= \"{search.LastInvokedAfter.Value:o}\""); // use 'o' for round-trip date/time pattern
+			}
 
-			return audioLogEntries.Find(query, 0, search.MaxResults);
+			// Combine conditions using AND operator
+			var combinedConditions = string.Join(" AND ", conditions);
+			var queryExpression = string.IsNullOrEmpty(combinedConditions) ? "true" : combinedConditions;
+
+			// Create the BsonExpression with combined conditions and sorting
+			var finalQuery = BsonExpression.Create(queryExpression + $" ORDER BY $.{nameof(AudioLogEntry.Timestamp)} DESC");
+
+			// Return the result of the find query with the applied filters
+			return audioLogEntries.Find(finalQuery).Take(search.MaxResults);
 		}
+
+
+
+
 
 		public string SearchParsed(SeachQuery query) => Format(Search(query));
 

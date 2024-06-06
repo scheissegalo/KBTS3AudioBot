@@ -1,16 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netcoreapp3.1;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
     <RootNamespace>TSLib</RootNamespace>
     <AssemblyName>TSLib</AssemblyName>
-
     <Nullable>enable</Nullable>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <DebugType>portable</DebugType>
-
     <RepositoryUrl>https://github.com/Splamy/TS3AudioBot.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -31,10 +29,8 @@
     <!-- PackageIconUrl is deprecated, but doc says it might be good for backwards compatibility -->
     <PackageIconUrl>https://splamy.de/static/ReSpeak.png</PackageIconUrl>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="NLog" Version="4.7.3" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Heijden.Dns.Portable" Version="2.0.19" />
     <PackageReference Include="Nullable" Version="1.2.1">
       <PrivateAssets>all</PrivateAssets>
@@ -42,8 +38,8 @@
     </PackageReference>
     <PackageReference Include="Portable.BouncyCastle" Version="1.8.6.7" />
     <PackageReference Include="Splamy.Ed25519.Toolkit" Version="1.0.3" />
-    <PackageReference Include="System.IO.Pipelines" Version="4.7.2" />
-    <PackageReference Condition="'$(TargetFramework)' == 'netstandard2.0'" Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.IO.Pipelines" Version="6.0.3" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ReSpeak.png" Pack="true" PackagePath="\" />

@@ -6,6 +6,7 @@ using TSLib;
 using TSLib.Full;
 using TS3AudioBot.Config;
 using System.Threading.Tasks;
+using Org.BouncyCastle.Asn1;
 
 namespace AloneMode
 {
@@ -29,8 +30,9 @@ namespace AloneMode
 		public void Initialize()
 		{
 			string cs = config.Connect.Channel.ToString();
+			Console.WriteLine("Config: " + cs);
 			int newcs = Int32.Parse(cs.Replace("/", ""));
-			Console.WriteLine(newcs);
+			Console.WriteLine(newcs.ToString());
 			botDefaultChannel = (ulong)newcs;
 			ts3Client.OnAloneChanged += OnAloneChanged;
 		}

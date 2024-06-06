@@ -80,7 +80,7 @@ namespace Cryptoz
 		public static string CommandGreet(InvokerData invoker, string steamid)
 		{
 			string response = AddOrUpdateUserInDatabase(invoker.ClientUid.Value, steamid);
-			return "[b][color=red]This TeamSpeak ID (" + invoker.ClientUid.Value + ") is now added to the given SteamID ("+ steamid +").[/color][/b] - Status: "+ response;
+			return "[b][color=red]This TeamSpeak ID (" + invoker.ClientUid.Value + ") is now added to the given SteamID (" + steamid + ").[/color][/b] - Status: " + response;
 		}
 
 		[Command("votes")]
@@ -201,7 +201,7 @@ namespace Cryptoz
 					// Step 3: Parse JSON Response
 					var data = JsonConvert.DeserializeObject<ApiResponse>(json);
 
-					
+
 
 					// Step 4: Use SQLite to store and retrieve data
 					using (var connection = new SQLiteConnection("Data Source=steam_ids.db"))
@@ -282,7 +282,7 @@ namespace Cryptoz
 						if (groupIdsToCheck.Contains(group.ServerGroupId))
 						{
 							// If the user has any of the specified groups, remove it.
-							SendSteamMessage("remove group with id: "+ group.ServerGroupId);
+							SendSteamMessage("remove group with id: " + group.ServerGroupId);
 							await tsFullClient.ServerGroupDelClient(group.ServerGroupId, usr.Value.DatabaseId);
 						}
 					}
@@ -293,7 +293,8 @@ namespace Cryptoz
 		static string AddOrUpdateUserInDatabase(string TSID, string SteamID)
 		{
 			string response = "no response";
-			using (var connection = new SQLiteConnection("Data Source=steam_ids.db"))
+			string databaseFolderPath = "steam_ids.db;Upgrade=true;";
+			using (var connection = new SQLiteConnection(databaseFolderPath))
 			{
 				connection.Open();
 
@@ -428,7 +429,7 @@ namespace Cryptoz
 						foreach (var group in userGroups.Value)
 						{
 							//Console.WriteLine("Iterate: "+ group.Name);
-							SendSteamMessage(teamspeakId + " Iterate: " + group.Name);	
+							SendSteamMessage(teamspeakId + " Iterate: " + group.Name);
 							if (groupIdsToCheck.Contains(group.ServerGroupId))
 							{
 								//Console.WriteLine("Group found and removing: " + group.Name);
@@ -464,7 +465,7 @@ namespace Cryptoz
 				dynamic dataVotes = JsonConvert.DeserializeObject(responseVotes);
 				int serverRank = dataVotes.rank;
 				int serverVotes = dataVotes.votes;
-				NewChannelName = "[cspacer1231]Server Rank: "+ serverRank +" | Votes: "+ serverVotes;
+				NewChannelName = "[cspacer1231]Server Rank: " + serverRank + " | Votes: " + serverVotes;
 				//Console.WriteLine("Server Rank: {0}, Votes: {1}", serverRank, serverVotes);
 
 				var response = client.DownloadString("https://teamspeak-servers.org/api/?object=servers&element=voters&key=s5b78c4OcL5UV6pDxTMnDeaMjNEotEUN6iA&month=current&format=json");
@@ -476,7 +477,7 @@ namespace Cryptoz
 					string nickname = voter.nickname;
 					int votes = voter.votes;
 					//Console.WriteLine("Nickname: {0}, Votes: {1}", nickname, votes);
-					userVotesList = userVotesList + nickname + " = "+ votes+"\n";
+					userVotesList = userVotesList + nickname + " = " + votes + "\n";
 				}
 
 				userVotesList = userVotesList + "\n\n[url=https://teamspeak-servers.org/server/12137/vote/]Vote for US[/url]";
@@ -496,7 +497,7 @@ namespace Cryptoz
 
 			string btcData = await client.GetStringAsync(BTC);
 
-			await tsFullClient.ChannelEdit(channelId, name: btcData+" USD");
+			await tsFullClient.ChannelEdit(channelId, name: btcData + " USD");
 		}
 
 

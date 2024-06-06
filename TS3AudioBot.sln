@@ -38,7 +38,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controls", "Controls\Contro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{AF67CC0C-02A9-4518-B575-A961F4B0CF91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterYouTube", "BetterYouTube\BetterYouTube.csproj", "{C43B4105-DA8C-4095-9076-275314A148C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterYouTube", "BetterYouTube\BetterYouTube.csproj", "{C43B4105-DA8C-4095-9076-275314A148C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

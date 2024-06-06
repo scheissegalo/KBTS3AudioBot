@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using TS3AudioBot;
-using TS3AudioBot.Audio;
 using TS3AudioBot.Plugins;
 using TSLib.Full.Book;
 using TSLib;
@@ -9,8 +8,6 @@ using TSLib.Full;
 using TSLib.Messages;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mail;
-using Microsoft.VisualBasic;
 using System.IO;
 
 namespace OnlineCounter
@@ -18,7 +15,6 @@ namespace OnlineCounter
 	public class OnlineCount : IBotPlugin
 	{
 		private TsFullClient tsFullClient;
-		private PlayManager playManager;
 		private Ts3Client ts3Client;
 		private Connection serverView;
 
@@ -39,9 +35,8 @@ namespace OnlineCounter
 		private bool isChecking = false;
 		//private string jsonFilePath = "data.json";
 
-		public OnlineCount(PlayManager playManager, Ts3Client ts3Client, Connection serverView, TsFullClient tsFull)
+		public OnlineCount(Ts3Client ts3Client, Connection serverView, TsFullClient tsFull)
 		{
-			this.playManager = playManager;
 			this.ts3Client = ts3Client;
 			this.tsFullClient = tsFull;
 			this.serverView = serverView;
@@ -55,14 +50,6 @@ namespace OnlineCounter
 			lastResetTime = DateTime.UtcNow;
 			//CheckOnlineUsers(true);
 			CheckOnlineUsersNeu(true);
-
-			//var userData = GetTsUserData();
-			//foreach (TSuserDB data in userData)
-			//{
-			//	Console.WriteLine($"OLD Data Deleted: Id: {data.Id}, Name: {data.Name}, Age: {data.ID}");
-			//}
-			//TSuserDB newData = new TSuserDB();
-			//TSuserDB.DeleteAllData(jsonFilePath);
 
 		}
 
