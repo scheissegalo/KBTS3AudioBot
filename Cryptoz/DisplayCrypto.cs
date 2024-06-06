@@ -293,7 +293,8 @@ namespace Cryptoz
 		static string AddOrUpdateUserInDatabase(string TSID, string SteamID)
 		{
 			string response = "no response";
-			using (var connection = new SQLiteConnection("Data Source=steam_ids.db"))
+			string databaseFolderPath = "steam_ids.db;Upgrade=true;";
+			using (var connection = new SQLiteConnection(databaseFolderPath))
 			{
 				connection.Open();
 
