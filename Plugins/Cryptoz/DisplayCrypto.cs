@@ -23,6 +23,7 @@ namespace Cryptoz
 		//private PlayManager playManager;
 		private Ts3Client ts3Client;
 		private Connection serverView;
+		//test
 
 		bool checkVotes = true;
 		bool enabledDebugs = false;
