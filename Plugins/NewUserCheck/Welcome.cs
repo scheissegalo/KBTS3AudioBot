@@ -7,7 +7,6 @@ using TSLib;
 using TSLib.Full;
 using TSLib.Messages;
 using System.Collections.Generic;
-using NAudio.Wave;
 using System;
 
 
