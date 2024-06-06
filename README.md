@@ -7,6 +7,12 @@ ensuring compatibility and taking advantage of the latest framework features and
 This upgrade results in a more efficient application, with reduced memory usage and a significantly smaller binary size. 
 All vulnerabilities have been addressed and resolved during the upgrade process.
 
+## Plugins?
+**You do not need any plugins, but you can use them if you wish.** 
+Most of them have hardcoded channels and paths, so you will need to adjust and compile them to use them. 
+I have already planned a real-time compiler so you can simply use .cs files directly in the plugins folder.
+
+
 - **Got questions?** Check out our [Wiki](https://github.com/scheissegalo/TS3AudioBot/wiki), [FAQ](https://github.com/scheissegalo/TS3AudioBot/wiki/FAQ).
 - **Something's broken or it's complicated?** [Open an issue](https://github.com/scheissegalo/TS3AudioBot/issues/new/choose)
   - Please use and fill out one of the templates we provide unless they are not applicable or you have a good reason not to.  
