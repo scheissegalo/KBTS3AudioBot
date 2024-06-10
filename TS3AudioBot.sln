@@ -26,7 +26,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AloneMode", "Plugins\AloneM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterYouTube", "Plugins\BetterYouTube\BetterYouTube.csproj", "{58E389DC-641D-42AD-B3FE-F344E751F4A4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controls", "Plugins\Controls\Controls.csproj", "{1C13C235-4CC0-48E4-8F41-F4447A6765CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChannelCreator", "Plugins\Controls\ChannelCreator.csproj", "{1C13C235-4CC0-48E4-8F41-F4447A6765CC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Plugins\Core\Core.csproj", "{8EC7B99D-44B6-4906-8008-8D43B8DCECBA}"
 EndProject

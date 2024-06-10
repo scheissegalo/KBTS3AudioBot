@@ -7,6 +7,10 @@ ensuring compatibility and taking advantage of the latest framework features and
 This upgrade results in a more efficient application, with reduced memory usage and a significantly smaller binary size. 
 All vulnerabilities have been addressed and resolved during the upgrade process.
 
+## Sign in to confirm you’re not a bot. This helps protect our community ##
+Install this:
+https://github.com/coletdjnz/yt-dlp-youtube-oauth2
+
 ## Plugins?
 **You do not need any plugins, but you can use them if you wish.** 
 Most of them have hardcoded channels and paths, so you will need to adjust and compile them to use them. 
