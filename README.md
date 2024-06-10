@@ -10,6 +10,16 @@ All vulnerabilities have been addressed and resolved during the upgrade process.
 ## Sign in to confirm you’re not a bot. This helps protect our community ##
 Install this:
 https://github.com/coletdjnz/yt-dlp-youtube-oauth2
+follow install instructions then use this as script:
+```
+#!/bin/bash
+# Path to the yt-dlp executable in the virtual environment
+YTDLP_PATH="$HOME/yt-dlp/bin/yt-dlp"
+
+# Use the yt-dlp executable with your arguments
+$YTDLP_PATH --username oauth2 --password 'yourpassword' "$@"
+```
+replace "yourpassword"
 
 ## Plugins?
 **You do not need any plugins, but you can use them if you wish.** 
