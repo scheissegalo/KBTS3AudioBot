@@ -12,8 +12,6 @@ using System.Data.SQLite;
 using System.Collections.Generic;
 using System.Linq;
 using TS3AudioBot.CommandSystem;
-using System.IO;
-using System.Globalization;
 
 namespace Cryptoz
 {
@@ -44,7 +42,9 @@ namespace Cryptoz
 		private ulong ServerVotesChannel = 466; // 449 local | 466 Remote | replace with the ID of the channel to update
 
 		private readonly int UpdateInterval = 30; //min
-												  //private readonly int GoldUpdateInterval = 480; //min
+
+		private ulong CryptoChannel = 232;
+		//private readonly int GoldUpdateInterval = 480; //min
 		ServerGroupInfo groupA = new ServerGroupInfo
 		{
 			VotesCount = 1,
@@ -139,11 +139,10 @@ namespace Cryptoz
 				groupD.ServerGroup = (ServerGroupId)136;
 			}
 
-
+			SetCryptoChannelInfo();
 			StartLoop();
 			GetVotesAndGroups();
-			//getCSV();
-			//getUsersfromCSV();
+
 		}
 
 		private async void StartLoop()
@@ -161,12 +160,25 @@ namespace Cryptoz
 					GetSilver();
 					GetVotes();
 					GetVotesAndGroups();
+					SetCryptoChannelInfo();
 					update = UpdateInterval;
 				}
 
 				update--;
 				await Task.Delay(60000); // 60000 1 min
 			}
+		}
+
+		private async void SetCryptoChannelInfo()
+		{
+			DateTime now = DateTime.Now;
+			string formattedTime = now.ToString("HH:mm");
+
+			Console.WriteLine("Changing Channel");
+			string newChanDis = $"[b]Complete List: [/b]";
+			string newChannelName = "Crypto & Metal - Last Update " + formattedTime;
+			ChannelId channelId = new ChannelId(CryptoChannel);
+			await tsFullClient.ChannelEdit(channelId, name: newChannelName, description: newChanDis);
 		}
 
 		private async void SendSteamMessage(string message)
