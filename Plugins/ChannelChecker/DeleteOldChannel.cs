@@ -12,7 +12,7 @@ namespace ChannelChecker
 {
 	public class DeleteOldChannel : IBotPlugin
 	{
-		// Singleton instance to make it accessible from the command method.
+		// Singleton instance to make it accessible from the command method.dsf
 		public static DeleteOldChannel? Instance { get; private set; }
 
 		private TsFullClient tsFullClient;
