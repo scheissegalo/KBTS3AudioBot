@@ -4,6 +4,7 @@ using TS3AudioBot;
 using TS3AudioBot.Audio;
 using TS3AudioBot.CommandSystem;
 using TS3AudioBot.Plugins;
+using TS3AudioBot.Localization;
 using TSLib.Full.Book;
 using TSLib;
 using TSLib.Full;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using LiteDB;
+using TS3AudioBot.Web.Api;
 
 namespace whatIsPlaying
 {
@@ -21,6 +23,7 @@ namespace whatIsPlaying
 		private PlayManager playManager;
 		private Ts3Client ts3Client;
 		private Connection serverView;
+		private Player playerConnection;
 		private Codec defaultCodec;
 		private int defaultCodecQuality = 6;
 		private Codec MusicCodec;
@@ -30,12 +33,13 @@ namespace whatIsPlaying
 		//private readonly ConfBot config;
 
 		// Your dependencies will be injected into the constructor of your class.
-		public nowPlaying(PlayManager playManager, Ts3Client ts3Client, Connection serverView, TsFullClient tsFull)
+		public nowPlaying(PlayManager playManager, Ts3Client ts3Client, Connection serverView, TsFullClient tsFull, Player playerConnection)
 		{
 			this.playManager = playManager;
 			this.ts3Client = ts3Client;
 			this.tsFullClient = tsFull;
 			this.serverView = serverView;
+			this.playerConnection = playerConnection;
 		}
 
 		// The Initialize method will be called when all modules were successfully injected.
@@ -172,11 +176,13 @@ namespace whatIsPlaying
 		}
 
 		[Command("datei")]
-		public static async Task<string> CommandDatei(PlayManager playManager, ClientCall invoker, string query)
+		public static async Task<string> CommandDatei(PlayManager playManager, Player playerConnection, ClientCall invoker, string query)
 		{
 			var file = Directory.GetFiles("mp3", $"*{query}*", SearchOption.TopDirectoryOnly).FirstOrDefault();
 			if (file != null)
 			{
+				playerConnection.Volume = 100f;
+				//playerConnection.Volume
 				var filename = Path.GetFileName(file);
 				var fullPath = Path.GetFullPath(file);
 
@@ -223,6 +229,7 @@ namespace whatIsPlaying
 				var filename = Path.GetFileName(randomFile);
 
 				//Console.WriteLine("Playing random file: " + filename);
+				
 				await playManager.Play(invoker, fullPath);
 				return "Random file " + filename + " is playing!";
 			}
