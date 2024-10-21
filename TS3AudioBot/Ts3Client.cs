@@ -39,14 +39,7 @@ namespace TS3AudioBot
 		public event EventHandler? OnWhisperNoTarget;
 
 		private static readonly string[] QuitMessages = {
-			"I'm outta here", "You're boring", "Have a nice day", "Bye", "Good night",
-			"Nothing to do here", "Taking a break", "Lorem ipsum dolor sit amet…",
-			"Nothing can hold me back", "It's getting quiet", "Drop the bazzzzzz",
-			"Never gonna give you up", "Never gonna let you down", "Keep rockin' it",
-			"?", "c(ꙩ_Ꙩ)ꜿ", "I'll be back", "Your advertisement could be here",
-			"connection lost", "disconnected", "Requested by API.",
-			"Robert'); DROP TABLE students;--", "It works!! No, wait...",
-			"Notice me, senpai", ":wq", "Soon™", "It's not a bug, it's a feature"
+			"Powered by Razuuu.de"
 		};
 
 		private bool closed = false;
