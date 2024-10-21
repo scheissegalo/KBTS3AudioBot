@@ -127,16 +127,13 @@ namespace TS3AudioBot
 
 		public static void LogHeader()
 		{
-			Log.Info("[============ TS3AudioBot started =============]");
-			Log.Info("[ Date: {0}", DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture));
-			Log.Info("[ Version: {0}", SystemData.AssemblyData);
-			Log.Info("[ Build: {0}", SystemData.AssemblyData.BuildConfiguration);
-			Log.Info("[ Platform: {0}", SystemData.PlatformData);
-			Log.Info("[ Runtime: {0} ServerGC:{1} GC:{2}", SystemData.RuntimeData.FullName, GCSettings.IsServerGC, GCSettings.LatencyMode);
-			Log.Info("[ Opus: {0}", TSLib.Audio.Opus.NativeMethods.Info);
-			// ffmpeg
-			// youtube-dl
-			Log.Info("[==============================================]");
+			Log.Info("");
+			Log.Info(" Razuuu' TeamSpeak Bot started ");
+			Log.Info("");
+			Log.Info(" Version: {0}", SystemData.AssemblyData);
+			Log.Info(" Build: {0}", SystemData.AssemblyData.BuildConfiguration);
+			Log.Info(" OS: {0}", SystemData.PlatformData);
+			Log.Info("");
 		}
 	}
 
