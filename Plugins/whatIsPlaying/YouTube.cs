@@ -1,142 +1,63 @@
 using Newtonsoft.Json.Linq;
-using Org.BouncyCastle.Utilities;
 using System;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static NLog.LayoutRenderers.Wrappers.ReplaceLayoutRendererWrapper;
+using System.Xml;
 
 namespace whatIsPlaying
 {
 	internal class YouTube
 	{
-		public static async Task<string> getTitleFromUrl(string videoUrl)
+		private static readonly HttpClient httpClient = new HttpClient();
+		//API Key AIzaSyAFZHRQL7HQH6ZnqBHPmGpSFzCdTb_EOjc
+		private static readonly string ApiKey = "AIzaSyAFZHRQL7HQH6ZnqBHPmGpSFzCdTb_EOjc"; // Replace with your YouTube API Key
+		public static int requests = 0;
+
+		public static async Task<string> GetTitleFromUrlAsync(string videoUrl)
 		{
-			//string videoId = GetVideoIdFromUrl(videoUrl);
-			//string videoPageUrl = $"https://www.youtube.com/watch?v={videoId}";
-			//Console.WriteLine("Video URL: "+videoUrl);
-			string returnValue = "Not Found";
+			requests++;
+			string videoId = GetVideoIdFromUrl(videoUrl);
+			if (videoId == null)
+				throw new ArgumentException("Invalid YouTube video URL.");
 
+			string apiUrl = $"https://www.googleapis.com/youtube/v3/videos?id={videoId}&key={ApiKey}&part=snippet,contentDetails";
 
-			//string url = "https://youtu.be/HlI_C5hpcsk"; // replace with the actual video or track URL
-
-			string title = await GetTitleFromUrl(videoUrl);
-
-			returnValue = title;
-
-			return returnValue;
-		}
-		static async Task<string> GetTitleFromUrl(string url)
-		{
-			if (IsYouTubeUrl(url))
+			using (HttpClient client = new HttpClient())
 			{
-				string videoId = GetVideoIdFromUrl(url);
-				string videoPageUrl = $"https://www.youtube.com/watch?v={videoId}";
+				var response = await client.GetStringAsync(apiUrl);
+				var json = JObject.Parse(response);
 
-				using (var client = new HttpClient())
-				{
-					var response = await client.GetAsync(videoPageUrl);
-					var content = await response.Content.ReadAsStringAsync();
+				var contentDetails = json["items"]?[0]?["contentDetails"];
+				var snippet = json["items"]?[0]?["snippet"];
 
-					var regex = new Regex("<title>(.*?)</title>");
-					var match = regex.Match(content);
+				string title = (string)snippet?["title"];
+				string duration = (string)contentDetails?["duration"];
+				string durationFormatted = ParseYouTubeDuration(duration);
 
-					if (match.Success)
-					{
-						string title = match.Groups[1].Value.Trim();
-						// Remove unwanted text at beginning and end of title
-						title = title.Replace(" - YouTube", "").Replace("&#39;", "'").Trim();
-						return "You[color=red]Tube[/color]: " + title;
-					}
-				}
+				string formattedOutput = $"[b][color=black]YOU[/color][color=red]TUBE[/color][/b] - {title} | Duration: {durationFormatted} - [url={videoUrl}](LINK)[/url]";
+				return formattedOutput ?? "Title Not Found";
 			}
-			else if (IsSoundCloudUrl(url))
-			{
-				string title = await GetTitleFromSoundCloudUrl(url);
-
-				return "SoundCloud: Kein Titel!";
-
-			}
-
-			throw new ArgumentException("Invalid YouTube or SoundCloud URL");
 		}
 
-		static bool IsYouTubeUrl(string url)
+		public static string ParseYouTubeDuration(string duration)
+		{
+			var parsedDuration = XmlConvert.ToTimeSpan(duration);
+			return $"{parsedDuration.Hours:D2};{parsedDuration.Minutes:D2};{parsedDuration.Seconds:D2}";
+		}
+
+		private static string GetVideoIdFromUrl(string url)
 		{
 			var uri = new Uri(url);
-			return uri.Host.ToLower() == "youtu.be" || uri.Host.ToLower() == "www.youtube.com";
-		}
-
-		static bool IsSoundCloudUrl(string url)
-		{
-			var uri = new Uri(url);
-			return uri.Host.ToLower() == "soundcloud.com";
-		}
-
-		static string GetVideoIdFromUrl(string url)
-		{
-			var uri = new Uri(url);
-			if (uri.Host.ToLower() == "youtu.be")
+			if (uri.Host.Contains("youtu.be"))
 			{
-				var parts = uri.AbsolutePath.Trim('/').Split('/');
-				return parts[parts.Length - 1];
+				return uri.AbsolutePath.Trim('/');
 			}
-			else if (uri.Host.ToLower() == "www.youtube.com")
+			else if (uri.Host.Contains("youtube.com"))
 			{
-				var query = uri.Query.TrimStart('?');
-				var parameters = query.Split('&');
-
-				foreach (var parameter in parameters)
-				{
-					var parts = parameter.Split('=');
-					if (parts.Length == 2 && parts[0].ToLower() == "v")
-					{
-						return parts[1];
-					}
-				}
+				var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+				return query["v"];
 			}
-
-			throw new ArgumentException("Invalid YouTube video URL");
-		}
-
-		static async Task<string> GetTrackIdFromUrl(string url)
-		{
-			using (var client = new HttpClient())
-			{
-				var response = await client.GetAsync(url);
-				var content = await response.Content.ReadAsStringAsync();
-
-				var regex = new Regex(@"data-sc-track=""(\d+)""");
-				var match = regex.Match(content);
-
-				if (match.Success)
-				{
-					return match.Groups[1].Value;
-				}
-			}
-
-			throw new ArgumentException("Invalid SoundCloud track URL");
-		}
-
-		static async Task<string> GetTitleFromSoundCloudUrl(string url)
-		{
-			//Console.WriteLine("Get title from: " + url);
-			var httpClient = new HttpClient();
-			var html = await httpClient.GetStringAsync(url);
-
-			var titleMatch = Regex.Match(html, @"<title>([^<]*)</title>");
-			if (titleMatch.Success)
-			{
-				return titleMatch.Groups[1].Value.Trim();
-			}
-
-			throw new ArgumentException("Invalid SoundCloud track URL");
-		}
-
-		class SoundCloudTrackMetadata
-		{
-			public string title { get; set; }
-			// add any additional metadata properties you want to retrieve here
+			return null;
 		}
 
 	}

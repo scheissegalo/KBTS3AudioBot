@@ -1,6 +1,6 @@
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
+//using System;
+//using System.Net.Http;
+//using System.Threading.Tasks;
 using Newtonsoft.Json;
 using TS3AudioBot;
 using TS3AudioBot.CommandSystem;
@@ -25,7 +25,7 @@ namespace Watchparty
 		}
 
 		// This method will create a WatchParty room and return the URL
-		public static async Task<string> CreateWatchPartyRoomAsync(string video = null)
+		public static async Task<string> CreateWatchPartyRoomAsync(string video = "")
 		{
 			var requestData = new
 			{
@@ -45,7 +45,7 @@ namespace Watchparty
 					// Parse the response JSON to get the room name
 					var responseBody = await response.Content.ReadAsStringAsync();
 					var responseData = JsonConvert.DeserializeObject<dynamic>(responseBody);
-					string roomName = responseData?.name;
+					string roomName = responseData?.name ?? "error";
 
 					// Generate the room URL
 					string roomUrl = HOST_NAME + "/watch" + roomName;

@@ -6,7 +6,7 @@ using TSLib;
 using TSLib.Full;
 using TS3AudioBot.Config;
 using System.Threading.Tasks;
-using Org.BouncyCastle.Asn1;
+//using Org.BouncyCastle.Asn1;
 
 namespace AloneMode
 {

@@ -218,7 +218,7 @@ Will create a channel called Mikes CSRoom.";
 
 		}
 
-		[Command("create")]
+		[Command("createchannel")]
 		public string CreateChannel(ClientCall invoker, string channelName)
 		{
 			Random random = new Random();

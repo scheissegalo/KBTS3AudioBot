@@ -69,6 +69,8 @@ namespace Cryptoz
 			ServerGroup = (ServerGroupId)135 // Group A
 		};
 
+		private static readonly HttpClient httpClient = new HttpClient();
+
 		public DisplayCrypto(Ts3Client ts3Client, Connection serverView, TsFullClient tsFull)
 		{
 			//this.playManager = playManager;
@@ -85,7 +87,7 @@ namespace Cryptoz
 		}
 
 		[Command("votes")]
-		public string CommandToggleVotes(InvokerData invoker, string command)
+		public async Task<string> CommandToggleVotes(InvokerData invoker, string command)
 		{
 			if (command == "on")
 			{
@@ -100,7 +102,7 @@ namespace Cryptoz
 			else if (command == "fetch")
 			{
 				checkVotes = true;
-				GetVotesAndGroups();
+				await GetVotesAndGroups();
 				return "[b][color=green]Votes are now enabled and fetched![/color][/b]";
 			}
 			else if (command == "debug")
@@ -125,7 +127,7 @@ namespace Cryptoz
 			//return "[b][color=red]This TeamSpeak ID (" + invoker.ClientUid.Value + ") is now added to the given SteamID (" + steamid + ").[/color][/b] - Status: " + response;
 		}
 
-		public void Initialize()
+		public async void Initialize()
 		{
 			string fileName = ".local.txt";
 
@@ -139,29 +141,38 @@ namespace Cryptoz
 				groupD.ServerGroup = (ServerGroupId)136;
 			}
 
-			SetCryptoChannelInfo();
-			StartLoop();
-			GetVotesAndGroups();
+			await SetCryptoChannelInfo();
+			await StartLoop();
+			await GetVotesAndGroups();
 
 		}
 
-		private async void StartLoop()
+		private async Task StartLoop()
 		{
 			int update = UpdateInterval;
 			while (true)
 			{
-				//Console.WriteLine($"Tick: Update:{update}");
-				if (update <= 0)
+				try
 				{
-					// Timer end
-					GetBTC();
-					GetETH();
-					GetGold();
-					GetSilver();
-					GetVotes();
-					GetVotesAndGroups();
-					SetCryptoChannelInfo();
-					update = UpdateInterval;
+
+
+					//Console.WriteLine($"Tick: Update:{update}");
+					if (update <= 0)
+					{
+						// Timer end
+						await GetBTC();
+						await GetETH();
+						await GetGold();
+						await GetSilver();
+						await GetVotes();
+						await GetVotesAndGroups();
+						await SetCryptoChannelInfo();
+						update = UpdateInterval;
+					}
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($"Error in Display Crypto Loop. Error: {ex.Message}");
 				}
 
 				update--;
@@ -169,7 +180,7 @@ namespace Cryptoz
 			}
 		}
 
-		private async void SetCryptoChannelInfo()
+		private async Task SetCryptoChannelInfo()
 		{
 			DateTime now = DateTime.Now;
 			string formattedTime = now.ToString("HH:mm");
@@ -181,7 +192,7 @@ namespace Cryptoz
 			await tsFullClient.ChannelEdit(channelId, name: newChannelName, description: newChanDis);
 		}
 
-		private async void SendSteamMessage(string message)
+		private async Task SendSteamMessage(string message)
 		{
 			//Console.WriteLine("Sending Message!");
 			if (enabledDebugs)
@@ -190,7 +201,7 @@ namespace Cryptoz
 			}
 		}
 
-		private async void GetVotesAndGroups()
+		private async Task GetVotesAndGroups()
 		{
 			if (!checkVotes)
 			{
@@ -230,7 +241,7 @@ namespace Cryptoz
 						{
 							string steamId = voter.steamid;
 							//Console.WriteLine("Voter: "+ voter.nickname + " | SteamID: "+voter.steamid);
-							SendSteamMessage("Voter: " + voter.nickname + " | SteamID: " + voter.steamid);
+							await SendSteamMessage("Voter: " + voter.nickname + " | SteamID: " + voter.steamid);
 
 							// Query the database to get TeamSpeak ID based on Steam ID
 							string teamspeakId = GetTeamSpeakIdFromSQLite(connection, steamId);
@@ -243,24 +254,24 @@ namespace Cryptoz
 								bool isClientOnline = serverView.Clients.Any(client => client.Value.Uid.Value.ToString() == teamspeakId);
 								if (isClientOnline)
 								{
-									SendSteamMessage("User Online");
+									await SendSteamMessage("User Online");
 									//Console.WriteLine("User Online");
 									Uid uid = new Uid(teamspeakId);
 									int votes = int.Parse(voter.votes);
 
 									ClientDbId udbid = await ts3Client.GetClientDbIdByUid(uid);
-									SetServerGroupBasedOnVotes(teamspeakId, votes, udbid, groupA, groupB, groupC, groupD);
+									await SetServerGroupBasedOnVotes(teamspeakId, votes, udbid, groupA, groupB, groupC, groupD);
 								}
 								else
 								{
 									//Console.WriteLine("Client not online!");
-									SendSteamMessage("User not Online");
+									await SendSteamMessage("User not Online");
 								}
 							}
 							else
 							{
 								//Console.WriteLine("TS ID is Empty: "+ teamspeakId);
-								SendSteamMessage("TS ID is Empty: " + teamspeakId);
+								await SendSteamMessage("TS ID is Empty: " + teamspeakId);
 							}
 						}
 
@@ -268,20 +279,20 @@ namespace Cryptoz
 				}
 			}
 
-			RemoveVotesFromUsersNotInList(voterList);
+			await RemoveVotesFromUsersNotInList(voterList);
 		}
 
 
-		private async void RemoveVotesFromUsersNotInList(List<String> UsersInList)
+		private async Task RemoveVotesFromUsersNotInList(List<String> UsersInList)
 		{
 			ServerGroupId[] groupIdsToCheck = { groupA.ServerGroup, groupB.ServerGroup, groupC.ServerGroup, groupD.ServerGroup };
-			SendSteamMessage("Removing users not in list");
+			await SendSteamMessage("Removing users not in list");
 			foreach (var usr in serverView.Clients)
 			{
 				if (UsersInList.Contains(usr.Value.Uid.Value.ToString()))
 				{
 					// The user ID is in the list; skip this iteration.
-					SendSteamMessage("The user ID is in the list");
+					await SendSteamMessage("The user ID is in the list");
 					continue;
 				}
 
@@ -295,7 +306,7 @@ namespace Cryptoz
 						if (groupIdsToCheck.Contains(group.ServerGroupId))
 						{
 							// If the user has any of the specified groups, remove it.
-							SendSteamMessage("remove group with id: " + group.ServerGroupId);
+							await SendSteamMessage("remove group with id: " + group.ServerGroupId);
 							await tsFullClient.ServerGroupDelClient(group.ServerGroupId, usr.Value.DatabaseId);
 						}
 					}
@@ -390,7 +401,7 @@ namespace Cryptoz
 			return null;
 		}
 
-		private async void SetServerGroupBasedOnVotes(string teamspeakId, int votes, ClientDbId userDBID, ServerGroupInfo groupA, ServerGroupInfo groupB, ServerGroupInfo groupC, ServerGroupInfo groupD)
+		private async Task SetServerGroupBasedOnVotes(string teamspeakId, int votes, ClientDbId userDBID, ServerGroupInfo groupA, ServerGroupInfo groupB, ServerGroupInfo groupC, ServerGroupInfo groupD)
 		{
 
 			ServerGroupId selectedGroup = groupA.ServerGroup; // Default group if no condition matches
@@ -429,81 +440,120 @@ namespace Cryptoz
 				}
 
 				//Console.WriteLine("Selected Group: " + selectedGroup.ToString() + " VotesCount: "+ votes);
-				SendSteamMessage(teamspeakId + " Selected Group: " + selectedGroup.ToString() + " VotesCount: " + votes);
+				await SendSteamMessage(teamspeakId + " Selected Group: " + selectedGroup.ToString() + " VotesCount: " + votes);
 
 				if (!userGroups.Value.Any(g => g.ServerGroupId == selectedGroup)) // client does not have the current selected group
 				{
 					//Console.WriteLine("Group not added");
-					SendSteamMessage(teamspeakId + " Group not added");
+					await SendSteamMessage(teamspeakId + " Group not added");
 					if (hasAnyGroup) // If already has any other vote group - remove then
 					{
 						//Console.WriteLine("Does have another vote group, remove it");
-						SendSteamMessage(teamspeakId + " Does have another vote group, remove it");
+						await SendSteamMessage(teamspeakId + " Does have another vote group, remove it");
 						foreach (var group in userGroups.Value)
 						{
 							//Console.WriteLine("Iterate: "+ group.Name);
-							SendSteamMessage(teamspeakId + " Iterate: " + group.Name);
+							await SendSteamMessage(teamspeakId + " Iterate: " + group.Name);
 							if (groupIdsToCheck.Contains(group.ServerGroupId))
 							{
 								//Console.WriteLine("Group found and removing: " + group.Name);
-								SendSteamMessage(teamspeakId + " Group found and removing: " + group.Name);
+								await SendSteamMessage(teamspeakId + " Group found and removing: " + group.Name);
 								// If the user has any of the specified groups, remove it.
 								await tsFullClient.ServerGroupDelClient(group.ServerGroupId, userDBID);
 							}
 							//Console.WriteLine(group.Name.ToString());
-							SendSteamMessage(teamspeakId + " " + group.Name.ToString());
+							await SendSteamMessage(teamspeakId + " " + group.Name.ToString());
 						}
 					}
 					// Add to Group
 					await tsFullClient.ServerGroupAddClient(selectedGroup, userDBID);
 					//Console.WriteLine($"Setting server group for TeamSpeak ID {teamspeakId} to '{selectedGroup}' with DBid: '{userDBID}' votes: {votes}");
-					SendSteamMessage(teamspeakId + " Setting server group to: " + selectedGroup.ToString() + " with DBid: " + userDBID + " votes: " + votes);
+					await SendSteamMessage(teamspeakId + " Setting server group to: " + selectedGroup.ToString() + " with DBid: " + userDBID + " votes: " + votes);
 				}
 				else
 				{
 					//Console.WriteLine($"Group already set: TeamSpeak ID {teamspeakId} to '{selectedGroup}' with DBid: '{userDBID}' votes: {votes}");
-					SendSteamMessage(teamspeakId + " Group already set: " + selectedGroup.ToString() + " with DBid: " + userDBID + " votes: " + votes);
+					await SendSteamMessage(teamspeakId + " Group already set: " + selectedGroup.ToString() + " with DBid: " + userDBID + " votes: " + votes);
 				}
 			}
 		}
 
 
-		private async void GetVotes()
+		private async Task GetVotes()
 		{
-			using (var client = new WebClient())
-			{
+			//using (var client = new WebClient())
+			//{
+			//	string NewChannelName = "";
+			//	string userVotesList = "";
+			//	var responseVotes = client.DownloadString("https://teamspeak-servers.org/api/?object=servers&element=detail&key=s5b78c4OcL5UV6pDxTMnDeaMjNEotEUN6iA");
+			//	dynamic dataVotes = JsonConvert.DeserializeObject(responseVotes);
+			//	int serverRank = dataVotes.rank;
+			//	int serverVotes = dataVotes.votes;
+			//	NewChannelName = "[cspacer1231]Server Rank: " + serverRank + " | Votes: " + serverVotes;
+			//	//Console.WriteLine("Server Rank: {0}, Votes: {1}", serverRank, serverVotes);
+
+			//	var response = client.DownloadString("https://teamspeak-servers.org/api/?object=servers&element=voters&key=s5b78c4OcL5UV6pDxTMnDeaMjNEotEUN6iA&month=current&format=json");
+			//	dynamic data = JsonConvert.DeserializeObject(response);
+			//	var voters = data.voters;
+
+			//	foreach (var voter in voters)
+			//	{
+			//		string nickname = voter.nickname;
+			//		int votes = voter.votes;
+			//		//Console.WriteLine("Nickname: {0}, Votes: {1}", nickname, votes);
+			//		userVotesList = userVotesList + nickname + " = " + votes + "\n";
+			//	}
+
+			//	userVotesList = userVotesList + "\n\n[url=https://teamspeak-servers.org/server/12137/vote/]Vote for US[/url]";
+			//	//Console.WriteLine(userVotesList);
+			//	string newChanDis = $"[b]User Vote List:[/b]\n{userVotesList}";
+			//	ChannelId channelId = new ChannelId(ServerVotesChannel);
+			//	await tsFullClient.ChannelEdit(channelId, name: NewChannelName, description: newChanDis);
+
+			//}
+
+
 				string NewChannelName = "";
 				string userVotesList = "";
-				var responseVotes = client.DownloadString("https://teamspeak-servers.org/api/?object=servers&element=detail&key=s5b78c4OcL5UV6pDxTMnDeaMjNEotEUN6iA");
-				dynamic dataVotes = JsonConvert.DeserializeObject(responseVotes);
-				int serverRank = dataVotes.rank;
-				int serverVotes = dataVotes.votes;
-				NewChannelName = "[cspacer1231]Server Rank: " + serverRank + " | Votes: " + serverVotes;
-				//Console.WriteLine("Server Rank: {0}, Votes: {1}", serverRank, serverVotes);
 
-				var response = client.DownloadString("https://teamspeak-servers.org/api/?object=servers&element=voters&key=s5b78c4OcL5UV6pDxTMnDeaMjNEotEUN6iA&month=current&format=json");
-				dynamic data = JsonConvert.DeserializeObject(response);
-				var voters = data.voters;
-
-				foreach (var voter in voters)
+				try
 				{
-					string nickname = voter.nickname;
-					int votes = voter.votes;
-					//Console.WriteLine("Nickname: {0}, Votes: {1}", nickname, votes);
-					userVotesList = userVotesList + nickname + " = " + votes + "\n";
+					// Fetching the server votes data
+					var responseVotes = await httpClient.GetStringAsync("https://teamspeak-servers.org/api/?object=servers&element=detail&key=s5b78c4OcL5UV6pDxTMnDeaMjNEotEUN6iA");
+					dynamic dataVotes = JsonConvert.DeserializeObject(responseVotes);
+					int serverRank = dataVotes.rank;
+					int serverVotes = dataVotes.votes;
+					NewChannelName = $"[cspacer1231]Server Rank: {serverRank} | Votes: {serverVotes}";
+
+					// Fetching the voters list data
+					var response = await httpClient.GetStringAsync("https://teamspeak-servers.org/api/?object=servers&element=voters&key=s5b78c4OcL5UV6pDxTMnDeaMjNEotEUN6iA&month=current&format=json");
+					dynamic data = JsonConvert.DeserializeObject(response);
+					var voters = data.voters;
+
+					foreach (var voter in voters)
+					{
+						string nickname = voter.nickname;
+						int votes = voter.votes;
+						userVotesList += $"{nickname} = {votes}\n";
+					}
+
+					userVotesList += "\n\n[url=https://teamspeak-servers.org/server/12137/vote/]Vote for US[/url]";
+					string newChanDis = $"[b]User Vote List:[/b]\n{userVotesList}";
+
+					ChannelId channelId = new ChannelId(ServerVotesChannel);
+					await tsFullClient.ChannelEdit(channelId, name: NewChannelName, description: newChanDis);
 				}
-
-				userVotesList = userVotesList + "\n\n[url=https://teamspeak-servers.org/server/12137/vote/]Vote for US[/url]";
-				//Console.WriteLine(userVotesList);
-				string newChanDis = $"[b]User Vote List:[/b]\n{userVotesList}";
-				ChannelId channelId = new ChannelId(ServerVotesChannel);
-				await tsFullClient.ChannelEdit(channelId, name: NewChannelName, description: newChanDis);
-
-			}
-
+				catch (HttpRequestException e)
+				{
+					Console.WriteLine($"Request error: {e.Message}");
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine($"An error occurred: {e.Message}");
+				}
 		}
 
-		private async void GetBTC()
+		private async Task GetBTC()
 		{
 			ChannelId channelId = new ChannelId(BTCchannel);
 			HttpClient client = new HttpClient();
@@ -514,7 +564,7 @@ namespace Cryptoz
 		}
 
 
-		private async void GetETH()
+		private async Task GetETH()
 		{
 			ChannelId channelId = new ChannelId(ETHchannel);
 			HttpClient client = new HttpClient();
@@ -524,7 +574,7 @@ namespace Cryptoz
 			await tsFullClient.ChannelEdit(channelId, name: ethData + " USD");
 		}
 
-		private async void GetGold()
+		private async Task GetGold()
 		{
 			ChannelId channelId = new ChannelId(GOLDchannel);
 			HttpClient client = new HttpClient();
@@ -535,7 +585,7 @@ namespace Cryptoz
 			await tsFullClient.ChannelEdit(channelId, name: goldData + " USD");
 		}
 
-		private async void GetSilver()
+		private async Task GetSilver()
 		{
 			ChannelId channelId = new ChannelId(SILVERchannel);
 			HttpClient client = new HttpClient();

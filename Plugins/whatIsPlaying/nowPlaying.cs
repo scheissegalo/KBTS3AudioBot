@@ -4,7 +4,7 @@ using TS3AudioBot;
 using TS3AudioBot.Audio;
 using TS3AudioBot.CommandSystem;
 using TS3AudioBot.Plugins;
-using TS3AudioBot.Localization;
+//using TS3AudioBot.Localization;
 using TSLib.Full.Book;
 using TSLib;
 using TSLib.Full;
@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using LiteDB;
-using TS3AudioBot.Web.Api;
+//using TS3AudioBot.Web.Api;
 
 namespace whatIsPlaying
 {
@@ -43,18 +43,18 @@ namespace whatIsPlaying
 		}
 
 		// The Initialize method will be called when all modules were successfully injected.
-		public void Initialize()
+		public async void Initialize()
 		{
 			// Store the default codec type (can be set to a different value)
 			defaultCodec = Codec.OpusVoice;
 			MusicCodec = Codec.OpusMusic;
 
 			playManager.AfterResourceStarted += Start;
-			playManager.PlaybackStopped += Stop;
 			tsFullClient.OnClientMoved += OnBotMoved;
+			tsFullClient.OnDisconnected += OnDisconnect;
 
-			setChannelCommander();
-			GetCurrentChannelId();
+			await setChannelCommander();
+			await GetCurrentChannelId();
 
 			msgFoot = @"
 
@@ -64,7 +64,13 @@ namespace whatIsPlaying
 [URL=https://north-industries.com]Home[/URL] | [URL=https://north-industries.com/ts-viewer/]TS-Viewer[/URL] | [URL=https://north-industries.com/teamspeak-connect/#rules]Rules[/URL]";
 		}
 
-		private async void GetCurrentChannelId()
+		private async void OnDisconnect(object sender, DisconnectEventArgs e)
+		{
+			await Task.Delay(5000);
+			await ts3Client.SetChannelCommander(true);
+		}
+
+		private async Task GetCurrentChannelId()
 		{
 			var me = await tsFullClient.WhoAmI();
 			ChannelId channelId = new ChannelId(me.Value.ChannelId.Value);
@@ -72,7 +78,7 @@ namespace whatIsPlaying
 			//Console.WriteLine("Current Channel Changed "+ channelId);
 		}
 
-		private async void setChannelCommander()
+		private async Task setChannelCommander()
 		{
 			await ts3Client.SetChannelCommander(true);
 		}
@@ -83,25 +89,20 @@ namespace whatIsPlaying
 			try
 			{
 				//await Task.Delay(500);
-				string currentTitle = await YouTube.getTitleFromUrl(playManager.CurrentPlayData.SourceLink);
+				string currentTitle = await YouTube.GetTitleFromUrlAsync(playManager.CurrentPlayData.SourceLink);
 				if (!string.IsNullOrEmpty(currentTitle))
 				{
-					await ts3Client.SendChannelMessage("Playing [b]" + currentTitle + "[/b]");
+					await ts3Client.SendChannelMessage($"Now playing: {currentTitle} | Today: {YouTube.requests} requests");
 				}
 			}
 			catch (Exception ex)
 			{
-				//await ts3Client.SendChannelMessage("Error resolving trackname " + ex.Message);
+				await ts3Client.SendChannelMessage("Error resolving trackname " + ex.Message);
 			}
 
 
 
 			//await ts3Client.SendChannelMessage("Song wird abgespielt");
-		}
-
-		private async Task Stop(object sender, EventArgs e)
-		{
-			//if (lastName != null) await ts3Client.ChangeName(lastName); listmp3 randommp3 !ytpl
 		}
 
 		private async void OnBotMoved(object sender, IEnumerable<ClientMoved> clients)
@@ -138,14 +139,14 @@ namespace whatIsPlaying
 						{
 							ChannelId channelId = new ChannelId(client.TargetChannelId.Value);
 
-							await tsFullClient.ChannelEdit(currentChannel, codec: defaultCodec, codecQuality: defaultCodecQuality);
-							await tsFullClient.ChannelEdit(channelId, codec: MusicCodec, codecQuality: MusicCodecQuality);
+							//await tsFullClient.ChannelEdit(currentChannel, codec: defaultCodec, codecQuality: defaultCodecQuality);
+							//await tsFullClient.ChannelEdit(channelId, codec: MusicCodec, codecQuality: MusicCodecQuality);
 
 							//Console.WriteLine("Bot was Moved to channel: " + client.TargetChannelId + "/" + channelId);
 
 						}
 						await ts3Client.SendChannelMessage(helpMessage);
-						GetCurrentChannelId();
+						await GetCurrentChannelId();
 					}
 				}
 			}
@@ -153,9 +154,7 @@ namespace whatIsPlaying
 			{
 				Console.WriteLine("Error editing channel properties: " + ex.Message);
 			}
-
 		}
-
 
 		[Command("local")]
 		public static async Task<string> CommandLocal(PlayManager playManager, ClientCall invoker, string query)
@@ -256,7 +255,6 @@ namespace whatIsPlaying
 			// Don't forget to unregister everything you have subscribed to,
 			// otherwise your plugin will remain in a zombie state
 			playManager.AfterResourceStarted -= Start;
-			playManager.PlaybackStopped -= Stop;
 			tsFullClient.OnClientMoved -= OnBotMoved;
 		}
 	}

@@ -1,4 +1,4 @@
-using Newtonsoft.Json; // Make sure to install this via NuGet.
+using Newtonsoft.Json;
 using TS3AudioBot;
 using TS3AudioBot.Plugins;
 using TSLib.Full.Book;
@@ -7,6 +7,7 @@ using TSLib.Full;
 using TSLib.Messages;
 using LiteDB;
 using TS3AudioBot.CommandSystem;
+//using System.Threading.Channels;
 
 namespace ChannelChecker
 {
@@ -24,6 +25,10 @@ namespace ChannelChecker
 
 		// Store channel visit counts in a dictionary.
 		private Dictionary<ulong, int> channelVisits = new();
+
+		// Create by Player count Channel ID to create subchannels in.
+		private ChannelId parentChannelId;// = (ChannelId)506;
+		private ChannelId adminChannel;
 
 		// Path to the JSON file for storing visit data.
 		private const string DataFilePath = "ChannelVisits.json";
@@ -45,6 +50,18 @@ namespace ChannelChecker
 
 		public void Initialize()
 		{
+			// Check if the file 'local.txt' exists in the working directory
+			if (System.IO.File.Exists("local.txt"))
+			{
+				parentChannelId = (ChannelId)506; // Local setting
+				adminChannel = (ChannelId)266;
+			}
+			else
+			{
+				parentChannelId = (ChannelId)589; // Remote setting
+				adminChannel = (ChannelId)266;
+			}
+
 			tsFullClient.OnClientMoved += TsFullClient_OnChannelChanged;
 			LoadVisitData(); // Load existing data on startup.
 			LoadIgnoredChannels();
@@ -52,7 +69,7 @@ namespace ChannelChecker
 
 		// Command method must be static and access the singleton instance.
 		[Command("channelcheck")]
-		public static async Task<string> CommandRank(ClientCall invoker)
+		public static string CommandRank(ClientCall invoker)
 		{
 			// Use the singleton instance to call the method.
 			if (Instance == null)
@@ -63,7 +80,7 @@ namespace ChannelChecker
 		}
 
 		[Command("addignore")]
-		public static async Task<string> AddIgnoredChannel(ClientCall invoker, ulong channelId)
+		public static string AddIgnoredChannel(ClientCall invoker, ulong channelId)
 		{
 			if (Instance == null)
 				return "Plugin not initialized.";
@@ -74,7 +91,7 @@ namespace ChannelChecker
 		}
 
 		[Command("removeignore")]
-		public static async Task<string> RemoveIgnoredChannel(ClientCall invoker, ulong channelId)
+		public static string RemoveIgnoredChannel(ClientCall invoker, ulong channelId)
 		{
 			if (Instance == null)
 				return "Plugin not initialized.";
@@ -106,10 +123,18 @@ namespace ChannelChecker
 			const int maxMessageLength = 8000; // Leave room for safety.
 			var reportChunks = SplitStringByLine(report, maxMessageLength);
 
+			ChannelId currentChannel = serverView?.CurrentChannel()?.Id ?? adminChannel;
+			//ChannelId currentChannel = serverView.CurrentChannel().Id;
+			ChannelId invokerChannel = invoker?.ChannelId ?? adminChannel;
+			//ChannelId invokerChannel = invoker.ChannelId.Value;
 			foreach (var chunk in reportChunks)
 			{
-				await ts3Client.SendMessage(chunk, invoker.ClientId.Value);
-				 //invoker.SendMessageAsync(chunk);
+				//tsFullClient.
+				await ts3Client.MoveTo(invokerChannel);
+				await ts3Client.SendMessage(chunk, invoker?.ClientId.Value ?? (ClientId)0);
+				await ts3Client.SendChannelMessage(chunk);
+				await ts3Client.MoveTo(currentChannel);
+				//invoker.SendMessageAsync(chunk);
 			}
 		}
 
@@ -160,7 +185,19 @@ namespace ChannelChecker
 				ulong channelId = channel.Id.Value;
 				//ChannelInfoResponse[] channelInfo = tsFullClient.ChannelInfo(channel.Id).Result.Value;
 				int visits = channelVisits.TryGetValue(channelId, out var count) ? count : 0;
-				bool isIgnored = ignoredChannelIds.Contains(channelId);
+				bool isIgnored = false;
+
+				//check if is a dynamic channel or parent
+				if (channel.Parent != parentChannelId && channel.Id != parentChannelId)
+				{
+					isIgnored = ignoredChannelIds.Contains(channelId);
+				}
+				else
+				{
+					isIgnored = true;
+					//Console.WriteLine($"Channel {channel.Name} is parent and ignored!");
+				}
+				
 
 				report += $"[color=green]{channel.Name}[/color] : [color=red]{visits} visits[/color]";
 				if (isIgnored)
@@ -196,7 +233,7 @@ namespace ChannelChecker
 			{
 				ulong channelId = channel.Id.Value;
 
-				if (ignoredChannelIds.Contains(channelId))
+				if (ignoredChannelIds.Contains(channelId) || channel.Parent == (ChannelId)589)
 				{
 					//Console.WriteLine($"Skipping ignored channel: {channel.Name}");
 					continue;

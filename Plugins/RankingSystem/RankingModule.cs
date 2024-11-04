@@ -1,42 +1,34 @@
+using LiteDB;
+using Newtonsoft.Json;
 using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TS3AudioBot;
-using TS3AudioBot.Audio;
-using TS3AudioBot.CommandSystem;
-using TS3AudioBot.Plugins;
-using TSLib.Full.Book;
 using TSLib;
 using TSLib.Full;
-using LiteDB;
-using System.Linq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
+using TSLib.Full.Book;
 
 namespace RankingSystem
 {
-	public class DataBaseKB : IBotPlugin
+	internal class RankingModule
 	{
 		private TsFullClient tsFullClient;
-		private PlayManager playManager;
 		private Ts3Client ts3Client;
 		private Connection serverView;
 		private bool dbInitialized;
 
 		private readonly List<uint> excludedGroups = new List<uint> { 11, 47, 115 }; // replace with the IDs of the excluded groups
-		private readonly int UpdateInterval = 2; //min
+
 		private Dictionary<string, User> _users;
 		private List<ServerGroupInfo> _serverGroupList;
 
-		string logFilePath = "botlog.txt"; // Change this to your desired log file path
-
-		public DataBaseKB(PlayManager playManager, Ts3Client ts3Client, Connection serverView, TsFullClient tsFull)
+		public RankingModule(Ts3Client ts3Client, TsFullClient tsFullClient, Connection serverView)
 		{
-			this.playManager = playManager;
 			this.ts3Client = ts3Client;
-			this.tsFullClient = tsFull;
+			this.tsFullClient = tsFullClient;
 			this.serverView = serverView;
+
 			_users = new Dictionary<string, User>();
 
 			_serverGroupList = new List<ServerGroupInfo>
@@ -92,190 +84,28 @@ namespace RankingSystem
 				new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(1090), ServerGroup = (ServerGroupId)128 },//23 Monate
 				//new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(755), ServerGroup = (ServerGroupId)129 },//24 Monate
 			};
+			
 		}
 
-		public void Initialize()
+
+		public async Task StartRankingModule()
 		{
-			InitDB();
-			StartLoop();
-			//TestListData();
-			//ImportData("exportedData.json");
+			Console.WriteLine("Ranking Module initialized!");
+			await CheckOnlineUsers();
+			//await StartLoop();
 		}
 
-		public void ImportData(string jsonFilePath)
+		public async Task TestTask()
 		{
-			try
-			{
-				// Initialize the LiteDB database
-				using (var db = new LiteDatabase(@"new_rank_users.db"))
-				{
-					// Get the 'users' collection (or create it if it doesn't exist)
-					var col = db.GetCollection<User>("users");
-
-					// Read JSON data from file
-					var jsonData = System.IO.File.ReadAllText(jsonFilePath);
-					var jsonObject = JObject.Parse(jsonData);
-					var usersArray = (JArray)jsonObject["users"];
-
-					var users = new List<User>();
-
-					foreach (var userToken in usersArray)
-					{
-						var user = new User
-						{
-							Id = userToken["_id"].ToString(),
-							UserID = userToken["UserID"].ToString(),
-							Time = (long)userToken["Time"],
-							OnlineTime = TimeSpan.FromTicks((long)userToken["OnlineTime"]["$numberLong"]),
-						};
-
-						users.Add(user);
-					}
-
-					// Insert users into the new database
-					col.InsertBulk(users);
-
-					// Ensure the 'UserID' field is indexed for faster queries
-					col.EnsureIndex(x => x.UserID);
-
-					Console.WriteLine($"Successfully imported {users.Count} users into the new database.");
-				}
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"Exception occurred: {ex.Message}");
-				Console.WriteLine(ex.ToString());
-			}
+			await Task.Delay(1000);
+			Console.WriteLine("Tested Ranking done!");
 		}
 
 
-
-		[Command("rank")]
-		public static async Task<string> CommandRank(ClientCall invoker, string querystring)
-		{
-			// Retrieve the user's data from the database
-			var db = new LiteDatabase("rank_users.db;Upgrade=true;");
-			var usersCollection = db.GetCollection<User>("users");
-
-			var user = usersCollection.FindOne(x => x.UserID == invoker.ClientUid.ToString());
-			Console.WriteLine("Invoker: " + invoker.NickName + " UserInDB: " + user);
-
-			if (user != null)
-			{
-				// Update the necessary fields
-				TimeSpan timeSpan = TimeSpan.Parse(querystring);
-				user.OnlineTime = timeSpan;
-				user.LastUpdate = DateTime.Now;
-				user.UpdateTime = true;
-
-				// Update the user's data in the database
-				usersCollection.Update(user);
-				return $"User {user.Name} changed. New time: {user.OnlineTime.TotalDays} Days, {user.OnlineTime.Hours} hours and {user.OnlineTime.Minutes} minutes";
-			}
-			else
-			{
-				return "User not found.";
-			}
-		}
-
-		[Command("rank")]
-		public static async Task<string> CommandRank(ClientCall invoker, string DBuser, string query)
-		{
-			// Retrieve the user's data from the database
-			var db = new LiteDatabase("rank_users.db;Upgrade=true;");
-			var usersCollection = db.GetCollection<User>("users");
-
-			var user = usersCollection.FindOne(x => x.Name == DBuser);
-			Console.WriteLine("Invoker: " + invoker.NickName + " UserInDB: " + user);
-
-			if (user != null)
-			{
-				// Update the necessary fields
-				TimeSpan timeSpan = TimeSpan.Parse(query);
-				user.OnlineTime = timeSpan;
-				user.LastUpdate = DateTime.Now;
-				user.UpdateTime = true;
-
-				// Update the user's data in the database
-				usersCollection.Update(user);
-
-				return $"User {user.Name} changed. New time: {user.OnlineTime.TotalDays} Days, {user.OnlineTime.Hours} hours and {user.OnlineTime.Minutes} minutes";
-			}
-			else
-			{
-				return "User not found.";
-			}
-			//return "Nichts gefunden!";
-			//}
-		}
-
-		[Command("rankdelete")]
-		public static async Task<string> CommandRankDelete(ClientCall invoker)
-		{
-			// Retrieve the user's data from the database
-			var db = new LiteDatabase("rank_users.db;Upgrade=true;");
-			var usersCollection = db.GetCollection<User>("users");
-			//usersCollection.Delete(Query.All());
-
-			return "Database Cleaned";
-			//}
-		}
-
-		[Command("importdb")]
-		public static async Task<string> ImportDataBase(ClientCall invoker)
-		{
-			try
-			{
-				var jsonData = System.IO.File.ReadAllText("exportedData.json");
-				var jsonObj = JsonConvert.DeserializeObject<JObject>(jsonData);
-
-				using (var newDb = new LiteDatabase(@"newDatabase.db"))
-				{
-					foreach (var collection in jsonObj.Properties())
-					{
-						var collectionName = collection.Name;
-						var collectionData = collection.Value.ToObject<List<BsonDocument>>();
-
-						var dbCollection = newDb.GetCollection<BsonDocument>(collectionName);
-						dbCollection.InsertBulk(collectionData);
-					}
-				}
-
-				Console.WriteLine("Data import completed.");
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"An error occurred: {ex.Message}");
-			}
-
-			return "Data import completed";
-			//}
-		}
-
-
-		public void readAndLoadJson()
-		{
-			string jsonFilePath = "tunausers.json"; // replace with your file path
-			string databaseFolderPath = "oldusers.db;Upgrade=true;"; // replace with your database folder path
-
-			var users = ReadUsersFromJson(jsonFilePath);
-
-			using (var db = new LiteDatabase(databaseFolderPath))
-			{
-				var usersCollection = db.GetCollection<User>("users");
-
-				foreach (var user in users)
-				{
-					Console.WriteLine("User: " + user.Nickname + " " + user.UserID);
-					usersCollection.Insert(user);
-				}
-			}
-		}
-
-		static List<User> ReadUsersFromJson(string jsonFilePath)
+		private List<User> ReadUsersFromJson(string jsonFilePath)
 		{
 			var json = System.IO.File.ReadAllText(jsonFilePath);
-			var jsonObject = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObject>(json);
+			var jsonObject = JsonConvert.DeserializeObject<RootObject>(json);
 
 			var users = new List<User>();
 
@@ -333,29 +163,10 @@ namespace RankingSystem
 			return _serverGroupList.Last().ServerGroup;
 		}
 
-		private async void StartLoop()
-		{
-			int update = UpdateInterval;
-			while (true)
-			{
-				Console.WriteLine($"Tick: Update:{update}");
-				//LogToFile(logFilePath, $"Tick: Update:{update}");
-				if (update <= 0)
-				{
-					// Timer end
-					InitDB();
-					update = UpdateInterval;
-				}
-
-				update--;
-				await Task.Delay(60000); // 60000 1 min
-			}
-		}
-
-		private async void InitDB()
+		public async Task CheckOnlineUsers()
 		{
 			dbInitialized = false;
-			Console.WriteLine("Updating Users");
+			//Console.WriteLine("Updating Users");
 			var allUsers = await tsFullClient.ClientList();
 
 			try
@@ -365,8 +176,6 @@ namespace RankingSystem
 				{
 
 					// Get a collection (or create it if it doesn't exist)
-					//var connectionString = "Filename=rank_users.db;Upgrade=true;";
-					//var db = new LiteDatabase(connectionString);
 					var DBusers = db.GetCollection<User>("users");
 
 					if (DBusers == null)
@@ -416,6 +225,7 @@ namespace RankingSystem
 
 						if (fulluser.Value.ClientType.Equals(ClientType.Full))
 						{
+							// Check if user has bot group
 							foreach (var sg in excludedGroups)
 							{
 								//Console.WriteLine("Is a bot and should be skipped");
@@ -433,7 +243,7 @@ namespace RankingSystem
 								//Console.WriteLine("Is a bot and should be skipped");
 								continue;
 							}
-							// Check if the user is already being tracked
+							// Check if the user is already being tracked if not create entry
 							if (!_users.ContainsKey(fulluser.Value.Uid.ToString()))
 							{
 
@@ -617,12 +427,12 @@ namespace RankingSystem
 
 									if (user.IsAfk || user.IsAlone)
 									{
-										Console.WriteLine(user.Name + " - User AFK Continue");
+										//Console.WriteLine(user.Name + " - User AFK Continue");
 										deleteClient = true;
 									}
 									else
 									{
-										Console.WriteLine(user.Name + " - User in Party adding Points");
+										//Console.WriteLine(user.Name + " - User in Party adding Points");
 										deleteClient = false;
 									}
 
@@ -690,91 +500,8 @@ namespace RankingSystem
 			return count;
 		}
 
-		private async void TestDB()
-		{
-			var allUsers = await tsFullClient.ClientList();
 
-			try
-			{
-				// Replace "your_database_name" with the name of your own database file
-				using (var db = new LiteDatabase("rank_users.db;Upgrade=true;"))
-				{
-					// Get a collection (or create it if it doesn't exist)
-					var users = db.GetCollection<User>("users");
-					//users.Delete(Query.All());
-
-					foreach (var user in allUsers.Value)
-					{
-						var fulluser = await tsFullClient.ClientInfo(user.ClientId);
-						bool skipClient = false;
-
-						if (fulluser.Value.ClientType.Equals(ClientType.Full))
-						{
-							foreach (var sg in excludedGroups)
-							{
-								ServerGroupId newSG = (ServerGroupId)sg;
-								if (fulluser.Value.ServerGroups.Contains(newSG))
-								{
-									//Console.WriteLine(user.Name + " Online but is a Bot");
-									skipClient = true;
-									break;
-								}
-							}
-
-							if (skipClient)
-							{
-								continue;
-							}
-
-							var clientOnlineTime = await tsFullClient.GetClientConnectionInfo(user.ClientId);
-							// Get the client uptime (in seconds) for the user
-							TimeSpan conTime = clientOnlineTime.Value.ConnectedTime;
-							//ulong uptime = ts3Client.GetClientUptime(clientId).Value;
-							//Console.WriteLine("Connection Time: "+ conTime);
-
-							var adduser = new User { Name = user.Name, UserID = user.Uid?.ToString(), Time = 0 };
-							//users.Insert(adduser);
-
-						}
-
-					}
-
-					// Query the data
-					var allUser = users.FindAll();
-					//var results = users.Find(x => x.Time > 27);
-
-					// Display the results
-					foreach (var result in allUser)
-					{
-						Console.WriteLine($"Name: {result.Name}, USERID: {result.UserID} Time: {result.Time}");
-						//Console.WriteLine(result);
-					}
-
-				}
-
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex.ToString());
-			}
-
-		}
-
-		static void LogToFile(string filePath, string message)
-		{
-			using (StreamWriter writer = new StreamWriter(filePath, true))
-			{
-				string logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {message}";
-				writer.WriteLine(logEntry);
-			}
-		}
-
-		public void Dispose()
-		{
-
-		}
-
-		class RootObject
+		public class RootObject
 		{
 			public long time { get; set; }
 			public string type { get; set; }
@@ -782,32 +509,36 @@ namespace RankingSystem
 			public List<UserJson> data { get; set; }
 		}
 
-		class UserJson
+		public class UserJson
 		{
 			public string name { get; set; }
 			public string uid { get; set; }
 			public int time { get; set; }
 		}
-	}
-	public class User
-	{
-		public string Id { get; set; }
-		public string Name { get; set; }
-		public string UserID { get; set; }
-		public long Time { get; set; }
-		public string Nickname { get; set; }
-		public TimeSpan OnlineTime { get; set; }
-		public bool IsAfk { get; set; }
-		public bool IsAlone { get; set; }
-		public DateTime LastUpdate { get; set; }
-		public ServerGroupId RankGroup { get; set; }
-		public ulong RankGroupInt { get; set; }
-		public bool UpdateTime { get; set; }
-	}
 
-	public class ServerGroupInfo
-	{
-		public TimeSpan OnlineTimeThreshold { get; set; }
-		public ServerGroupId ServerGroup { get; set; }
+		public class User
+		{
+			public string Id { get; set; }
+			public string Name { get; set; }
+			public string UserID { get; set; }
+			public long Time { get; set; }
+			public string Nickname { get; set; }
+			public TimeSpan OnlineTime { get; set; }
+			public bool IsAfk { get; set; }
+			public bool IsAlone { get; set; }
+			public DateTime LastUpdate { get; set; }
+			public ServerGroupId RankGroup { get; set; }
+			public ulong RankGroupInt { get; set; }
+			public bool UpdateTime { get; set; }
+		}
+
+		public class ServerGroupInfo
+		{
+			public TimeSpan OnlineTimeThreshold { get; set; }
+			public ServerGroupId ServerGroup { get; set; }
+		}
+
+
+
 	}
 }

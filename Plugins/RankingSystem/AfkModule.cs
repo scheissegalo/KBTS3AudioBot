@@ -1,60 +1,33 @@
-using System;
 using System.Threading.Tasks;
+using System;
 using TS3AudioBot;
-using TS3AudioBot.Plugins;
 using TSLib.Full.Book;
-using TSLib;
 using TSLib.Full;
+using TSLib;
 using System.Collections.Generic;
 
-
-namespace AfkChecker
+namespace RankingSystem
 {
-	public class CheckAfk : IBotPlugin
-	{
+	internal class AfkModule
+    {
 		private TsFullClient tsFullClient;
 		private Ts3Client ts3Client;
 		private Connection serverView;
-		private bool TimerOn = false;
-		private int AFKTime = 60; // in Minutes
+		private Constants constants = new Constants();
+
 		private int AFKNotice;
 
-		// Your dependencies will be injected into the constructor of your class.
-		public CheckAfk(Ts3Client ts3Client, Connection serverView, TsFullClient tsFull)
+		public AfkModule(Ts3Client ts3Client, TsFullClient tsFullClient, Connection serverView)
 		{
-			//this.playManager = playManager;
 			this.ts3Client = ts3Client;
-			this.tsFullClient = tsFull;
+			this.tsFullClient = tsFullClient;
 			this.serverView = serverView;
 		}
 
-		// The Initialize method will be called when all modules were successfully injected.
-		public async void Initialize()
+		public void StartAfkModule()
 		{
-			AFKNotice = AFKTime - 1;
-			Console.WriteLine("Starting AFK Service - AFK Time: " + AFKTime + " AFK Notice: " + AFKNotice);
-
-			TimerOn = true;
-			await StartTimerLoop();
-			//UserIdleCheck();
-
-		}
-
-		private async Task StartTimerLoop()
-		{
-			while (TimerOn)
-			{
-				try
-				{
-					await UserIdleCheck();
-				}
-				catch (Exception ex) 
-				{
-					Console.WriteLine($"Error in AFK Loop User Check! Error:{ex.Message}");
-				}
-				//Console.WriteLine("Executed method - " + DateTime.Now);
-				await Task.Delay(30000); // Wait for 10 seconds before executing again
-			}
+			AFKNotice = constants.AFKTime - 1;
+			Console.WriteLine("AFK Module initialized!");
 		}
 
 		public async Task UserIdleCheck()
@@ -65,13 +38,22 @@ namespace AfkChecker
 				var allConnectedClients = serverView.Clients;
 				foreach (var client in allConnectedClients)
 				{
-					// If is in Bot Server Group Ignore
-					ServerGroupId serverGroupId = (ServerGroupId)11;
-					ServerGroupId serverGroupId2 = (ServerGroupId)69;
-					if (!client.Value.ServerGroups.Contains(serverGroupId)
-						&& !client.Value.ServerGroups.Contains(serverGroupId2)
-						&& GetUserCountFromChannelId(client.Value.Channel) > 1
-						&& client.Value.Channel.ToString() != "18")
+					//Check if user is in excludet group
+					bool skipCurrentClient = false;
+					foreach (var sg in constants.BotGroups)
+					{
+						ServerGroupId newSG = (ServerGroupId)sg;
+						if (client.Value.ServerGroups.Contains(newSG))
+						{
+							//Console.WriteLine("Skipping Bot");
+							skipCurrentClient = true;
+							break;
+						}
+					}
+					if (skipCurrentClient)
+						continue;
+
+					if (GetUserCountFromChannelId(client.Value.Channel) > 1	&& client.Value.Channel != constants.AfkChannel)
 					{
 						var ci = await ts3Client.GetClientInfoById(client.Value.Id);
 
@@ -80,16 +62,19 @@ namespace AfkChecker
 							TimeSpan ts = ci.ClientIdleTime;
 							double totalMinutesAfk = Math.Round(ts.TotalMinutes);
 
+							//Console.WriteLine($"Checking user {ci.Name}, AFK Time: {ci.ClientIdleTime} converted: {totalMinutesAfk} and ");
+
 							if (totalMinutesAfk >= AFKNotice)
 							{
 								await tsFullClient.SendPrivateMessage("\n[b][color=red]🚨 !Attention! 🚨[/color][/b]\n[color=green] Please note, if there's no activity in the next minute, you'll be moved to the AFK channel. Feel free to talk or type to stay active![/color]\nYou can also type anything in this chat window to stay active.", client.Value.Id);
+								//Console.WriteLine($"Sendind Warning to user {ci.Name} to AFK while afkNoticeTime is: {totalMinutesAfk}>={AFKNotice}");
 							}
-							if (totalMinutesAfk >= AFKTime)
+							if (totalMinutesAfk >= constants.AFKTime)
 							{
-								//Console.WriteLine("Sending " + client.Value.Name + " to AFK Channel");
 								// move to afk Channel
 								await tsFullClient.ClientMove(client.Value.Id, (ChannelId)18);
 								await tsFullClient.PokeClient("Moved to AFK: No activity for 1 hour. Join when ready!", client.Value.Id);
+								//Console.WriteLine($"Sendind User to Channel AFK {ci.Name} to AFK Channel as AFKTime is: {totalMinutesAfk}>={constants.AFKTime}");
 							}
 						}
 					}
@@ -115,7 +100,7 @@ namespace AfkChecker
 			}
 		}
 
-		private static List<string> SplitIntoChunks(string message, int chunkSize)
+		private List<string> SplitIntoChunks(string message, int chunkSize)
 		{
 			List<string> chunks = new List<string>();
 			for (int i = 0; i < message.Length; i += chunkSize)
@@ -161,10 +146,10 @@ namespace AfkChecker
 			return count;
 		}
 
-		public void Dispose()
+		public async Task TestTask()
 		{
-			TimerOn = false;
+			await Task.Delay(1000);
+			Console.WriteLine("Tested AFK done!");
 		}
 	}
-
 }
