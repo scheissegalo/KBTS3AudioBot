@@ -51,7 +51,7 @@ namespace whatIsPlaying
 
 			playManager.AfterResourceStarted += Start;
 			tsFullClient.OnClientMoved += OnBotMoved;
-			tsFullClient.OnDisconnected += OnDisconnect;
+			//tsFullClient.OnDisconnected += OnDisconnect;
 
 			await setChannelCommander();
 			await GetCurrentChannelId();
@@ -64,11 +64,11 @@ namespace whatIsPlaying
 [URL=https://north-industries.com]Home[/URL] | [URL=https://north-industries.com/ts-viewer/]TS-Viewer[/URL] | [URL=https://north-industries.com/teamspeak-connect/#rules]Rules[/URL]";
 		}
 
-		private async void OnDisconnect(object sender, DisconnectEventArgs e)
-		{
-			await Task.Delay(5000);
-			await ts3Client.SetChannelCommander(true);
-		}
+		//private async void OnDisconnect(object sender, DisconnectEventArgs e)
+		//{
+		//	await Task.Delay(5000);
+		//	await ts3Client.SetChannelCommander(true);
+		//}
 
 		private async Task GetCurrentChannelId()
 		{
@@ -88,12 +88,35 @@ namespace whatIsPlaying
 			var self = serverView.OwnClient;
 			try
 			{
-				//await Task.Delay(500);
-				string currentTitle = await YouTube.GetTitleFromUrlAsync(playManager.CurrentPlayData.SourceLink);
-				if (!string.IsNullOrEmpty(currentTitle))
+				string currentSong;
+
+				// Check if the file is an MP3 by its extension
+				if (playManager.CurrentPlayData.SourceLink.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase))
 				{
-					await ts3Client.SendChannelMessage($"Now playing: {currentTitle} | Today: {YouTube.requests} requests");
+					// Extract the filename without the path and extension
+					
+					//currentSong = Path.GetFileNameWithoutExtension(playManager.CurrentPlayData.SourceLink);
+					currentSong = Path.GetFileName(playManager.CurrentPlayData.SourceLink);
+					await ts3Client.SendChannelMessage($"Now playing: {currentSong}");
 				}
+				else
+				{
+					// For YouTube links
+					currentSong = await YouTube.GetTitleFromUrlAsync(playManager.CurrentPlayData.SourceLink);
+					await ts3Client.SendChannelMessage($"Now playing: {currentSong} | Today: {YouTube.requests} requests");
+				}
+
+				//await Task.Delay(500);
+				//string currentTitle = await YouTube.GetTitleFromUrlAsync(playManager.CurrentPlayData.SourceLink);
+				//if (!string.IsNullOrEmpty(currentTitle))
+				//{
+				//	await ts3Client.SendChannelMessage($"Now playing: {currentTitle} | Today: {YouTube.requests} requests");
+				//}
+				//else
+				//{
+				//	await ts3Client.SendChannelMessage($"Now playing: {playManager.CurrentPlayData.SourceLink}");
+					
+				//}
 			}
 			catch (Exception ex)
 			{

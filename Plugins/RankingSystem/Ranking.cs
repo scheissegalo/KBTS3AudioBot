@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using RankingSystem.Services;
+using RankingSystem.Interfaces;
 
 namespace RankingSystem
 {
@@ -19,14 +21,22 @@ namespace RankingSystem
 		private Connection serverView;
 		private Constants constants = new Constants();
 		public static Ranking Instance { get; private set; }
+		//LocalizationManager localizationManager = new LocalizationManager();
+		private bool looping = true;
 
-		//private readonly int UpdateInterval; //min
-
-		private RankingModule ranking;
+		//private RankingModule ranking;
 		private OnlineCounterModule onlineCounter;
 		private AfkModule afk;
 		private AdminModule admin;
 		private StatisticsModule statistics;
+		//private OnboardingModule onlineboarding;
+		private MockUserRepository mockRepo = new MockUserRepository();
+		private OnboardingModule _onboardingModule;
+		private Services.CommandManager commandManager = new Services.CommandManager();
+		private ChannelManager channelManager;
+		private IServerGroupManager serverGroupManager;
+		private UserStatusUpdater userStatusUpdater;
+		private Services.LocalizationManager localizationManager = new Services.LocalizationManager();
 
 		public Ranking(Ts3Client ts3Client, Connection serverView, TsFullClient tsFull)
 		{
@@ -40,37 +50,54 @@ namespace RankingSystem
 		public async void Initialize()
 		{
 			// Build Modules
-			ranking = new RankingModule(ts3Client, tsFullClient, serverView);
+			//ranking = new RankingModule(ts3Client, tsFullClient, serverView);
 			onlineCounter = new OnlineCounterModule(ts3Client, tsFullClient, serverView);
 			afk = new AfkModule(ts3Client, tsFullClient, serverView);
 			admin = new AdminModule(ts3Client, tsFullClient, serverView);
-			statistics = new StatisticsModule(onlineCounter);
+
+			channelManager = new ChannelManager(tsFullClient);
+			serverGroupManager = new ServerGroupManager(tsFullClient);
+			userStatusUpdater = new UserStatusUpdater(mockRepo, serverGroupManager, channelManager, localizationManager, tsFullClient);
+			_onboardingModule = new OnboardingModule(mockRepo, commandManager, channelManager, serverGroupManager, localizationManager, userStatusUpdater, onlineCounter, tsFullClient);
+			statistics = new StatisticsModule(onlineCounter, _onboardingModule);
+
+
+			//onlineboarding = new OnboardingModule(TSUser);
 
 			// Start Modules
-			await ranking.StartRankingModule();
+			//await ranking.StartRankingModule();
 			onlineCounter.StartOnlineCounterModule();
 			afk.StartAfkModule();
 			admin.StartAdminModule();
-			statistics.StartStatisticsModule();
+			_onboardingModule.StartOnboardingModule();
+			//await _onboardingModule.CheckUser();
+			await userStatusUpdater.CheckUser();
+			//await userStatusUpdater.UpdateUsers();
 
+			statistics.StartStatisticsModule();
+			await onlineCounter.CheckOnlineUsers(true);
 			Console.WriteLine("All Modules Initialized!");
 			Console.WriteLine("-- Ranking System Fully up and running! --");
 
-			//Start main loop BLOCKS (await to infinity)!!!!!
+			//Start main loop BLOCKS (await to infinity)!!!!!dfd
 			await StartLoop();
 
 		}
 
 		private async Task StartLoop()
 		{
-			while (true)
+			while (looping)
 			{
 				try
 				{
 					await afk.UserIdleCheck();
-					await ranking.CheckOnlineUsers();
+					//await ranking.CheckOnlineUsers();
+					await onlineCounter.CheckOnlineUsers(true);
 					await onlineCounter.CheckForDailyReset();
-					statistics.LogUserCount();						
+					statistics.LogUserCount();
+					//await _onboardingModule.CheckUser();
+					await userStatusUpdater.CheckUser();
+					//await userStatusUpdater.UpdateUsers();
 				}
 				catch (Exception ex)
 				{
@@ -80,6 +107,17 @@ namespace RankingSystem
 			}
 		}
 
+		[Command("talk2me")]
+		public static async Task<string> CommandEcho(ClientCall invoker)
+		{
+			var user = await Instance.tsFullClient.ClientInfo(invoker.ClientId.Value);
+
+			//string greeting = Instance.localizationManager.GetTranslation("ir", "greeting");
+			string greeting = Instance.localizationManager.GetTranslation(user.Value.CountryCode, "greeting");
+
+			string message = $"{greeting}: {user.Value.CountryCode}";
+			return message;
+		}
 
 		[Command("rank")]
 		public static string CommandRank(ClientCall invoker, string querystring)
@@ -192,6 +230,8 @@ namespace RankingSystem
 		public void Dispose()
 		{
 			admin.Dispose();
+			_onboardingModule.StopOnboardingModule();
+			looping = false;
 		}
 	}
 }

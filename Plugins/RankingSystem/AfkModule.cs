@@ -14,8 +14,13 @@ namespace RankingSystem
 		private Ts3Client ts3Client;
 		private Connection serverView;
 		private Constants constants = new Constants();
+		LocalizationManager localizationManager = new LocalizationManager();
 
 		private int AFKNotice;
+
+		// Dictionary to track users who have been warned
+		//Dictionary<int, bool> warnedUsers = new Dictionary<int, bool>();
+		Dictionary<int, DateTime> warnedUsers = new Dictionary<int, DateTime>();
 
 		public AfkModule(Ts3Client ts3Client, TsFullClient tsFullClient, Connection serverView)
 		{
@@ -26,13 +31,13 @@ namespace RankingSystem
 
 		public void StartAfkModule()
 		{
-			AFKNotice = constants.AFKTime - 1;
-			Console.WriteLine("AFK Module initialized!");
+			AFKNotice = constants.AFKTime - 5;
+			Console.WriteLine($"AFK Module initialized! AFKTime: {constants.AFKTime} AFKNoticeTime: {AFKNotice}");
 		}
 
 		public async Task UserIdleCheck()
 		{
-			Console.WriteLine("Checking Idle Users...");
+			//Console.WriteLine("Checking Idle Users...");
 			try
 			{
 				var allConnectedClients = serverView.Clients;
@@ -40,9 +45,9 @@ namespace RankingSystem
 				{
 					//Check if user is in excludet group
 					bool skipCurrentClient = false;
-					foreach (var sg in constants.BotGroups)
+					foreach (var sg in constants.BotGroupsE)
 					{
-						ServerGroupId newSG = (ServerGroupId)sg;
+						ServerGroupId newSG = sg;
 						if (client.Value.ServerGroups.Contains(newSG))
 						{
 							//Console.WriteLine("Skipping Bot");
@@ -53,7 +58,7 @@ namespace RankingSystem
 					if (skipCurrentClient)
 						continue;
 
-					if (GetUserCountFromChannelId(client.Value.Channel) > 1	&& client.Value.Channel != constants.AfkChannel)
+					if (GetUserCountFromChannelId(client.Value.Channel) > 1	&& client.Value.Channel != constants.AfkChannel && !client.Value.ServerGroups.Contains(constants.NoAfkGroup))
 					{
 						var ci = await ts3Client.GetClientInfoById(client.Value.Id);
 
@@ -63,18 +68,53 @@ namespace RankingSystem
 							double totalMinutesAfk = Math.Round(ts.TotalMinutes);
 
 							//Console.WriteLine($"Checking user {ci.Name}, AFK Time: {ci.ClientIdleTime} converted: {totalMinutesAfk} and ");
+							string countryCode = ci.CountryCode ?? "US"; // Default to "DE" for Germany if null
 
-							if (totalMinutesAfk >= AFKNotice)
+							//Console.WriteLine($"User {ci.Name} with country code {countryCode} checked!");
+
+							if (totalMinutesAfk >= AFKNotice && totalMinutesAfk < constants.AFKTime)
 							{
-								await tsFullClient.SendPrivateMessage("\n[b][color=red]🚨 !Attention! 🚨[/color][/b]\n[color=green] Please note, if there's no activity in the next minute, you'll be moved to the AFK channel. Feel free to talk or type to stay active![/color]\nYou can also type anything in this chat window to stay active.", client.Value.Id);
-								//Console.WriteLine($"Sendind Warning to user {ci.Name} to AFK while afkNoticeTime is: {totalMinutesAfk}>={AFKNotice}");
+								// Check if the user hasn't been warned yet
+								if (!warnedUsers.ContainsKey(client.Value.Id.Value) || warnedUsers[client.Value.Id.Value].Date != DateTime.Now.Date)
+								{
+									if (constants.SendAFKNotice)
+									{
+										string noticeMessage = localizationManager.GetTranslation(client.Value.CountryCode, "warningMessage");
+										await tsFullClient.SendPrivateMessage(noticeMessage, client.Value.Id);
+										Console.WriteLine($"Sendind User message {ci.Name} AFKNoticeTime is: {totalMinutesAfk}>={AFKNotice}");
+									}
+									
+									// Mark the user as warned by setting the current date
+									warnedUsers[client.Value.Id.Value] = DateTime.Now;
+								}
 							}
-							if (totalMinutesAfk >= constants.AFKTime)
+							else if (totalMinutesAfk >= constants.AFKTime)
 							{
-								// move to afk Channel
-								await tsFullClient.ClientMove(client.Value.Id, (ChannelId)18);
-								await tsFullClient.PokeClient("Moved to AFK: No activity for 1 hour. Join when ready!", client.Value.Id);
-								//Console.WriteLine($"Sendind User to Channel AFK {ci.Name} to AFK Channel as AFKTime is: {totalMinutesAfk}>={constants.AFKTime}");
+
+								if (!client.Value.ServerGroups.Contains(constants.NoAfkGroup))
+								{
+									await tsFullClient.ServerGroupAddClient(constants.NoAfkGroup, client.Value.DatabaseId);
+								}
+
+							}
+
+						}
+					}
+					else
+					{
+						if (client.Value.ServerGroups.Contains(constants.NoAfkGroup))
+						{
+							var ci = await ts3Client.GetClientInfoById(client.Value.Id);
+
+							if (ci.ClientIdleTime != null)
+							{
+								TimeSpan ts = ci.ClientIdleTime;
+								double totalMinutesAfk = Math.Round(ts.TotalMinutes);
+
+								if (totalMinutesAfk < constants.AFKTime)
+								{
+									await tsFullClient.ServerGroupDelClient(constants.NoAfkGroup, client.Value.DatabaseId);
+								}
 							}
 						}
 					}

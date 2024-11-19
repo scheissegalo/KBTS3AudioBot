@@ -1,12 +1,10 @@
 using TS3AudioBot;
-//using TS3AudioBot.Audio;
 using TS3AudioBot.CommandSystem;
 using TS3AudioBot.Plugins;
 using TSLib.Full.Book;
 using TSLib;
 using TSLib.Full;
 using TSLib.Messages;
-using System.Text;
 
 namespace AutoChannel
 {
@@ -20,7 +18,9 @@ namespace AutoChannel
 		// Create by Player count Channel ID to create subchannels in (Remote: 589 | Local: 506
 		private ChannelId parentChannelId;// = (ChannelId)589;
 		private Dictionary<int, List<ChannelId>> occupancyChannels = new Dictionary<int, List<ChannelId>>();
+		private Dictionary<int, List<ChannelId>> parentChannels = new Dictionary<int, List<ChannelId>>();
 		private bool isCheckingChannels = false;
+		private bool looping = true;
 
 
 		public AutoChannelCreator(Ts3Client ts3Client, Connection serverView, TsFullClient tsFull)
@@ -33,175 +33,223 @@ namespace AutoChannel
 			Instance = this;
 		}
 
-		private async Task CheckChannels()
+		private void LoadParentChannels()
 		{
-			if (isCheckingChannels) return;
-			isCheckingChannels = true;
+			// Retrieve all channels under the main parent channel
+			var channels = serverView.Channels; // Replace with actual method to get channels
 
+			Console.WriteLine($"Iteration over {channels.Count} channels");
+
+			foreach (var channel in channels)
+			{
+				// Check if channel matches your parent naming pattern
+				if (channel.Value.Name.StartsWith("▪ ■ ┐ (") && channel.Value.Name.Contains("Player-Channels"))
+				{
+					// Extract the maxClients number from the name (assuming it's always formatted this way)
+					var maxClientsString = channel.Value.Name.Split('(')[1].Split(')')[0];
+					if (int.TryParse(maxClientsString, out int maxClients))
+					{
+						if (!parentChannels.ContainsKey(maxClients))
+						{
+							parentChannels[maxClients] = new List<ChannelId>();
+						}
+						parentChannels[maxClients].Add(channel.Value.Id);
+					}
+				}
+			}
+			Console.WriteLine($"{parentChannels.Count.ToString()} Parent channels Loaded");
+		}
+
+		private async Task CreateParentChannels()
+		{
+			for (int maxClients = 2; maxClients <= 8; maxClients++)
+			{
+				var parentChannel = await tsFullClient.ChannelCreate(
+					name: $"▪ ■ ┐ ({maxClients}) Player-Channels ▪ ↓",
+					topic: $"Main Channel for up to {maxClients} players",
+					maxClients: 0,
+					maxClientsUnlimited: false,
+					parent: parentChannelId,
+					type: ChannelType.Permanent);
+
+				parentChannels[maxClients] = new List<ChannelId> { parentChannel.Value.ChannelId };
+				await AddSubchannel(maxClients);
+				await AddSubchannel(maxClients);
+				//await CheckChan(maxClients);
+				//channelName = $"┐ ■ ({maxClients}) Players-Channel ▪ ↓";
+			}
+		}
+
+		private async Task DeleteAllParentChannels()
+		{
 			try
 			{
-				// Clear and update the occupancy channels dictionary
-				occupancyChannels.Clear();
+				var channels = await tsFullClient.ChannelList();
 
-				// Fetch all channels and filter based on the parent channel ID
-
-				Dictionary<ChannelId, Channel> serverChannels = serverView.Channels;
-				foreach (var channel in serverChannels)
+				foreach (var channel in channels.Value)
 				{
-					var channelInfos = await tsFullClient.ChannelInfo(channel.Value.Id);
-					foreach (var channelInfo in channelInfos.Value)
+					if (channel.ParentChannelId == parentChannelId)
 					{
-						// get all channels in By Player count channel
-						if (channelInfo.ParentChannelId == parentChannelId)
+						try
 						{
-							int maxClients = channelInfo.MaxClients;
-							//Console.WriteLine($"Channel: {channel.Value.Name} Max:{maxClients}");
-							if (!occupancyChannels.ContainsKey(maxClients))
-								occupancyChannels[maxClients] = new List<ChannelId>();
-
-							occupancyChannels[maxClients].Add(channel.Value.Id);
-
+							// Delete the channel (both parent and subchannels)
+							await tsFullClient.ChannelDelete(channel.ChannelId);
+							//Console.WriteLine($"Deleted Channel: {channel.Name}");
 						}
-						//Console.WriteLine($"Name: {channel.Value.Name} - Info: {channelInfo.ParentChannelId.Value}");
-					}
-				}
-
-				// ** Add this block to create initial channels if none are found **
-				if (occupancyChannels.Count == 0)
-				{
-					for (int i = 2; i <= 8; i++) // Creating channels for 2 to 8 clients
-					{
-						await CreateNewChannel(i);
-						await CreateNewChannel(i);
-					}
-					Console.WriteLine("Initial channels created for each occupancy level from 2 to 8 clients.");
-				}
-
-				// Ensure each occupancy level has exactly 2 free channels
-				foreach (var entry in occupancyChannels)
-				{
-					int maxClients = entry.Key;
-					List<ChannelId> channels = entry.Value;
-
-					// Count the free channels
-					int freeChannels = channels.Count(channelId =>
-						!serverView.Clients.Values.Any(client => client.Channel == channelId));
-
-					//Console.WriteLine($"Free channel count: {freeChannels}");
-
-					// If there are fewer than 2 free channels, create more
-					int channelsToCreate = 2 - freeChannels;
-					for (int i = 0; i < channelsToCreate; i++)
-					{
-						await CreateNewChannel(maxClients);
-					}
-
-					// If there are more than 2 free channels, delete extras
-					if (freeChannels > 2)
-					{
-						int channelsToDelete = freeChannels - 2;
-						foreach (var channelId in channels.Take(channelsToDelete))
+						catch (Exception ex)
 						{
-							await tsFullClient.ChannelDelete(channelId);
+							Console.WriteLine($"Error deleting channel {channel.Name}: {ex.Message}");
 						}
+						//Console.WriteLine($"Delete Channel {channel.Name}");
+						//await tsFullClient.ChannelDelete(channel.ChannelId);
 					}
-
-					// ** Ensure channels are ordered correctly **
-					//await OrderChannels(entry.Value);
-					await OrderChannelsByMaxClients();
-
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.ToString());
-			}
-			finally
-			{
-				isCheckingChannels = false;
-			}
-
-
-			//initialized = true;
-		}
-
-		private async Task OrderChannelsByMaxClients()
-		{
-			foreach (var group in occupancyChannels.OrderBy(g => g.Key))
-			{
-				// Sort the channels for each occupancy level
-				List<ChannelId> channels = group.Value.OrderBy(id => (int)id.Value).ToList();
-
-				// Only move channels if the ordering differs from the current one
-				for (int i = 1; i < channels.Count; i++)
-				{
-					if (channels[i] != channels[i - 1])
-					{
-						await MoveChannel(channels[i], channels[i - 1]);
-					}
-				}
+				Console.WriteLine($"Error fetching channel list: {ex.Message}");
 			}
 		}
 
-		private async Task DeleteChannels()
+		// Existing method for creating a subchannel, with minor adjustments
+		private async Task<ChannelId> AddSubchannel(int maxClients)
 		{
-			// Sort channels by max client groups and then within each group by ChannelId
-			foreach (var group in occupancyChannels.OrderBy(g => g.Key))
+			var generator = new RandomNameGenerator();
+			string channelName;
+			bool nameExists;
+
+			do
 			{
-				List<ChannelId> channels = group.Value.OrderBy(id => (int)id.Value).ToList();
+				// Generate a new channel name
+				channelName = $"│→ ({maxClients}) Players-{generator.GenerateRandomName()}";
+				//channelName = $"│ ■ ({maxClients}) Players-Channel ▪ ↓";
 
-				// Move each channel in this occupancy level group to be sequential
-				for (int i = 0; i < channels.Count; i++)
-				{
-					//await MoveChannel(channels[i], channels[i - 1]); // Move each channel below the previous one in the ordered list
-					await tsFullClient.ChannelDelete(channels[i]);
-				}
-			}
+				// Check if the channel name already exists
+				nameExists = await CheckIfChannelExists(channelName);
 
-		}
+			} while (nameExists); // Loop until a unique name is found
 
-		private async Task CreateNewChannel(int maxClients)
-		{
-			var newChannel = await tsFullClient.ChannelCreate(
-				name: $"╠-({maxClients}) Players-Channel_{GenerateRandomName(3)}",
-				topic: "Dynamic Channel",
-				description: $"Dynamic Channel for max {maxClients} clients",
+			var parentChannelId = parentChannels[maxClients][0];
+
+			var subChannel = await tsFullClient.ChannelCreate(
+				name: channelName,
+				topic: "Subchannel for active players",
 				maxClients: maxClients,
 				maxClientsUnlimited: false,
-				parent:parentChannelId, type:
-				ChannelType.Permanent);
+				parent: parentChannelId,
+				type: ChannelType.Permanent);
 
-			// Add the new channel to occupancyChannels
+			// Add the subchannel ID to occupancyChannels
 			if (!occupancyChannels.ContainsKey(maxClients))
 			{
 				occupancyChannels[maxClients] = new List<ChannelId>();
 			}
-			
-			occupancyChannels[maxClients].Add(newChannel.Value.ChannelId);
+			occupancyChannels[maxClients].Add(subChannel.Value.ChannelId);
+
+			// Return the Channel ID of the created subchannel
+			return subChannel.Value.ChannelId;
 		}
 
-		private async Task MoveChannel(ChannelId channelID, ChannelId orderChannelID)
+		private async Task CheckSubChannels()
 		{
-			await tsFullClient.ChannelEdit(channelID, order: orderChannelID);
-		}
+			//Console.WriteLine($"Started Channel Check");
+			occupancyChannels.Clear();
+			var chanList = await tsFullClient.ChannelList();
+			Dictionary<ChannelId, Channel> serverChannels = serverView.Channels;
 
-
-		private string GenerateRandomName(int length = 3)
-		{
-			var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-			var output = new StringBuilder();
-			var random = new Random();
-
-
-			for (int i = 0; i < length; i++)
+			// Pre-build a lookup dictionary of parent channel IDs for quick access
+			var parentChannelLookup = new Dictionary<ChannelId, int>();
+			foreach (var entry in parentChannels)
 			{
-				output.Append(chars[random.Next(chars.Length)]);
+				int maxClients = entry.Key;
+				foreach (var parentChannelId in entry.Value)
+				{
+					parentChannelLookup[parentChannelId] = maxClients;
+				}
 			}
-			return output.ToString();
+
+			foreach (var chan in chanList.Value)
+			{
+				//Console.WriteLine($"Channel: {chan.Name}");		
+				//				
+				var channelInfoResult = await tsFullClient.ChannelInfo(chan.ChannelId);
+				if (!channelInfoResult.Ok || channelInfoResult.Value == null)
+				{
+					continue;
+				}
+				foreach (var channelInfo in channelInfoResult.Value)
+				{
+					// Check if this channel's parent is in the parent channel lookup
+					if (parentChannelLookup.TryGetValue(channelInfo.ParentChannelId, out int maxClients))
+					{
+						//Console.WriteLine($"{channelInfo.Name} is added to list!");
+
+						// Ensure the maxClients entry exists in occupancyChannels
+						if (!occupancyChannels.ContainsKey(maxClients))
+						{
+							occupancyChannels[maxClients] = new List<ChannelId>();
+						}
+
+						// Add the channel to the appropriate occupancyChannels list
+						occupancyChannels[maxClients].Add(chan.ChannelId);
+						break; // Optional: Stop after the first match to avoid duplicate entries
+					}
+				}
+			}
+
+			var allClients = await tsFullClient.ClientList();
+			Console.WriteLine($"Finished Refresh list {occupancyChannels.Count} channels");
+			// Ensure each occupancy level has exactly 2 free channels
+			foreach (var entry in parentChannels)
+			{
+				//Console.WriteLine($"Key: {entry.Key} Value: {entry.Value}");
+				int maxClients = entry.Key;
+
+				// Check if occupancyChannels has an entry for this maxClients value; if not, initialize it
+				if (!occupancyChannels.ContainsKey(maxClients))
+				{
+					occupancyChannels[maxClients] = new List<ChannelId>();
+				}
+
+				var channelList = occupancyChannels[maxClients];
+				//Console.WriteLine($"{maxClients} has {channelList.Count} channel(s) available");
+
+				// Count the free channels
+				int freeChannels = channelList.Count(channelId =>
+					!allClients.Value.Any(client => client.ChannelId == channelId));
+
+				// If there are fewer than 2 free channels, create more
+				int channelsToCreate = 2 - freeChannels;
+				for (int i = 0; i < channelsToCreate; i++)
+				{
+					var newChannelId = await AddSubchannel(maxClients);
+					channelList.Add(newChannelId);  // Add the new subchannel ID to the occupancyChannels list
+				}
+
+				//If there are more than 2 free channels, delete extras
+				if (freeChannels > 2)
+				{
+					int channelsToDelete = freeChannels - 2;
+					foreach (var channelId in channelList.Take(channelsToDelete).ToList())  // Use ToList() to avoid modifying collection while iterating
+					{
+						await tsFullClient.ChannelDelete(channelId);
+						occupancyChannels[maxClients].Remove(channelId); // Remove deleted channel from occupancyChannels list
+					}
+				}
+			}
+
 		}
 
-		[Command("createchannel")]
-		public async Task CreateChannel(ClientCall invoker)
+		// Method to check if a channel with the given name already exists
+		private async Task<bool> CheckIfChannelExists(string channelName)
+		{
+			// Replace this with your actual method to retrieve channels and check for existence
+			var channels = await tsFullClient.ChannelList(); // Hypothetical method to get all channels
+			return channels.Value.Any(channel => channel.Name == channelName);
+		}
+
+		[Command("createparentchannels")]
+		public async Task CommandCreateParentChannel(ClientCall invoker)
 		{
 			if (Instance == null)
 			{
@@ -209,7 +257,31 @@ namespace AutoChannel
 				return;  // Or handle the error as needed
 			}
 
-			await Instance.CheckChannels();
+			await Instance.CreateParentChannels();
+		}
+
+		[Command("checkchannel")]
+		public async Task CommandCheckSubChannels(ClientCall invoker)
+		{
+			if (Instance == null)
+			{
+				Console.WriteLine("AutoChannelCreator instance is not initialized.");
+				return;  // Or handle the error as needed
+			}
+
+			await Instance.CheckSubChannels();
+		}
+
+		[Command("loadparentchannels")]
+		public void CommandLoadParentChannel(ClientCall invoker)
+		{
+			if (Instance == null)
+			{
+				Console.WriteLine("AutoChannelCreator instance is not initialized.");
+				return;  // Or handle the error as needed
+			}
+
+			Instance.LoadParentChannels();
 		}
 
 		[Command("deletechannel")]
@@ -221,7 +293,20 @@ namespace AutoChannel
 				return;  // Or handle the error as needed
 			}
 
-			await Instance.DeleteChannels();
+			await Instance.DeleteAllParentChannels();
+		}
+
+		[Command("rebuildchannel")]
+		public async Task ComandRebuildChannels(ClientCall invoker)
+		{
+			if (Instance == null)
+			{
+				Console.WriteLine("AutoChannelCreator instance is not initialized.");
+				return;  // Or handle the error as needed
+			}
+
+			await Instance.DeleteAllParentChannels();
+			await Instance.CreateParentChannels();
 		}
 
 		public async void Initialize()
@@ -239,12 +324,16 @@ namespace AutoChannel
 			try
 			{
 				tsFullClient.OnClientMoved += OnUserMoved;
-				await CheckChannels(); // Await this if you make CheckChannels() async
+				
+				LoadParentChannels();
+				await StartLoop();
+				//await CheckSubChannels();
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine($"Error during initialization: {ex.Message}");
 			}
+
 		}
 
 		private void OnUserMoved(object sender, IEnumerable<ClientMoved> e)
@@ -252,24 +341,93 @@ namespace AutoChannel
 
 			foreach (var clientMoved in e)
 			{
-				// Check if the client moved to a channel in the occupancyChannels
 				var channelId = clientMoved.TargetChannelId;
 
 				// Check if the new channel is in our occupancy channels
 				if (occupancyChannels.Values.SelectMany(list => list).Contains(channelId))
 				{
 					//Console.WriteLine($"User {clientMoved.ClientId} moved to channel {channelId}. Checking channels...");
-					_ = CheckChannels(); // Call CheckChannels asynchronously
+					_ = CheckSubChannels(); // Call CheckChannels asynchronously
 				}
 			}
 
+		}
+
+		private async Task StartLoop()
+		{
+			while (looping)
+			{
+				await Task.Delay(TimeSpan.FromMinutes(1));
+				try
+				{
+					await CheckSubChannels();
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine(ex.ToString());
+				}
+				
+			}
 		}
 
 		public void Dispose()
 		{
 			tsFullClient.OnClientMoved -= OnUserMoved;
 			//tsFullClient.OnClientMoved -= OnUserMoved;
+			looping = false;
 		}
 
+	}
+
+	public class RandomNameGenerator
+	{
+		private static readonly List<string> ThreeLetterWords = new List<string>
+		{
+			"ALPHA",   // Loot or items
+			"BRAVO",   // Group mission
+			"CHARLIE",   // Boss fight
+			"DELTA",    // Player vs. Player
+			"ECHO",   // Cooperative play
+			"FOXTROT",    // Role-Playing Game
+			"GOLF",    // Non-Player Character
+			"HOTEL",    // First-Person Shooter
+			"INDIA",  // In-game quest
+			"HERO",   // Main character
+			"CLAN",   // Player groups
+			"DUEL",   // One-on-one battle
+			"RUN",    // Movement or quest
+			"HP",     // Health Points
+			"XP",     // Experience Points
+			"DPS",    // Damage Per Second
+			"GUNS",    // Away From Keyboard
+			"LIMA",    // Heads-Up Display
+			"BLIZ",   // Game mode
+			"TANGO",    // Game environment
+			"RACE",   // Racing games or mode
+			"TEAM",   // Team-based play
+			"WAR",   // Character customization
+			"ZONE",   // Game region or level
+			"RELOAD",    // Modifications
+			"GUN",    // Weapons
+			"CHARGE",    // Tagging mechanics
+			"MED",    // Health or medkit
+			"SQUAD",  // Team or group
+			"INFANTRY",  // Fighting or combat
+			"ARENA",  // PvP area
+			"FORT",   // Defensive structure
+			"BATTALION",   // Waves of enemies
+			"COMPANY",  // Player level or stage
+			"WIN",    // Winning a game
+			"SQUAD"    // Losing a game
+		};
+
+		private static readonly Random random = new Random();
+
+		public string GenerateRandomName()
+		{
+			// Get a random index to select a word from the list
+			int index = random.Next(ThreeLetterWords.Count);
+			return ThreeLetterWords[index];
+		}
 	}
 }

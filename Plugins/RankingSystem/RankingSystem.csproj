@@ -3,18 +3,70 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="languages\de.json" />
+    <None Remove="languages\en.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="languages\de.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="languages\en.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="LiteDB" Version="5.0.17" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\TS3AudioBot\TS3AudioBot.csproj" />
     <ProjectReference Include="..\..\TSLib\TSLib.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="languages\ae.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="languages\cz.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="languages\fi.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="languages\hu.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="languages\ir.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="languages\pl.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="languages\pt.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="languages\ru.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="languages\tr.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
   <Target Name="CustomAfterBuild" AfterTargets="Build">
     <Message Text="After party stardet" Importance="high" />
+    
     <ItemGroup>
       <PluginFiles Include="$(TargetDir)$(TargetName).dll" />
     </ItemGroup>
     <Message Text="Copying @(PluginFiles) to $(SolutionDir)TS3AudioBot\bin\Debug\net6.0\Plugins\" Importance="high" />
     <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(SolutionDir)TS3AudioBot\bin\Debug\net6.0\Plugins\" />
+
+    <!-- Copy Languages Folder -->
+    <ItemGroup>
+      <LanguageFiles Include="languages\**\*" />
+    </ItemGroup>
+    <Message Text="Copying @(LanguageFiles) to $(SolutionDir)TS3AudioBot\bin\Debug\net6.0\Languages\" Importance="high" />
+    <Copy SourceFiles="@(LanguageFiles)" DestinationFolder="$(SolutionDir)TS3AudioBot\bin\Debug\net6.0\Languages\" />
+    
   </Target>
+  
 </Project>

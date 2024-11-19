@@ -8,7 +8,8 @@ using System.Collections.Generic;
 using TSLib.Messages;
 using System.Linq;
 using Newtonsoft.Json;
-using System.Threading;
+//using System.Threading;
+using static RankingSystem.RankingModule;
 
 namespace RankingSystem
 {
@@ -18,14 +19,14 @@ namespace RankingSystem
 		private Ts3Client ts3Client;
 		private Connection serverView;
 		private Constants constants = new Constants();
-		private Timer resetTimer;
+		//private Timer resetTimer;
 
-		private bool isChecking = false;
+		public bool isChecking = false;
 		public uint count = 0;
-		private uint countToday = 0;
+		public uint countToday = 0;
 		public DateTime lastResetTime = DateTime.MinValue;
 		private DateTime lastResetDate;
-		private List<string> userIDS = new List<string>();
+		public List<string> userIDS = new List<string>();
 		private List<string> userNames = new List<string>();
 
 		private const string UserDataFile = "user_data.json"; // File path for saving user data
@@ -108,10 +109,10 @@ namespace RankingSystem
 			await CheckOnlineUsers(true);
 			await ts3Client.SendServerMessage("[b][color=red]Online Counter Reset! everyday at 6:00 PM CET[/color][/b]");
 
-			Console.WriteLine("User data reset at 6 AM.");
+			//Console.WriteLine("User data reset at 6 AM.");
 		}
 
-		private async Task CheckOnlineUsers(bool connected)
+		public async Task CheckOnlineUsers(bool connected)
 		{
 			if (isChecking) { return; }
 			isChecking = true;
@@ -119,17 +120,21 @@ namespace RankingSystem
 			await Task.Delay(500); // Add a 500ms delay before starting the method
 
 			count = 0;
-			foreach (var oneuser in serverView.Clients)
+			var allUsers = await tsFullClient.ClientList();
+			foreach (var oneuser in allUsers.Value)
 			{
+				//Console.WriteLine($"Checking {oneuser.Name}");
 				// Check if is full user
-				if (oneuser.Value.ClientType == ClientType.Full)
+				if (oneuser.ClientType == ClientType.Full)
 				{
 					//Check if user is in excludet group
 					bool skipCurrentClient = false;
-					foreach (var sg in constants.BotGroups)
+					var fulluser = await tsFullClient.ClientInfo(oneuser.ClientId);
+					foreach (var sg in constants.BotGroupsE)
 					{
-						ServerGroupId newSG = (ServerGroupId)sg;
-						if (oneuser.Value.ServerGroups.Contains(newSG))
+						
+						ServerGroupId newSG = sg;
+						if (fulluser.Value.ServerGroups != null && fulluser.Value.ServerGroups.Contains(newSG))
 						{
 							//Console.WriteLine("Skipping Bot");
 							skipCurrentClient = true;
@@ -140,20 +145,23 @@ namespace RankingSystem
 					if (skipCurrentClient)
 						continue;
 					// User is Fulluser and is not a Bot go on
-					bool containsUserID = userIDS.Any(item => item == oneuser.Value.Uid.Value.ToString());
+					//Console.WriteLine($"Not a bot {fulluser.Value.Name}");
+					// User is Fulluser and is not a Bot, go on
+					bool containsUserID = userIDS.Any(item => item == fulluser.Value.Uid.Value.ToString());
 					count++;
 					if (connected && !containsUserID)
 					{
+						//Console.WriteLine($"Adding {oneuser.Name} to the list");
 						countToday++;
-						userNames.Add(oneuser.Value.Name);
-						userIDS.Add(oneuser.Value.Uid.Value.ToString());
+						userNames.Add(fulluser.Value.Name);
+						userIDS.Add(fulluser.Value.Uid.Value.ToString());
 					}
-
 				}
 			}
 			await UpdateChannelName();
 			SaveUserData();
 			isChecking = false;
+			//Console.WriteLine($"Total online: {countToday}");
 		}
 
 		// Method to save user data to a file

@@ -507,6 +507,7 @@ namespace TS3AudioBot
 		[Command("help")]
 		public static string CommandHelp(CallerInfo callerInfo)
 		{
+			
 			var tmb = new TextModBuilder(callerInfo.IsColor);
 			tmb.AppendLine("KBAudioBot zu deinen Diensten!");
 			tmb.AppendLine("Um los zu legen benutze einer der folgenden Befehle:");

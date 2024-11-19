@@ -233,7 +233,7 @@ namespace ChannelChecker
 			{
 				ulong channelId = channel.Id.Value;
 
-				if (ignoredChannelIds.Contains(channelId) || channel.Parent == (ChannelId)589)
+				if (ignoredChannelIds.Contains(channelId) || channel.Parent == parentChannelId)
 				{
 					//Console.WriteLine($"Skipping ignored channel: {channel.Name}");
 					continue;

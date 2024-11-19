@@ -18,7 +18,8 @@ namespace whatIsPlaying
 			requests++;
 			string videoId = GetVideoIdFromUrl(videoUrl);
 			if (videoId == null)
-				throw new ArgumentException("Invalid YouTube video URL.");
+				return null;
+				//throw new ArgumentException("Invalid YouTube video URL.");
 
 			string apiUrl = $"https://www.googleapis.com/youtube/v3/videos?id={videoId}&key={ApiKey}&part=snippet,contentDetails";
 

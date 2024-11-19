@@ -1,3 +1,4 @@
+//using Heijden.DNS;
 using LiteDB;
 using Newtonsoft.Json;
 using System;
@@ -8,6 +9,7 @@ using TS3AudioBot;
 using TSLib;
 using TSLib.Full;
 using TSLib.Full.Book;
+//using TSLib.Messages;
 
 namespace RankingSystem
 {
@@ -16,9 +18,10 @@ namespace RankingSystem
 		private TsFullClient tsFullClient;
 		private Ts3Client ts3Client;
 		private Connection serverView;
-		private bool dbInitialized;
+		private bool dbInitialized = false;
+		private Constants constants = new Constants();
 
-		private readonly List<uint> excludedGroups = new List<uint> { 11, 47, 115 }; // replace with the IDs of the excluded groups
+		//private readonly List<uint> excludedGroups = new List<uint> { 11, 47, 115 }; // replace with the IDs of the excluded groups
 
 		private Dictionary<string, User> _users;
 		private List<ServerGroupInfo> _serverGroupList;
@@ -163,6 +166,8 @@ namespace RankingSystem
 			return _serverGroupList.Last().ServerGroup;
 		}
 
+
+
 		public async Task CheckOnlineUsers()
 		{
 			dbInitialized = false;
@@ -226,11 +231,11 @@ namespace RankingSystem
 						if (fulluser.Value.ClientType.Equals(ClientType.Full))
 						{
 							// Check if user has bot group
-							foreach (var sg in excludedGroups)
+							foreach (var sg in constants.BotGroupsE)
 							{
 								//Console.WriteLine("Is a bot and should be skipped");
 
-								ServerGroupId newSG = (ServerGroupId)sg;
+								ServerGroupId newSG = sg;
 								if (fulluser.Value.ServerGroups.Contains(newSG))
 								{
 									skipClient = true;
@@ -293,7 +298,8 @@ namespace RankingSystem
 							var UpdateUser = _users[fulluser.Value.Uid.ToString()];
 
 							// If Channel has more that 1 user
-							if (GetUserCountFromChannelId(fulluser.Value.ChannelId) > 1)
+							int channelUserCount = await GetUserCountFromChannelId(fulluser.Value.ChannelId);
+							if (channelUserCount > 1)
 							{
 								UpdateUser.IsAlone = false;
 								//Console.WriteLine("User is NOT Alone in Channel");
@@ -315,9 +321,21 @@ namespace RankingSystem
 								UpdateUser.IsAfk = false;
 								//Console.WriteLine("User is NOT AFK");
 							}
-							var usrStatus = DBusers.FindOne(u => u.UserID == fulluser.Value.Uid.ToString());
+
+							if (fulluser.Value.ServerGroups.Contains(constants.NoAfkGroup))
+							{
+								UpdateUser.IsNoAfkMode = true;
+							}
+							else
+							{
+								UpdateUser.IsNoAfkMode = false;
+							}
+
+								var usrStatus = DBusers.FindOne(u => u.UserID == fulluser.Value.Uid.ToString());
 							// Check if the user is in the AFK channel or alone in their channel and skip
-							if (!UpdateUser.IsAfk && !UpdateUser.IsAlone)
+
+
+							if (!UpdateUser.IsAfk && !UpdateUser.IsAlone && !UpdateUser.IsNoAfkMode)
 							{
 								if (usrStatus.UpdateTime)
 								{
@@ -327,7 +345,6 @@ namespace RankingSystem
 								}
 								else
 								{
-									// Update the user's time in DB
 									UpdateUser.OnlineTime += (DateTime.Now - UpdateUser.LastUpdate);
 								}
 
@@ -347,9 +364,9 @@ namespace RankingSystem
 											//Console.WriteLine("Group removed");
 											// if user has Old Group Remove it
 											await tsFullClient.ServerGroupDelClient(serverGroupInfo.ServerGroup, newId.ClientDbId);
+											//Console.WriteLine("Is in AFK mode, not updating rank");
 										}
 									}
-
 									if (UpdateUser.RankGroupInt != GetServerGroup(UpdateUser.OnlineTime).Value)
 									{
 										UpdateUser.RankGroupInt = GetServerGroup(UpdateUser.OnlineTime).Value;
@@ -381,10 +398,10 @@ namespace RankingSystem
 									}
 
 								}
-								else
-								{
-									Console.WriteLine("Update Server Group Failed");
-								}
+								//else
+								//{
+								//	//Console.WriteLine("Update Server Group Failed");
+								//}
 
 								// Update the user's last update time
 								UpdateUser.LastUpdate = DateTime.Now;
@@ -396,10 +413,10 @@ namespace RankingSystem
 								//Console.WriteLine("Database updated!");
 
 							}
-							else
-							{
-								//Console.WriteLine("Ignoring AFK or Alone User");
-							}
+							//else
+							//{
+							//	//Console.WriteLine("Ignoring AFK or Alone User");
+							//}
 							//Console.WriteLine("*********** USER ***********");
 
 						}
@@ -441,7 +458,7 @@ namespace RankingSystem
 							}
 							else
 							{
-								Console.WriteLine("Fulluser is null! Database");
+								//Console.WriteLine("Fulluser is null! Database");
 								//return;
 							}
 						}
@@ -473,22 +490,34 @@ namespace RankingSystem
 		}
 
 
-		private int GetUserCountFromChannelId(ChannelId ChanId)
+		private async Task<int> GetUserCountFromChannelId(ChannelId ChanId)
 		{
+			//Console.WriteLine($"Getting user count from channel {ChanId.Value.ToString()}");
 			int count = 0;
 
-			var allConnectedClients = serverView.Clients;
+			//var allConnectedClients = serverView.Clients;
+			var allConnectedClients = await tsFullClient.ClientList();
 
-			foreach (var client in allConnectedClients)
+			if (allConnectedClients.Value == null)
 			{
+				//Console.WriteLine("Value was 0");
+				return 0;
+			}
+
+			foreach (var client in allConnectedClients.Value)
+			{
+				if (client ==null) continue;
 				ServerGroupId serverGroupId = (ServerGroupId)11;
-				if (client.Value.ServerGroups.Contains(serverGroupId))
+				var fulluser = await tsFullClient.ClientInfo(client.ClientId);
+
+				if (fulluser.Value.ServerGroups != null && fulluser.Value.ServerGroups.Contains(serverGroupId) && fulluser.Value.ServerGroups.Contains(constants.NoAfkGroup))
 				{
-					//Console.WriteLine("User is Bot: " + client.Value.Name);
+					//Console.WriteLine("User is Bot: " + client.Name);
+					//Console.WriteLine("Channel Check failed, client has 0 groups");
 				}
 				else
 				{
-					if (client.Value.Channel == ChanId)
+					if (fulluser.Value.ChannelId == ChanId)
 					{
 						count++;
 					}
@@ -496,7 +525,7 @@ namespace RankingSystem
 
 				//Console.WriteLine(client.Value.Id + " is in channel: " + client.Value.Channel.Value.ToString());
 			}
-
+			//Console.WriteLine($"Channel count was {count}");
 			return count;
 		}
 
@@ -525,6 +554,7 @@ namespace RankingSystem
 			public string Nickname { get; set; }
 			public TimeSpan OnlineTime { get; set; }
 			public bool IsAfk { get; set; }
+			public bool IsNoAfkMode { get; set; }
 			public bool IsAlone { get; set; }
 			public DateTime LastUpdate { get; set; }
 			public ServerGroupId RankGroup { get; set; }

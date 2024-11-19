@@ -48,7 +48,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watchparty", "Watchparty\Wa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChannelChecker", "Plugins\ChannelChecker\ChannelChecker.csproj", "{CA74C32D-70BA-4BAB-9AB4-1D09F1BB6631}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoChannel", "AutoChannel\AutoChannel.csproj", "{03109C28-F3A6-443F-AF4B-82B28583AA5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoChannel", "AutoChannel\AutoChannel.csproj", "{03109C28-F3A6-443F-AF4B-82B28583AA5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManager", "UserManager\UserManager.csproj", "{3B1078F6-910E-45AB-B547-F3019A58E2ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -132,6 +134,10 @@ Global
 		{03109C28-F3A6-443F-AF4B-82B28583AA5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03109C28-F3A6-443F-AF4B-82B28583AA5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03109C28-F3A6-443F-AF4B-82B28583AA5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B1078F6-910E-45AB-B547-F3019A58E2ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B1078F6-910E-45AB-B547-F3019A58E2ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B1078F6-910E-45AB-B547-F3019A58E2ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B1078F6-910E-45AB-B547-F3019A58E2ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -153,6 +159,7 @@ Global
 		{71A22125-8C1F-43DF-BCB5-31D1CC8BBF22} = {ECDAFBE7-4DD5-4138-9566-29ABEAE272DD}
 		{CA74C32D-70BA-4BAB-9AB4-1D09F1BB6631} = {ECDAFBE7-4DD5-4138-9566-29ABEAE272DD}
 		{03109C28-F3A6-443F-AF4B-82B28583AA5D} = {ECDAFBE7-4DD5-4138-9566-29ABEAE272DD}
+		{3B1078F6-910E-45AB-B547-F3019A58E2ED} = {ECDAFBE7-4DD5-4138-9566-29ABEAE272DD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {15C2EA96-9126-41B1-A7A1-B02663F50EE3}

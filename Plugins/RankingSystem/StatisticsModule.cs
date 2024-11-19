@@ -1,11 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using TS3AudioBot;
-using TSLib.Full.Book;
-using TSLib.Full;
 using Newtonsoft.Json;
 
 namespace RankingSystem
@@ -13,13 +8,15 @@ namespace RankingSystem
 	internal class StatisticsModule
 	{
 		private OnlineCounterModule onlineCounterModule;
+		private OnboardingModule boardingModule; // maybe need to Grab Users
 
 		private List<UserStatistic> userStatistics = new List<UserStatistic>();
 		private bool initialCheck = true;
 
-		public StatisticsModule(OnlineCounterModule ocm)
+		public StatisticsModule(OnlineCounterModule ocm, OnboardingModule boardingModule)
 		{
 			this.onlineCounterModule = ocm;
+			this.boardingModule = boardingModule;
 		}
 
 		public void StartStatisticsModule()
@@ -31,21 +28,24 @@ namespace RankingSystem
 
 		public void LogUserCount()
 		{
-
 			if (initialCheck)
 			{
 				initialCheck = false;
 			}
 			else
 			{
-				userStatistics.Add(new UserStatistic
+				if (!onlineCounterModule.isChecking)
 				{
-					Timestamp = DateTime.UtcNow,
-					UserCount = onlineCounterModule.count
-				});
+					userStatistics.Add(new UserStatistic
+					{
+						Timestamp = DateTime.UtcNow,
+						UserCount = onlineCounterModule.count
+					});
 
-				// Save to file for persistence
-				SaveUserStatisticsToFile();
+					// Save to file for persistence
+					SaveUserStatisticsToFile();
+				}
+
 			}
 		}
 
@@ -73,7 +73,7 @@ namespace RankingSystem
 
 			// Write back the entire updated list
 			System.IO.File.WriteAllText("user_statistics.json", JsonConvert.SerializeObject(currentStatistics));
-			Console.WriteLine("Statistics Recorded!");
+			//Console.WriteLine("Statistics Recorded!");
 		}
 
 		public async Task TestTask()

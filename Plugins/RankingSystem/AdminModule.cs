@@ -55,9 +55,9 @@ namespace RankingSystem
 			{
 				var fullClient = await ts3Client.GetClientInfoById(item.InvokerId);
 				bool skipCurrentClient = false;
-				foreach (var sg in constants.BotGroups)
+				foreach (var sg in constants.BotGroupsE)
 				{
-					ServerGroupId newSG = (ServerGroupId)sg;
+					ServerGroupId newSG = sg;
 					if (fullClient.ServerGroups.Contains(newSG))
 					{
 						//Console.WriteLine("Skipping Bot");
@@ -79,9 +79,9 @@ namespace RankingSystem
 				var fullClient = await ts3Client.GetClientInfoById(item.InvokerId);
 				//var clientServerGroups = fullClient.ServerGroups;
 				bool skipCurrentClient = false;
-				foreach (var sg in constants.BotGroups)
+				foreach (var sg in constants.BotGroupsE)
 				{
-					ServerGroupId newSG = (ServerGroupId)sg;
+					ServerGroupId newSG = sg;
 					if (fullClient.ServerGroups.Contains(newSG))
 					{
 						//Console.WriteLine("Skipping Bot");
@@ -103,9 +103,9 @@ namespace RankingSystem
 				var fullClient = await ts3Client.GetClientInfoById(item.InvokerId);
 				//var clientServerGroups = fullClient.ServerGroups;
 				bool skipCurrentClient = false;
-				foreach (var sg in constants.BotGroups)
+				foreach (var sg in constants.BotGroupsE)
 				{
-					ServerGroupId newSG = (ServerGroupId)sg;
+					ServerGroupId newSG = sg;
 					if (fullClient.ServerGroups.Contains(newSG))
 					{
 						//Console.WriteLine("Skipping Bot");
