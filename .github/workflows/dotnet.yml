@@ -32,9 +32,10 @@ jobs:
 
       # Step 6: Generate the version info using the build.csx script
       - name: Generate version
-        run: |
-          dotnet tool install --global dotnet-script
-          dotnet script ./build.csx obj\Debug\net6.0\Version.g.cs $(BuildConfiguration)
+      run: |
+        dotnet tool install --global dotnet-script
+        dotnet script ./TS3AudioBot/build.csx obj\Debug\net6.0\Version.g.cs $(BuildConfiguration)
+    
         
       # Step 7: Extract version from the generated file (Version.g.cs)
       - name: Extract version from file
