@@ -47,12 +47,13 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
 
-      # Step 8: Extract version from the generated file (Version.g.cs)
       - name: Extract version from file
         id: extract_version
         run: |
-          VERSION=$(grep -oP '(?<=this.Version = ")[^"]*' TS3AudioBot/obj/Debug/net6.0/Version.g.cs)
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          $content = Get-Content TS3AudioBot/obj/Debug/net6.0/Version.g.cs
+          $version = ($content -match 'this\.Version = "(?<version>[^"]*)"' | Out-Null; $matches['version'])
+          echo "VERSION=$version" >> $env:GITHUB_ENV
+      
 
 
       - name: Create Release
