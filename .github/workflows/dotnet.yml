@@ -5,36 +5,57 @@ name: .NET
 
 on:
   push:
-    branches: [ "disabled" ]
-    #branches: [ "master" ]
+    #branches: [ "disabled" ]
+    branches: [ "master" ]
   pull_request:
-    #branches: [ "master" ]
-    branches: [ "disabled" ]
+    branches: [ "master" ]
+    #branches: [ "disabled" ]
 
 jobs:
   build-and-release:
     runs-on: windows-latest
     steps:
+      # Step 1: Checkout code
       - uses: actions/checkout@v2
+      # Step 2: Setup .NET (use the appropriate version for your project)
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 3.1.x
+          dotnet-version: '6.0'  # Use the version that matches your project
+
       - name: Restore dependencies
         run: dotnet restore
+
+      # Step 5: Run tests
       - name: Build
         run: dotnet build --no-restore
+
+      # Step 6: Generate the version info using the build.csx script
+      - name: Generate version
+        run: |
+          dotnet tool install --global dotnet-script
+          dotnet script ./build.csx obj\Debug\net6.0\Version.g.cs $(BuildConfiguration)
+        
+      # Step 7: Extract version from the generated file (Version.g.cs)
+      - name: Extract version from file
+        id: extract_version
+        run: |
+          VERSION=$(grep -oP '(?<=this.Version = ")[^"]*' obj\Debug\net6.0\Version.g.cs)
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
       - name: Test
         run: dotnet test --no-build --verbosity normal
+
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
-          tag_name: v0.0.3 # set the tag name here
-          release_name: Release 0.0.3 # set the release name here
+          tag_name: ${{ env.VERSION }}
+          release_name: "Release ${{ env.VERSION }}" # set the release name here
           body: |
-            This is the release notes for version 0.0.3
+            This is the release notes for version ${{ env.VERSION }}
           draft: false
           prerelease: false
