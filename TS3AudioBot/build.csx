@@ -17,6 +17,8 @@ string buildConfig = Args[1];
 string buildFile = "build_number.txt";
 string branchName = "master"; // Default branch
 string commitSha = "unknown"; // Default SHA
+string major = "0";
+string minor = "13";
 
 // Increment the build number
 int buildNumber = 1;
@@ -38,8 +40,6 @@ catch (Exception ex)
 }
 
 // Generate version information
-string major = "1";
-string minor = "0";
 string version = $"{major}.{minor}.{buildNumber}-{commitSha}";
 
 var genFile = $@"

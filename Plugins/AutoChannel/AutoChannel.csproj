@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TS3AudioBot\TS3AudioBot.csproj" />
-    <ProjectReference Include="..\TSLib\TSLib.csproj" />
+    <ProjectReference Include="..\..\TS3AudioBot\TS3AudioBot.csproj" />
+    <ProjectReference Include="..\..\TSLib\TSLib.csproj" />
   </ItemGroup>
 
   <Target Name="CustomAfterBuild" AfterTargets="Build">
@@ -19,5 +19,5 @@
     <Message Text="Copying @(PluginFiles) to $(SolutionDir)TS3AudioBot\bin\Debug\net6.0\Plugins\" Importance="high" />
     <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(SolutionDir)TS3AudioBot\bin\Debug\net6.0\Plugins\" />
   </Target>
-  
+
 </Project>

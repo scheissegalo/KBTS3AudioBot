@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TS3AudioBot\TS3AudioBot.csproj" />
-    <ProjectReference Include="..\TSLib\TSLib.csproj" />
+    <ProjectReference Include="..\..\TS3AudioBot\TS3AudioBot.csproj" />
+    <ProjectReference Include="..\..\TSLib\TSLib.csproj" />
   </ItemGroup>
 
   <Target Name="CustomAfterBuild" AfterTargets="Build">
