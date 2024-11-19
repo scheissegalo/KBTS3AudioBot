@@ -282,7 +282,32 @@ namespace RankingSystem
 							ChannelString = "No own Channel";
 						}
 						await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "welcomeBack") + " " + user.Name + "!", user.ClientID);
-						await _tsFullClient.SendPrivateMessage($"\n******** [b][color=#24336b]North[/color][color=#0095db]Industries[/color][/b] ********\n--- Stats --- | --- Stats --- | --- Stats ---\n\n[b]{_localizationManager.GetTranslation(userCountryCode, "userStats")}:[/b]\n[color=green]{_localizationManager.GetTranslation(userCountryCode, "countryCode")}[/color][b]: [color=red]{user.CountryCode}[/color][/b]\n[color=green]{_localizationManager.GetTranslation(userCountryCode, "rulesAccepted")}[/color][b]: [color=red]{acceptedRules}[/color][/b]\n[color=green]{_localizationManager.GetTranslation(userCountryCode, "rankingEnabled")}[/color][b]: [color=red]{rankingDisabled}[/color][/b]\n[color=green]{_localizationManager.GetTranslation(userCountryCode, "score")}[/color][b]: [color=red]{user.Score}[/color][/b]\n[color=green]{_localizationManager.GetTranslation(userCountryCode, "OnlineTime")}[/color][b]: [color=red]{FormatTimeSpan(user.OnlineTime)}[/color][/b]\n[color=green]{_localizationManager.GetTranslation(userCountryCode, "setupDone")}[/color][b]: [color=red]{setupDone}[/color][/b]\n[color=green]{_localizationManager.GetTranslation(userCountryCode, "skippedSetup")}[/color][b]: [color=red]{skippedSetup}[/color][/b]\n[color=green]{_localizationManager.GetTranslation(userCountryCode, "level")}[/color][b]: [color=red]{GetUserLevel(user.OnlineTime)}[/color][/b]\n{ChannelString}\n[color=green]{_localizationManager.GetTranslation(userCountryCode, "ownChannel")}[/color][b]: [color=red]{hasOwnChannel}[/color][/b]\n\n{_localizationManager.GetTranslation(user.CountryCode, "typeHelp")}", user.ClientID);
+						await SendPrivateMessage(@$"[b][color=blue]Server Statistics[/color][/b]  
+[b]•[/b] Users Online Today: [color=green]{_onlineCounterModule.countToday} [/color]  
+[b]•[/b] Current Online Users: [color=#0044aa]{_onlineCounterModule.count}[/color]  
+
+[b][color=blue]═══════════- Personal Daily Status -══════════[/color][/b] 
+
+[b]•[/b] Username: [color=#aa4400]{user.Name}[/color]  
+[b]•[/b] Online Time: [color=#00FF00]{FormatTimeSpan(user.OnlineTime)}[/color]  
+[b]•[/b] Credits: [color=#00FF00]{user.Score}[/color]  
+[b]•[/b] Level: [color=cyan]{GetUserLevel(user.OnlineTime)}[/color]  
+[b]•[/b] Channel: [color=white]{ChannelString} [/color]",user.ClientID);
+//						await _tsFullClient.SendPrivateMessage(@$"
+//******** [b][color=#24336b]North[/color][color=#0095db]Industries[/color][/b] ********
+//--- Stats --- | --- Stats --- | --- Stats ---
+//[b]{_localizationManager.GetTranslation(userCountryCode, "userStats")}:[/b]
+//[color=green]{_localizationManager.GetTranslation(userCountryCode, "countryCode")}[/color][b]: [color=red]{user.CountryCode}[/color][/b]
+//[color=green]{_localizationManager.GetTranslation(userCountryCode, "rulesAccepted")}[/color][b]: [color=red]{acceptedRules}[/color][/b]
+//[color=green]{_localizationManager.GetTranslation(userCountryCode, "rankingEnabled")}[/color][b]: [color=red]{rankingDisabled}[/color][/b]
+//[color=green]{_localizationManager.GetTranslation(userCountryCode, "score")}[/color][b]: [color=red]{user.Score}[/color][/b]
+//[color=green]{_localizationManager.GetTranslation(userCountryCode, "OnlineTime")}[/color][b]: [color=red]{FormatTimeSpan(user.OnlineTime)}[/color][/b]
+//[color=green]{_localizationManager.GetTranslation(userCountryCode, "setupDone")}[/color][b]: [color=red]{setupDone}[/color][/b]
+//[color=green]{_localizationManager.GetTranslation(userCountryCode, "skippedSetup")}[/color][b]: [color=red]{skippedSetup}[/color][/b]
+//[color=green]{_localizationManager.GetTranslation(userCountryCode, "level")}[/color][b]: [color=red]{GetUserLevel(user.OnlineTime)}[/color][/b]
+//{ChannelString}\n[color=green]{_localizationManager.GetTranslation(userCountryCode, "ownChannel")}[/color][b]: [color=red]{hasOwnChannel}[/color][/b]
+
+//{_localizationManager.GetTranslation(user.CountryCode, "typeHelp")}", user.ClientID);
 						break;
 					}
 				default:
@@ -295,6 +320,13 @@ namespace RankingSystem
 			{
 				return _localizationManager.GetTranslation(userCountryCode, condition ? "yes" : "no");
 			}
+		}
+
+		public async Task SendPrivateMessage(string message, ClientId user)
+		{
+			//Console.WriteLine($"Sending message {message}");
+			string newMessage = $"{constants.messageHeader} {message} {constants.messageFooter}";
+			var response = await _tsFullClient.SendPrivateMessage(newMessage, user);
 		}
 
 

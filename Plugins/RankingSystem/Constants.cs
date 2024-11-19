@@ -36,7 +36,9 @@ namespace RankingSystem
 [b]══════════════════════════════════════════════[/b]
 [b][url=https://north-industries.com]HOME[/url] | [url=https://north-industries.com/news/]NEWS[/url] | [url=https://north-industries.com/teamspeak-connect/#rules]RULES[/url] | [url=https://north-industries.com/teamspeak-help]HELP[/url] | [url=https://teamspeak-servers.org/server/12137/vote/]VOTE[/url] | [url=https://north-industries.com/ts-viewer/]TS-VIEWER[/url] | [url=https://north-industries.com/teamspeak-connect/]SHARE[/url][/b]
 
-[color=#24336b]North[/color][color=#0095db]Industries[/color] [i]Your Gaming Journey Starts Here![/i]
+[b]Need help? Just type ""[color=#00FF00]help[/color]""[/b]
+
+[color=#24336b]North[/color][color=#0095db]Industries[/color] [i]""Your Gaming Journey Starts Here!""[/i]
 ";
 
 		public List<ServerGroupInfo> _serverGroupList = new List<ServerGroupInfo>
