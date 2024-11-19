@@ -127,7 +127,7 @@ namespace TS3AudioBot
 
 		public static void LogHeader()
 		{
-			Log.Info("[============ TS3AudioBot started =============]");
+			Log.Info("[============ KBTS3AudioBot started =============]");
 			Log.Info("[ Date: {0}", DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture));
 			Log.Info("[ Version: {0}", SystemData.AssemblyData);
 			Log.Info("[ Build: {0}", SystemData.AssemblyData.BuildConfiguration);

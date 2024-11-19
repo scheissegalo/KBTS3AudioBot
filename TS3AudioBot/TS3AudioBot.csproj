@@ -16,7 +16,7 @@
     <StartupObject>TS3AudioBot.Setup</StartupObject>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
-    <RepositoryUrl>https://github.com/Splamy/TS3AudioBot.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/scheissegalo/KBTS3AudioBot.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
