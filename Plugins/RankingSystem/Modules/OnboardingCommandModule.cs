@@ -506,7 +506,7 @@ administrator | 500 | Administrator rights
 		{
 			if (e.InvokerUid == null)
 			{
-				Console.WriteLine("InvokerUid is null.");
+				//Console.WriteLine("InvokerUid is null.");
 				return;
 			}
 			TSUser? user = _userRepository.FindOne(e.InvokerUid.Value);
@@ -523,7 +523,7 @@ administrator | 500 | Administrator rights
 			{
 				// No argument provided
 				string errorMessage = localizationManager.GetTranslation("en", "noCountryCode");
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation("en", "countryCodeUsage"), user.ClientID);
+				await SendPrivateMessage(errorMessage +" "+ localizationManager.GetTranslation("en", "countryCodeUsage"), user.ClientID, true);
 				return;
 			}
 
@@ -537,7 +537,7 @@ administrator | 500 | Administrator rights
 				user.CountryCode = languageCode;
 				_userRepository.Update(user);
 
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(languageCode, "successSetLanguage"), user.ClientID);
+				await SendPrivateMessage(localizationManager.GetTranslation(languageCode, "successSetLanguage"), user.ClientID, true);
 
 			}
 			else
@@ -548,7 +548,7 @@ administrator | 500 | Administrator rights
 				string errorMessage = localizationManager.GetTranslation(tsCountryCode, "notValidCountryCode");
 				//string languagePrompt = localizationManager.GetTranslation(tsCountryCode, "whatIsYourLanguage");description
 
-				await _tsFullClient.SendPrivateMessage(errorMessage, user.ClientID);
+				await SendPrivateMessage(errorMessage, user.ClientID, true);
 			}
 		}
 
@@ -564,7 +564,7 @@ administrator | 500 | Administrator rights
 			string adminHelp = "";
 			if (user == null)
 			{
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "contactAdmin"), user.ClientID);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "contactAdmin"), user.ClientID, true);
 				return;
 			}
 			if (await IsUserAdministrator(user))
@@ -606,19 +606,19 @@ addusercredit | <amount> <user> | add credit to user.
 			TSUser? user = _userRepository.FindOne(message.InvokerUid.Value);
 			if (user == null)
 			{
-				await _tsFullClient.SendPrivateMessage("User not found in the database.", message.InvokerId);
+				await SendPrivateMessage("User not found in the database.", message.InvokerId);
 				return;
 			}
 
 			if (user.SkipSetup)
 			{
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "skippedSetupNoChannel"), user.ClientID);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "skippedSetupNoChannel"), user.ClientID, true);
 				return;
 			}
 
 			if (user.ChannelIDInt != 0)
 			{
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "alreadHaveChannel"), user.ClientID);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "alreadHaveChannel"), user.ClientID, true);
 				return;
 			}
 
@@ -635,7 +635,7 @@ addusercredit | <amount> <user> | add credit to user.
 
 					await _tsFullClient.ClientMove(user.ClientID, newChannelId.Value);
 					await _tsFullClient.ChannelGroupAddClient((ChannelGroupId)5, newChannelId.Value, dbuser.Value.ClientDbId);
-					await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "addPassword"), user.ClientID);
+					await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "addPassword"), user.ClientID, true);
 				}
 			}
 			else
@@ -646,9 +646,9 @@ addusercredit | <amount> <user> | add credit to user.
 					_userRepository.Update(user);
 				}
 
-				await _tsFullClient.SendPrivateMessage($"{localizationManager.GetTranslation(user.CountryCode, "notEnoughTime")} " +
+				await SendPrivateMessage($"{localizationManager.GetTranslation(user.CountryCode, "notEnoughTime")} " +
 					$"{localizationManager.GetTranslation(user.CountryCode, "onlineTime")}: " +
-					$"{(int)user.OnlineTime.TotalMinutes} {localizationManager.GetTranslation(user.CountryCode, "minutes")}", user.ClientID);
+					$"{(int)user.OnlineTime.TotalMinutes} {localizationManager.GetTranslation(user.CountryCode, "minutes")}", user.ClientID, true);
 			}
 		}
 
@@ -657,7 +657,7 @@ addusercredit | <amount> <user> | add credit to user.
 			TSUser? user = _userRepository.FindOne(message.InvokerUid.Value);
 			if (user == null || user.ChannelIDInt == 0)
 			{
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "noChannelToDelete"), message.InvokerId);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "noChannelToDelete"), message.InvokerId, true);
 				return;
 			}
 			await _channelManager.KickAllUsersFromChannel(user);
@@ -666,13 +666,14 @@ addusercredit | <amount> <user> | add credit to user.
 			{
 				user.ChannelIDInt = 0;
 				_userRepository.Update(user);
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "channelDeleted"), message.InvokerId);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "channelDeleted"), message.InvokerId, true);
 				//await tsFullClient.SendPrivateMessage("Your channel has been deleted.", message.InvokerId); channelnoChannelToDeleteDeleted
 			}
 			else
 			{
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "failedTodeleteYourChannel"), message.InvokerId);
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "contactAdmin"), message.InvokerId);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "failedTodeleteYourChannel")+" "+
+					localizationManager.GetTranslation(user.CountryCode, "contactAdmin"), message.InvokerId, true);
+				//await SendPrivateMessage(, message.InvokerId, true);
 			}
 		}
 
@@ -680,13 +681,13 @@ addusercredit | <amount> <user> | add credit to user.
 		{
 			if (user == null)
 			{
-				await _tsFullClient.SendPrivateMessage("User not found in the database.", user.ClientID);
+				await SendPrivateMessage("User not found in the database.", user.ClientID, true);
 				return;
 			}
 
 			if (user.SkipSetup)
 			{
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "skippedSetupNoChannel"), user.ClientID);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "skippedSetupNoChannel"), user.ClientID, true);
 				return;
 			}
 
@@ -704,7 +705,7 @@ addusercredit | <amount> <user> | add credit to user.
 
 					await _tsFullClient.ClientMove(user.ClientID, newChannelId.Value);
 					await _tsFullClient.ChannelGroupAddClient((ChannelGroupId)5, newChannelId.Value, dbuser.Value.ClientDbId);
-					await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "addPassword"), user.ClientID);
+					await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "addPassword"), user.ClientID, true);
 				}
 			}
 			else
@@ -715,9 +716,9 @@ addusercredit | <amount> <user> | add credit to user.
 					_userRepository.Update(user);
 				}
 
-				await _tsFullClient.SendPrivateMessage($"{localizationManager.GetTranslation(user.CountryCode, "notEnoughTime")} " +
+				await SendPrivateMessage($"{localizationManager.GetTranslation(user.CountryCode, "notEnoughTime")} " +
 					$"{localizationManager.GetTranslation(user.CountryCode, "onlineTime")}: " +
-					$"{(int)user.OnlineTime.TotalMinutes} {localizationManager.GetTranslation(user.CountryCode, "minutes")}", user.ClientID); //minutes
+					$"{(int)user.OnlineTime.TotalMinutes} {localizationManager.GetTranslation(user.CountryCode, "minutes")}", user.ClientID, true); //minutes
 			}
 		}
 
@@ -725,7 +726,7 @@ addusercredit | <amount> <user> | add credit to user.
 		{
 			if (message.InvokerUid == null)
 			{
-				Console.WriteLine("InvokerUid is null.");
+				//Console.WriteLine("InvokerUid is null.");
 				return;
 			}
 			TSUser? user = _userRepository.FindOne(message.InvokerUid.Value);
@@ -735,11 +736,11 @@ addusercredit | <amount> <user> | add credit to user.
 				user.SetupDate = DateTime.UtcNow;
 				user.SetupStep = 0;
 				_userRepository.Update(user);
-				await _tsFullClient.SendPrivateMessage($"{localizationManager.GetTranslation(user.CountryCode, "restartSetup")}", user.ClientID);
+				await SendPrivateMessage($"{localizationManager.GetTranslation(user.CountryCode, "restartSetup")}", user.ClientID, true);
 			}
 			else
 			{
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "stillHaveChannel"), user.ClientID);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "stillHaveChannel"), user.ClientID, true);
 			}
 
 		}
@@ -748,7 +749,7 @@ addusercredit | <amount> <user> | add credit to user.
 		{
 			if (e.InvokerUid == null)
 			{
-				Console.WriteLine("InvokerUid is null.");
+				//Console.WriteLine("InvokerUid is null.");
 				return;
 			}
 			// Handle !skipsetup stillHaveChannel
@@ -757,21 +758,21 @@ addusercredit | <amount> <user> | add credit to user.
 			{
 				if (user.SetupDone)
 				{
-					await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation("en", "alreadySetupDone"), user.ClientID);
+					await SendPrivateMessage(localizationManager.GetTranslation("en", "alreadySetupDone"), user.ClientID, true);
 					return;
 				}
 				string TSCountryCode = await GetUserCountryCodeFromTS(user);
 				//Send english Backup incase user is on VPN setupSkipped
+				string messageEN = "";
 				if (TSCountryCode != "en")
 				{
-					string messageEN = localizationManager.GetTranslation("en", "setupSkipped");
-					await _tsFullClient.SendPrivateMessage($"Backup English: {messageEN}", user.ClientID);
+					messageEN = "Backup English: " + localizationManager.GetTranslation("en", "setupSkipped");
 				}
 				user.SkipSetup = true;
 				user.CountryCode = TSCountryCode;
 				_userRepository.Update(user);
-				string message = localizationManager.GetTranslation(TSCountryCode, "setupSkipped");
-				await _tsFullClient.SendPrivateMessage(message, user.ClientID);
+				string message = $"{messageEN} | " + localizationManager.GetTranslation(TSCountryCode, "setupSkipped");
+				await SendPrivateMessage(message, user.ClientID, true);
 			}
 		}
 
@@ -779,7 +780,7 @@ addusercredit | <amount> <user> | add credit to user.
 		{
 			if (e.InvokerUid == null)
 			{
-				Console.WriteLine("InvokerUid is null.");
+				//Console.WriteLine("InvokerUid is null.");
 				return;
 			}
 			// Respond to a simple hello command
@@ -788,7 +789,7 @@ addusercredit | <amount> <user> | add credit to user.
 			{
 				string TSCountryCode = await GetUserCountryCodeFromTS(user);
 				string message = localizationManager.GetTranslation(TSCountryCode, "helloMessage");
-				await _tsFullClient.SendPrivateMessage(message, user.ClientID);
+				await SendPrivateMessage(message, user.ClientID);
 			}
 		}
 
