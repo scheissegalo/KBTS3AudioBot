@@ -24,6 +24,10 @@ jobs:
         with:
           dotnet-version: '6.0'  # Use the version that matches your project
       
+      - name: Create necessary directories
+        run: |
+          mkdir -p TS3AudioBot/obj/Debug/net6.0
+
       # Step 3: Install a compatible dotnet-script tool (version 1.0.0 is compatible with .NET 6.0)
       - name: Install dotnet-script tool (version 1.5.0)
         run: dotnet tool install --global dotnet-script --version 1.5.0
@@ -31,7 +35,7 @@ jobs:
       # Step 4: Generate version info using the build.csx script
       - name: Generate version
         run: |
-          dotnet script ./TS3AudioBot/build.csx TS3AudioBot/obj/Debug/net6.0/Version.g.cs Debug
+          dotnet script ./TS3AudioBot/build.csx TS3AudioBot/obj/Debug/net6.0/Version.g.cs $(BuildConfiguration)
         env:
           BuildConfiguration: Debug
 
