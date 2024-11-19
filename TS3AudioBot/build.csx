@@ -12,7 +12,8 @@ if (Args.Count < 2)
 }
 
 string outFile = Args[0];
-string buildConfig = Args[1];
+string buildConfig = Args.Count > 1 ? Args[1] : "Debug";
+//string buildConfig = Args[1];
 
 string buildFile = "build_number.txt";
 string branchName = "master"; // Default branch
