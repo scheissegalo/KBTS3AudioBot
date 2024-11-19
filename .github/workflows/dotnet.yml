@@ -20,9 +20,9 @@ jobs:
 
       # Step 2: Setup .NET (use the appropriate version for your project)
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.0'  # Use the version that matches your project
+          dotnet-version: '6.0.x'
       
       # Step 3: Install a compatible dotnet-script tool (version 1.0.0 is compatible with .NET 6.0)
       - name: Install dotnet-script tool (version 1.5.0)
