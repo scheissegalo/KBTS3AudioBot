@@ -127,7 +127,7 @@ namespace RankingSystem
 			string userCountryCode;
 			if (user == null)
 			{
-				await _tsFullClient.SendPrivateMessage("Something went wrong! Please contact an admin!", e.InvokerId);
+				await SendPrivateMessage("Something went wrong! Please contact an admin!", e.InvokerId, true);
 			}
 			else
 			{
@@ -139,32 +139,29 @@ namespace RankingSystem
 				userCountryCode = user.CountryCode;
 				string localizedYes = _localizationManager.GetTranslation(userCountryCode, "yes").ToLower();
 				string localizedNo = _localizationManager.GetTranslation(userCountryCode, "no").ToLower();
+				string message = "";
+				string messageEN = "";
 				switch ((SetupStep)user.SetupStep)
 				{
 				case SetupStep.Welcome:
 					if (userCountryCode != "en")
 					{
-						string message = _localizationManager.GetTranslation(TSCountryCode, "welcomeMessage");
-						await _tsFullClient.SendPrivateMessage($"{_localizationManager.GetTranslation(TSCountryCode, "hello")} {user.Name}!\n {message}", user.ClientID);
-						message = _localizationManager.GetTranslation(TSCountryCode, "whatIsYourLanguage");
-						await _tsFullClient.SendPrivateMessage($"{_localizationManager.GetTranslation(TSCountryCode, "skipSetup")}\n{message} [b]{TSCountryCode}[/b]!", user.ClientID);
+					
+						//message = _localizationManager.GetTranslation(TSCountryCode, "welcomeMessage");
+						//await _tsFullClient.SendPrivateMessage($"{_localizationManager.GetTranslation(TSCountryCode, "hello")} {user.Name}!\n {message}", user.ClientID);
+						message = _localizationManager.GetTranslation(TSCountryCode, "welcomeMessage") + " " + _localizationManager.GetTranslation(TSCountryCode, "whatIsYourLanguage");
+						await SendPrivateMessage($"{_localizationManager.GetTranslation(TSCountryCode, "skipSetup")} {message} [b]{TSCountryCode}[/b]!", user.ClientID);
 					}
 					else
 					{
 						if (TSCountryCode != "en")
 						{
-							string messageEN = _localizationManager.GetTranslation("en", "welcomeMessage");
-							await _tsFullClient.SendPrivateMessage($"Backup English: {_localizationManager.GetTranslation("en", "hello")} {user.Name}!\n {messageEN}", user.ClientID);
+							messageEN = "Backup English:" + _localizationManager.GetTranslation("en", "welcomeMessage");
+							messageEN += _localizationManager.GetTranslation("en", "whatIsYourLanguage");
+							//await _tsFullClient.SendPrivateMessage($"Backup English:{_localizationManager.GetTranslation("en", "skipSetup")}\n{messageEN} [b]{TSCountryCode}[/b]!", user.ClientID);
 						}
-						string message = _localizationManager.GetTranslation(TSCountryCode, "welcomeMessage");
-						await _tsFullClient.SendPrivateMessage($"{_localizationManager.GetTranslation(TSCountryCode, "hello")} {user.Name}!\n {message}", user.ClientID);
-						if (TSCountryCode != "en")
-						{
-							string messageEN = _localizationManager.GetTranslation("en", "whatIsYourLanguage");
-							await _tsFullClient.SendPrivateMessage($"Backup English:{_localizationManager.GetTranslation("en", "skipSetup")}\n{messageEN} [b]{TSCountryCode}[/b]!", user.ClientID);
-						}
-						message = _localizationManager.GetTranslation(TSCountryCode, "whatIsYourLanguage");
-						await _tsFullClient.SendPrivateMessage($"{_localizationManager.GetTranslation(TSCountryCode, "skipSetup")}\n{message} [b]{TSCountryCode}[/b]!", user.ClientID);
+						message = $"{messageEN} | " + _localizationManager.GetTranslation(TSCountryCode, "welcomeMessage") +_localizationManager.GetTranslation(TSCountryCode, "whatIsYourLanguage");
+						await SendPrivateMessage($"{_localizationManager.GetTranslation(TSCountryCode, "skipSetup")}\n{message} [b]{TSCountryCode}[/b]!", user.ClientID);
 					}
 					user.SetupStep = 1;
 					break;
@@ -176,23 +173,23 @@ namespace RankingSystem
 							_userRepository.Update(user);
 							user = _userRepository.FindById(user);
 							userCountryCode = user.CountryCode;
-							await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "acceptRules") ?? "", user.ClientID);
+							await SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "acceptRules") ?? "", user.ClientID, true);
 							user.SetupStep = 2;
 							break;
 						}
 						if (TSCountryCode != "en")
 						{
-							string messageEN = _localizationManager.GetTranslation("en", "whatIsYourLanguage");
-							await _tsFullClient.SendPrivateMessage("Backup English: " + messageEN + " !\n " + _localizationManager.GetTranslation("en", "skipSetup"), user.ClientID);
+							messageEN = _localizationManager.GetTranslation("en", "whatIsYourLanguage");
+							//await _tsFullClient.SendPrivateMessage("Backup English: " + messageEN + " !\n " + _localizationManager.GetTranslation("en", "skipSetup"), user.ClientID);
 						}
-						string message = _localizationManager.GetTranslation(TSCountryCode, "whatIsYourLanguage");
-						await _tsFullClient.SendPrivateMessage($"{message} {TSCountryCode}!\n {_localizationManager.GetTranslation(TSCountryCode, "skipSetup")}", user.ClientID);
-						await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(TSCountryCode, "notValidCountryCode") + "]", user.ClientID);
+						message = "Backup English: "+ _localizationManager.GetTranslation("en", "whatIsYourLanguage") + _localizationManager.GetTranslation("en", "skipSetup") + _localizationManager.GetTranslation(TSCountryCode, "whatIsYourLanguage");
+						//await _tsFullClient.SendPrivateMessage($"{message} {TSCountryCode}!\n {_localizationManager.GetTranslation(TSCountryCode, "skipSetup")}", user.ClientID);
+						await SendPrivateMessage($"{message} {TSCountryCode}!\n {_localizationManager.GetTranslation(TSCountryCode, "skipSetup")}"+_localizationManager.GetTranslation(TSCountryCode, "notValidCountryCode") + "]", user.ClientID);
 						break;
 					}
 				case SetupStep.AcceptRules:
 					{
-						Console.WriteLine("Translated yes: " + localizedYes + ", No: " + localizedNo);
+						//Console.WriteLine("Translated yes: " + localizedYes + ", No: " + localizedNo);
 						string answer = e.Message.ToLower();
 						if (answer.Equals(localizedYes, StringComparison.OrdinalIgnoreCase) || answer.Equals(localizedNo, StringComparison.OrdinalIgnoreCase))
 						{
@@ -322,13 +319,30 @@ namespace RankingSystem
 			}
 		}
 
-		public async Task SendPrivateMessage(string message, ClientId user)
-		{
-			//Console.WriteLine($"Sending message {message}");
-			string newMessage = $"{constants.messageHeader} {message} {constants.messageFooter}";
-			var response = await _tsFullClient.SendPrivateMessage(newMessage, user);
-		}
+		//public async Task SendPrivateMessage(string message, ClientId user)
+		//{
+		//	//Console.WriteLine($"Sending message {message}");
+		//	string newMessage = $"{constants.messageHeader} {message} {constants.messageFooter}";
+		//	var response = await _tsFullClient.SendPrivateMessage(newMessage, user);
+		//}
 
+		private async Task<bool> SendPrivateMessage(string message, ClientId client, bool format = false)
+		{
+			if (format)
+			{
+				message = $@"[b][color=red]{message}[/color][/b]";
+			}
+
+			string formattetMessage = $@"{constants.messageHeader} {message} {constants.messageFooter}";
+			var result = await _tsFullClient.SendPrivateMessage(formattetMessage, client);
+
+			if (result.Ok)
+			{
+				return true;
+			}
+
+			return false;
+		}
 
 		public void StopOnboardingModule()
 		{
