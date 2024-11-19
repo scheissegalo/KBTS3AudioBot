@@ -49,7 +49,7 @@ namespace RankingSystem.Modules
 			commandManager.RegisterCommand("sendcredit", HandleSendCredit);
 			commandManager.RegisterCommand("sendcredits", HandleSendCredit);
 			commandManager.RegisterCommand("disablestatus", HandleDisableStatus);
-			commandManager.RegisterCommand("importdb", HandleDBImport);
+			//commandManager.RegisterCommand("importdb", HandleDBImport);
 			//commandManager.RegisterCommand("addsteam", HandleAddSteam);
 			// Register Admin Commands
 			commandManager.RegisterCommand("addcredit", HandleAddCredit);
@@ -83,7 +83,7 @@ namespace RankingSystem.Modules
 
 			user.SteamID = argument;
 			_userRepository.Update(user);
-			await _tsFullClient.SendPrivateMessage("Steam ID Added", user.ClientID);
+			await SendPrivateMessage("Steam ID Added", user.ClientID);
 		}
 
 		private async Task HandleSetStep(TextMessage message)
@@ -129,92 +129,94 @@ namespace RankingSystem.Modules
 			if (user == null)
 			{
 				// Handle case where user is not found
-				Console.WriteLine("User not found");
+				//Console.WriteLine("User not found");
 				return;
 			}
 			if (user.DailyStatusEnabled)
 			{
 				user.DailyStatusEnabled = false;
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "dailyPersonalStatus")+" "+ localizationManager.GetTranslation(user.CountryCode, "disabled"), user.ClientID);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "dailyPersonalStatus") + " " +
+					localizationManager.GetTranslation(user.CountryCode, "disabled"), user.ClientID, true);
 			}
 			else
 			{
 				user.DailyStatusEnabled = true;
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "dailyPersonalStatus") + " " + localizationManager.GetTranslation(user.CountryCode, "enabled"), user.ClientID);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "dailyPersonalStatus") + " " +
+					localizationManager.GetTranslation(user.CountryCode, "enabled"), user.ClientID, true);
 			}
 			_userRepository.Update(user);
 
 		}
 
-		private async Task HandleDBImport(TextMessage message)
-		{
-			if (ImportDatabase())
-			{
-				await _tsFullClient.SendPrivateMessage("Import Successfull", message.InvokerId);
-			}
-			else
-			{
-				await _tsFullClient.SendPrivateMessage("Import Error", message.InvokerId);
-			}
-		}
+		//private async Task HandleDBImport(TextMessage message)
+		//{
+		//	if (ImportDatabase())
+		//	{
+		//		await _tsFullClient.SendPrivateMessage("Import Successfull", message.InvokerId);
+		//	}
+		//	else
+		//	{
+		//		await _tsFullClient.SendPrivateMessage("Import Error", message.InvokerId);
+		//	}
+		//}
 
-		public bool ImportDatabase()
-		{
-			try
-			{
-				// Initialize the LiteDB database using the recommended approach
-				using (var db = new LiteDatabase(@"Filename=rank_users.db;Upgrade=true;"))
-				{
-					// Get a collection (or create it if it doesn't exist)
-					var DBusers = db.GetCollection<User>("users");
+		//public bool ImportDatabase()
+		//{
+		//	try
+		//	{
+		//		// Initialize the LiteDB database using the recommended approach
+		//		using (var db = new LiteDatabase(@"Filename=rank_users.db;Upgrade=true;"))
+		//		{
+		//			// Get a collection (or create it if it doesn't exist)
+		//			var DBusers = db.GetCollection<User>("users");
 
-					if (DBusers == null)
-					{
-						Console.WriteLine("Database collection 'users' is null!");
-						return false;
-					}
+		//			if (DBusers == null)
+		//			{
+		//				Console.WriteLine("Database collection 'users' is null!");
+		//				return false;
+		//			}
 
-					// Fetch all users in the collection
-					var users = DBusers.FindAll().ToList();
+		//			// Fetch all users in the collection
+		//			var users = DBusers.FindAll().ToList();
 
-					foreach (var user in users)
-					{
-						// Calculate credits based on online time
-						double totalMinutes = user.OnlineTime.TotalMinutes;
-						float credits = (float)totalMinutes * constants.ScorePerTick;
+		//			foreach (var user in users)
+		//			{
+		//				// Calculate credits based on online time
+		//				double totalMinutes = user.OnlineTime.TotalMinutes;
+		//				float credits = (float)totalMinutes * constants.ScorePerTick;
 
-						// Feed the data to your new database
-						Console.WriteLine($"Importing user: {user.Name} - {user.Nickname}, ID: {user.UserID}");
-						var newUser = new TSUser
-						{
-							UserID = (Uid)user.UserID,
-							Name = user.Name,
-							OnlineTime = user.OnlineTime,
-							LastUpdate = DateTime.Now,
-							SkipSetup = true,
-							SetupStep = 0,
-							Score = credits
-						};
+		//				// Feed the data to your new database
+		//				Console.WriteLine($"Importing user: {user.Name} - {user.Nickname}, ID: {user.UserID}");
+		//				var newUser = new TSUser
+		//				{
+		//					UserID = (Uid)user.UserID,
+		//					Name = user.Name,
+		//					OnlineTime = user.OnlineTime,
+		//					LastUpdate = DateTime.Now,
+		//					SkipSetup = true,
+		//					SetupStep = 0,
+		//					Score = credits
+		//				};
 
-						// Add the user to your new database
-						_userRepository.Insert(newUser);
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex.Message);
-				return false;
-			}
+		//				// Add the user to your new database
+		//				_userRepository.Insert(newUser);
+		//			}
+		//		}
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		Console.WriteLine(ex.Message);
+		//		return false;
+		//	}
 
-			return true;
-		}
+		//	return true;
+		//}
 
 		private async Task HandleSendCredit(TextMessage message)
 		{
 			if (message.InvokerUid == null)
 			{
-				Console.WriteLine("InvokerUid is null.");
+				//Console.WriteLine("InvokerUid is null.");
 				return;
 			}
 			TSUser? user = _userRepository.FindOne(message.InvokerUid.Value);
@@ -231,7 +233,7 @@ namespace RankingSystem.Modules
 			{
 				// No argument notEnoughtArguments
 				//string errorMessage = "Too many arguments";
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "notEnoughtArguments"), user.ClientID);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "notEnoughtArguments"), user.ClientID, true);
 				return;
 			}
 
@@ -243,30 +245,30 @@ namespace RankingSystem.Modules
 			{
 				if (!CheckIfUserHasEnoughtCredit(user, floatValue))
 				{
-					await _tsFullClient.SendPrivateMessage("Not enought Credits!", user.ClientID);
+					await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "notEnoughtCredits")+ "😥", user.ClientID, true);
 					return;
 				}
 
 				TSUser? updateUser = _userRepository.FindOneByName(username);
 				if (updateUser == null)
 				{
-					// Handle case where user is not found
+					// Handle case where user is not found userNotFound
 					//Console.WriteLine("User null");
-					await _tsFullClient.SendPrivateMessage("Unable to find that user!", user.ClientID);
+					await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "userNotFound"), user.ClientID, true);
 					return;
 				}
-				//Console.WriteLine($"Parsed float: {floatValue}"); // Output: Parsed float: 42.42
+				//Console.WriteLine($"Parsed float: {floatValue}"); // Output: Parsed float: 42.42 from
 				updateUser.Score += floatValue;
 				user.Score -= floatValue;
 				_userRepository.Update(updateUser);
 				_userRepository.Update(user);
-				await _tsFullClient.SendPrivateMessage($"Credits send to {updateUser.Name}. Your Credits: {user.Score}", user.ClientID);
-				await _tsFullClient.SendPrivateMessage($"You recived {floatValue} credits from {user.Name}", updateUser.ClientID);
+				await SendPrivateMessage($"{localizationManager.GetTranslation(user.CountryCode, "creditsSend")} {updateUser.Name}. {localizationManager.GetTranslation(user.CountryCode, "yourCredits")}: {user.Score}", user.ClientID, true);
+				await SendPrivateMessage($"🎉💰{localizationManager.GetTranslation(user.CountryCode, "youRecieved")} {floatValue} {localizationManager.GetTranslation(user.CountryCode, "credits")} {localizationManager.GetTranslation(user.CountryCode, "from")}: {user.Name}", updateUser.ClientID, true);
 			}
 			else
 			{
-				await _tsFullClient.SendPrivateMessage("Wrong format, Example: sendcredit 10 Username", user.ClientID);
-				//Console.WriteLine("Invalid float format!");
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "wrongFormatCredit"), user.ClientID, true);
+				//Console.WriteLine("Invalid float format!");wrongFormatCredit
 			}
 		}
 
@@ -274,19 +276,19 @@ namespace RankingSystem.Modules
 		{
 			if (message.InvokerUid == null)
 			{
-				Console.WriteLine("InvokerUid is null.");
+				//Console.WriteLine("InvokerUid is null.");
 				return;
 			}
 			TSUser? user = _userRepository.FindOne(message.InvokerUid.Value);
 			if (user == null)
 			{
 				// Handle case where user is not found
-				Console.WriteLine("User not found");
+				//Console.WriteLine("User not found");
 				return;
 			}
 			if (!await IsUserAdministrator(user))
 			{
-				Console.WriteLine("Not Admin");
+				//Console.WriteLine("Not Admin");
 				return;
 			}
 			// Split the message into command and argument
@@ -294,7 +296,7 @@ namespace RankingSystem.Modules
 			if (parts.Length < 2)
 			{
 				// No argument provided
-				await _tsFullClient.SendPrivateMessage("No argument provided", user.ClientID);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "notEnoughtArguments"), user.ClientID, true);
 				return;
 			}
 
@@ -309,18 +311,20 @@ namespace RankingSystem.Modules
 				{
 					// Handle case where user is not found
 					//Console.WriteLine("User null");
-					await _tsFullClient.SendPrivateMessage("Unable to find that user!", user.ClientID);
+					await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "userNotFound"), user.ClientID, true);
 					return;
 				}
 
 				updateUser.Score += floatValue;
 				_userRepository.Update(updateUser);
-				await _tsFullClient.SendPrivateMessage($"Updated {updateUser.Name}'s credits: {updateUser.Score}", user.ClientID);
-				await _tsFullClient.SendPrivateMessage($"You recived {floatValue} credits from {user.Name}", updateUser.ClientID);
+				//await SendPrivateMessage($"{localizationManager.GetTranslation(user.CountryCode, "creditsSend")} {updateUser.Name}. {localizationManager.GetTranslation(user.CountryCode, "yourCredits")}: {user.Score}", user.ClientID, true);
+				await SendPrivateMessage($"🎉💰{localizationManager.GetTranslation(user.CountryCode, "youRecieved")} {floatValue} {localizationManager.GetTranslation(user.CountryCode, "credits")} {localizationManager.GetTranslation(user.CountryCode, "from")}: {user.Name}", updateUser.ClientID, true);
+				await SendPrivateMessage($"Updated {updateUser.Name}'s credits: {updateUser.Score}", user.ClientID, true);
+				//await _tsFullClient.SendPrivateMessage($"You recived {floatValue} credits from {user.Name}", updateUser.ClientID);
 			}
 			else
 			{
-				await _tsFullClient.SendPrivateMessage("Wrong format, Example: addusercredit 10 Username", user.ClientID);
+				await SendPrivateMessage("Wrong format, Example: addusercredit 10 Username", user.ClientID, true);
 				//Console.WriteLine("Invalid float format!");
 			}
 		}
@@ -328,19 +332,19 @@ namespace RankingSystem.Modules
 		{
 			if (message.InvokerUid == null)
 			{
-				Console.WriteLine("InvokerUid is null.");
+				//Console.WriteLine("InvokerUid is null.");
 				return;
 			}
 			TSUser? user = _userRepository.FindOne(message.InvokerUid.Value);
 			if (user == null)
 			{
 				// Handle case where user is not found
-				Console.WriteLine("User null");
+				//Console.WriteLine("User null");
 				return;
 			}
 			if (!await IsUserAdministrator(user))
 			{
-				Console.WriteLine("Not Admin");
+				//Console.WriteLine("Not Admin");
 				return;
 			}
 
@@ -349,7 +353,7 @@ namespace RankingSystem.Modules
 
 			if (parts.Length < 2)
 			{
-				await _tsFullClient.SendPrivateMessage("No argument provided", user.ClientID);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "notEnoughtArguments"), user.ClientID, true);
 				return;
 			}
 
@@ -360,11 +364,11 @@ namespace RankingSystem.Modules
 			{
 				user.Score += floatValue;
 				_userRepository.Update(user);
-				await _tsFullClient.SendPrivateMessage($"Updated, your credits: {user.Score}", user.ClientID);
+				await SendPrivateMessage($"Updated, your credits: {user.Score}", user.ClientID, true);
 			}
 			else
 			{
-				await _tsFullClient.SendPrivateMessage("Wrong format, Example: addcredit 10", user.ClientID);
+				await SendPrivateMessage("Wrong format, Example: addcredit 10", user.ClientID, true);
 			}
 
 		}
@@ -373,7 +377,7 @@ namespace RankingSystem.Modules
 		{
 			if (e.InvokerUid == null)
 			{
-				Console.WriteLine("InvokerUid is null.");
+				//Console.WriteLine("InvokerUid is null.");
 				return;
 			}
 			TSUser? user = _userRepository.FindOne(e.InvokerUid.Value);
@@ -384,7 +388,7 @@ namespace RankingSystem.Modules
 			}
 			if (user.SkipSetup)
 			{
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "skippedSetupNoChannel"), user.ClientID);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "skippedSetupNoChannel"), user.ClientID, true);
 				return;
 			}
 
@@ -434,11 +438,11 @@ administrator | 500 | Administrator rights
 					user.Score -= 25;
 					_userRepository.Update(user);
 					await CreateAdditionalChannel(user);
-					await _tsFullClient.SendPrivateMessage($"You have successfully bought a new channel your credits: {user.Score}", user.ClientID);
+					await SendPrivateMessage($"You have successfully bought a new channel your credits: {user.Score}", user.ClientID, true);
 				}
 				else
 				{
-					await _tsFullClient.SendPrivateMessage($"You do not have enought credits to buy a new channel. Your credits: {user.Score}", user.ClientID);
+					await SendPrivateMessage($"You do not have enought credits to buy a new channel. Your credits: {user.Score}", user.ClientID, true);
 				}
 				//handle addchannel
 				break;
@@ -449,7 +453,7 @@ administrator | 500 | Administrator rights
 				//code
 				break;
 			}
-			await _tsFullClient.SendPrivateMessage(statusMessage, user.ClientID);
+			await SendPrivateMessage(statusMessage, user.ClientID);
 		}
 
 		private bool CheckIfUserHasEnoughtCredit(TSUser user, float amount)
@@ -465,7 +469,7 @@ administrator | 500 | Administrator rights
 		{
 			if (message.InvokerUid == null)
 			{
-				Console.WriteLine("InvokerUid is null.");
+				//Console.WriteLine("InvokerUid is null.");
 				return;
 			}
 			TSUser? user = _userRepository.FindOne(message.InvokerUid.Value);
@@ -476,7 +480,7 @@ administrator | 500 | Administrator rights
 			}
 			if (user.SkipSetup)
 			{
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "skippedSetupNoChannel"), user.ClientID);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "skippedSetupNoChannel"), user.ClientID, true);
 				return;
 			}
 
@@ -489,12 +493,12 @@ administrator | 500 | Administrator rights
 				}
 				else
 				{
-					await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "noChannelToMove"), user.ClientID);
+					await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "noChannelToMove"), user.ClientID, true);
 				}
 			}
 			else
 			{
-				await _tsFullClient.SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "noChannelToMove"), user.ClientID);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "noChannelToMove"), user.ClientID, true);
 			}
 		}
 
@@ -828,10 +832,15 @@ addusercredit | <amount> <user> | add credit to user.
 			return tsuser.OnlineTime >= threshold;
 		}
 
-		private async Task<bool> SendPrivateMessage(string message, ClientId client)
+		private async Task<bool> SendPrivateMessage(string message, ClientId client, bool format = false)
 		{
+			if (format)
+			{
+				message = $@"[b][color=red]{message}[/color][/b]";
+			}
+
 			string formattetMessage = $@"{constants.messageHeader} {message} {constants.messageFooter}";
-			var result = await _tsFullClient.SendPrivateMessage(message, client);
+			var result = await _tsFullClient.SendPrivateMessage(formattetMessage, client);
 
 			if (result.Ok)
 			{
@@ -840,28 +849,23 @@ addusercredit | <amount> <user> | add credit to user.
 
 			return false;
 		}
+
 	}
 
-	public class ServerGroupInfo
-	{
-		public TimeSpan OnlineTimeThreshold { get; set; }
-		public ServerGroupId ServerGroup { get; set; }
-	}
-
-	public class User
-	{
-		public string Id { get; set; }
-		public string Name { get; set; }
-		public string UserID { get; set; }
-		public long Time { get; set; }
-		public string Nickname { get; set; }
-		public TimeSpan OnlineTime { get; set; }
-		public bool IsAfk { get; set; }
-		public bool IsNoAfkMode { get; set; }
-		public bool IsAlone { get; set; }
-		public DateTime LastUpdate { get; set; }
-		public ServerGroupId RankGroup { get; set; }
-		public ulong RankGroupInt { get; set; }
-		public bool UpdateTime { get; set; }
-	}
+	//public class User
+	//{
+	//	public string Id { get; set; }
+	//	public string Name { get; set; }
+	//	public string UserID { get; set; }
+	//	public long Time { get; set; }
+	//	public string Nickname { get; set; }
+	//	public TimeSpan OnlineTime { get; set; }
+	//	public bool IsAfk { get; set; }
+	//	public bool IsNoAfkMode { get; set; }
+	//	public bool IsAlone { get; set; }
+	//	public DateTime LastUpdate { get; set; }
+	//	public ServerGroupId RankGroup { get; set; }
+	//	public ulong RankGroupInt { get; set; }
+	//	public bool UpdateTime { get; set; }
+	//}
 }

@@ -88,32 +88,32 @@ namespace RankingSystem
 			return "en";
 		}
 
-		public string FormatTimeSpan(TimeSpan timeSpan)
+		public string FormatTimeSpan(TimeSpan timeSpan, string userCountryCode)
 		{
 			List<string> list = new List<string>();
 			if (timeSpan.Days >= 365)
 			{
 				int num = timeSpan.Days / 365;
-				list.Add($"{num} year{((num > 1) ? "s" : "")}");
+				list.Add($"{num} {((num > 1) ? _localizationManager.GetTranslation(userCountryCode, "years") : _localizationManager.GetTranslation(userCountryCode, "year"))}");
 			}
 			if (timeSpan.Days % 365 > 0)
 			{
 				int num2 = timeSpan.Days % 365;
-				list.Add($"{num2} day{((num2 > 1) ? "s" : "")}");
+				list.Add($"{num2} {((num2 > 1) ? _localizationManager.GetTranslation(userCountryCode, "days") : _localizationManager.GetTranslation(userCountryCode, "day"))}");
 			}
 			if (timeSpan.Hours > 0)
 			{
-				list.Add($"{timeSpan.Hours} hour{((timeSpan.Hours > 1) ? "s" : "")}");
+				list.Add($"{timeSpan.Hours} {((timeSpan.Hours > 1) ? _localizationManager.GetTranslation(userCountryCode, "hours") : _localizationManager.GetTranslation(userCountryCode, "hour"))}");
 			}
 			if (timeSpan.Minutes > 0)
 			{
-				list.Add($"{timeSpan.Minutes} minute{((timeSpan.Minutes > 1) ? "s" : "")}");
+				list.Add($"{timeSpan.Minutes} {((timeSpan.Minutes > 1) ? _localizationManager.GetTranslation(userCountryCode, "minutes") : _localizationManager.GetTranslation(userCountryCode, "minute"))}");
 			}
 			if (timeSpan.Seconds > 0)
 			{
-				list.Add($"{timeSpan.Seconds} second{((timeSpan.Seconds > 1) ? "s" : "")}");
+				list.Add($"{timeSpan.Seconds} {((timeSpan.Seconds > 1) ? _localizationManager.GetTranslation(userCountryCode, "seconds") : _localizationManager.GetTranslation(userCountryCode, "second"))}");
 			}
-			Console.WriteLine($"Result: {string.Join(" ", list)} | Orig: {timeSpan}");
+			//Console.WriteLine($"Result: {string.Join(" ", list)} | Orig: {timeSpan}");
 			return string.Join(" ", list);
 		}
 
@@ -236,7 +236,7 @@ namespace RankingSystem
 							user.SkipSetup = false;
 							_userRepository.Update(user);
 							user = _userRepository.FindById(user);
-							R<ClientDbIdFromUid, CommandError> dbuser = await _tsFullClient.GetClientDbIdFromUid(user.UserID);
+							var dbuser = await _tsFullClient.GetClientDbIdFromUid(user.UserID);
 							await _tsFullClient.ServerGroupAddClient(constants.memberGroup, dbuser.Value.ClientDbId);
 							if (user.WantsOwnChannel)
 							{
@@ -274,22 +274,22 @@ namespace RankingSystem
 						string ChannelString;
 						if (user.WantsOwnChannel && user.ChannelIDInt != 0)
 						{
-							R<ChannelInfoResponse[], CommandError> chanInfo = await _tsFullClient.ChannelInfo((ChannelId)user.ChannelIDInt);
+							var chanInfo = await _tsFullClient.ChannelInfo((ChannelId)user.ChannelIDInt);
 							ChannelString = $"[color=green]Your Channel[/color][b]: [color=red]{chanInfo.Value[0].Name} ({user.ChannelIDInt})[/color][/b]";
 						}
 						else
 						{
 							ChannelString = "No own Channel";
 						}
-						await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "welcomeBack") + " " + user.Name + "!", user.ClientID);
+						//await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "welcomeBack") + " " + user.Name + "!", user.ClientID);
 						await SendPrivateMessage(@$"[b][color=blue]Server Statistics[/color][/b]  
-[b]•[/b] Users Online Today: [color=green]{_onlineCounterModule.countToday} [/color]  
+[b]•[/b] Users Online Today: [color=green]{_onlineCounterModule.userIDS.Count} [/color]  
 [b]•[/b] Current Online Users: [color=#0044aa]{_onlineCounterModule.count}[/color]  
 
 [b][color=blue]═══════════- Personal Daily Status -══════════[/color][/b] 
 
 [b]•[/b] Username: [color=#aa4400]{user.Name}[/color]  
-[b]•[/b] Online Time: [color=#00FF00]{FormatTimeSpan(user.OnlineTime)}[/color]  
+[b]•[/b] Online Time: [color=#00FF00]{FormatTimeSpan(user.OnlineTime, userCountryCode)}[/color]  
 [b]•[/b] Credits: [color=#00FF00]{user.Score}[/color]  
 [b]•[/b] Level: [color=cyan]{GetUserLevel(user.OnlineTime)}[/color]  
 [b]•[/b] Channel: [color=white]{ChannelString} [/color]",user.ClientID);
