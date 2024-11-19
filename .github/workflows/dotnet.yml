@@ -29,7 +29,8 @@ jobs:
         run: dotnet tool install --global dotnet-script --version 1.5.0
 
       - name: List directory structure
-        run: dir /s      
+        run: Get-ChildItem -Recurse -Force
+        shell: pwsh 
 
       - name: Generate version
         run: |
