@@ -64,5 +64,6 @@ namespace TS3AudioBot.Environment
 
 Console.WriteLine($"Generated Version: {version}");
 var writeFull = Path.GetFullPath(outFile);
-File.WriteAllText(writeFull, genFile);
 Console.WriteLine($"Version file written to: {writeFull}");
+File.WriteAllText(writeFull, genFile);
+
