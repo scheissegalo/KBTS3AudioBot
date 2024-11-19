@@ -24,8 +24,12 @@
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Version>1.0.0</Version>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="GitVersion.MsBuild" Version="6.0.5">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="CliWrap" Version="3.1.0" />
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
     <PackageReference Include="NLog" Version="4.7.3" />
@@ -78,21 +82,19 @@
       <LastGenOutput>strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="GenerateGitVersion" BeforeTargets="BeforeCompile">
+
+  <Target Name="GenerateBuildVersion" BeforeTargets="BeforeCompile">
     <ItemGroup>
       <VersionBuildScript Include="build.csx" />
       <VersionBuildOutputFile Include="$(IntermediateOutputPath)Version.g.cs" />
     </ItemGroup>
-    <Exec Command="dotnet tool install --global dotnet-script" IgnoreExitCode="true" />
-    <Exec Command="dotnet tool install --global GitVersion.Tool" IgnoreExitCode="true" />
-    <Exec Command="dotnet script @(VersionBuildScript) -- @(VersionBuildOutputFile) $(Configuration)" IgnoreExitCode="true">
-      <Output TaskParameter="ExitCode" PropertyName="GitverExit" />
-    </Exec>
-    <ItemGroup Condition="$(GitverExit) == '0'">
+    <Exec Command="dotnet script @(VersionBuildScript) -- @(VersionBuildOutputFile) $(Configuration)" />
+    <ItemGroup>
       <FileWrites Include="@(VersionBuildOutputFile)" />
       <Compile Include="@(VersionBuildOutputFile)">
         <AutoGen>True</AutoGen>
       </Compile>
     </ItemGroup>
   </Target>
+  
 </Project>
