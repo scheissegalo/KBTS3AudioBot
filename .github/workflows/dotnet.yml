@@ -31,7 +31,9 @@ jobs:
       # Step 4: Generate version info using the build.csx script
       - name: Generate version
         run: |
-          dotnet script ./TS3AudioBot/build.csx TS3AudioBot/obj/Debug/net6.0/Version.g.cs $(BuildConfiguration)
+          dotnet script ./TS3AudioBot/build.csx TS3AudioBot/obj/Debug/net6.0/Version.g.cs ${{ github.event.inputs.BuildConfiguration }} 
+        env:
+          BuildConfiguration: Debug
 
       - name: Restore dependencies
         run: dotnet restore
