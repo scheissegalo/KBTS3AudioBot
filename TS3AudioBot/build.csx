@@ -29,6 +29,7 @@ if (File.Exists(buildFile))
 }
 File.WriteAllText(buildFile, buildNumber.ToString());
 
+
 // Attempt to get the current Git commit SHA
 try
 {
@@ -64,6 +65,13 @@ namespace TS3AudioBot.Environment
 
 Console.WriteLine($"Generated Version: {version}");
 var writeFull = Path.GetFullPath(outFile);
+
+var outputDirectory = Path.GetDirectoryName(writeFull);
+if (!Directory.Exists(outputDirectory))
+{
+    Directory.CreateDirectory(outputDirectory);
+}
+
 Console.WriteLine($"Version file written to: {writeFull}");
 File.WriteAllText(writeFull, genFile);
 
