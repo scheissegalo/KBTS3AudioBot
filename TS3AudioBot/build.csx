@@ -27,7 +27,7 @@ string commitSha = "unknown"; // Default SHA
 string major = "0";
 string minor = "13";
 
-// Increment the build number
+// Increment the build numbers
 int buildNumber = 1;
 if (File.Exists(writeFullVersionFile2))
 {
@@ -73,8 +73,8 @@ Console.WriteLine($"{version}");
 var writeFull = Path.GetFullPath(outFile);
 
 // Get the path to the output file
-var versionFile = "current_version.txt";
-var writeFullVersionFile = Path.GetFullPath(versionFile);
+//var versionFile = "current_version.txt";
+//var writeFullVersionFile = Path.GetFullPath(versionFile);
 
 var outputDirectory = Path.GetDirectoryName(writeFull);
 if (!Directory.Exists(outputDirectory))
@@ -82,9 +82,9 @@ if (!Directory.Exists(outputDirectory))
     Directory.CreateDirectory(outputDirectory);
 }
 // Set the environment variable that GitHub Actions can read
-Environment.SetEnvironmentVariable("VERSION", version, EnvironmentVariableTarget.Process);
+//Environment.SetEnvironmentVariable("VERSION", version, EnvironmentVariableTarget.Process);
 
 //Console.WriteLine($"{version}");
 File.WriteAllText(writeFull, genFile);
-File.WriteAllText(writeFullVersionFile, version);
+//File.WriteAllText(writeFullVersionFile, version);
 
