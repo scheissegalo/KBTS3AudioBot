@@ -71,6 +71,8 @@ if (!Directory.Exists(outputDirectory))
 {
     Directory.CreateDirectory(outputDirectory);
 }
+// Set the environment variable that GitHub Actions can read
+Environment.SetEnvironmentVariable("VERSION", version, EnvironmentVariableTarget.Process);
 
 Console.WriteLine($"Version file written to: {writeFull}");
 File.WriteAllText(writeFull, genFile);

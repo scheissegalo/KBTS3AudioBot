@@ -33,7 +33,8 @@ jobs:
 
       - name: Generate version
         run: |
-          dotnet script ./TS3AudioBot/build.csx TS3AudioBot/obj/Debug/net6.0/Version.g.cs ${{ env.BuildConfiguration }}
+          version=$(dotnet script ./TS3AudioBot/build.csx TS3AudioBot/obj/Debug/net6.0/Version.g.cs ${{ env.BuildConfiguration }})
+          echo "VERSION=$version" >> $env:GITHUB_ENV
         env:
           BuildConfiguration: Debug
 
@@ -46,15 +47,6 @@ jobs:
       # Step 5: Run tests
       - name: Build
         run: dotnet build --no-restore
-
-      - name: Extract version from file
-        id: extract_version
-        run: |
-          $content = Get-Content TS3AudioBot/obj/Debug/net6.0/Version.g.cs
-          $version = ($content -match 'this\.Version = "(?<version>[^"]*)"' | Out-Null; $matches['version'])
-          echo "VERSION=$version" >> $env:GITHUB_ENV
-      
-
 
       - name: Create Release
         id: create_release
