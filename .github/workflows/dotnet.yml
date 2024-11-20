@@ -43,15 +43,16 @@ jobs:
         run: dotnet test --no-build --verbosity normal
 
       # Step 5: Run tests
-      - name: Build
-        run: dotnet build --no-restore
-
-      - name: Debug version content
+      #- name: Build
+      #  run: dotnet build --no-restore
+      - name: Build and Publish the project
         run: |
-          $versionContent = Get-Content current_version.txt
-          echo "Version content: $versionContent"
-          echo "VERSION from environment: $env:VERSION"
-        shell: pwsh
+          dotnet publish -c Release -o ${{ github.workspace }}/output
+
+      - name: Zip output files
+        run: |
+          # Zip the bin and obj directories along with the publish output
+          zip -r ${{ github.workspace }}/release_package.zip ${{ github.workspace }}/bin ${{ github.workspace }}/obj ${{ github.workspace }}/output
 
       - name: Create Release
         id: create_release
@@ -65,3 +66,11 @@ jobs:
             This is the release notes for version ${{ env.VERSION }}
           draft: false
           prerelease: false
+
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/release_package.zip
+          asset_name: release_package.zip
+          asset_content_type: application/zip
