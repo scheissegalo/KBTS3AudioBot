@@ -21,7 +21,7 @@ string writeFullVersionFile2 = Path.Combine(solutionRoot, "build_number.txt");
 
 //Console.WriteLine($"File Path: {writeFullVersionFile2}");
 
-//string buildFile = "build_number.txt";
+string buildFile = "build_number.txt";
 string branchName = "master"; // Default branch
 string commitSha = "unknown"; // Default SHA
 string major = "0";
@@ -35,6 +35,11 @@ if (File.Exists(writeFullVersionFile2))
 }
 File.WriteAllText(writeFullVersionFile2, buildNumber.ToString());
 
+if (buildNumber == 1)
+{
+    buildNumber = int.Parse(File.ReadAllText(buildFile)) + 1;
+    File.WriteAllText(buildFile, buildNumber.ToString());
+}
 
 // Attempt to get the current Git commit SHA
 try
