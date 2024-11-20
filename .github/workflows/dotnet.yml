@@ -31,15 +31,15 @@ jobs:
       - name: Build Project
         run: dotnet build --configuration Debug
 
-      # Step 1: Generate the version and save it to a file
       - name: Generate version
         run: |
-          # Generate the version using dotnet script
-          $version = dotnet script ./TS3AudioBot/build.csx TS3AudioBot/obj/Debug/net6.0/Version.g.cs ${{ env.BuildConfiguration }}
-          # Save the version to a file for later use
-          echo $version | Out-File -FilePath current_version.txt -Encoding utf8
-        env:
-          BuildConfiguration: Debug
+          $version = $(dotnet script ./TS3AudioBot/build.csx TS3AudioBot/obj/Debug/net6.0/Version.g.cs Debug)
+          echo "Generated Version: $version"
+          # Save the version to the file
+          echo $version > current_version.txt
+          # Extract only the version number (e.g., 0.13.5-93265e6)
+          $versionNumber = Select-String -Pattern 'Generated Version: (\S+)' -InputObject $version | ForEach-Object { $_.Matches.Groups[1].Value }
+          echo "VERSION=$versionNumber" >> $env:GITHUB_ENV  # Set the version in the environment
 
       - name: Restore dependencies
         run: dotnet restore
