@@ -2,6 +2,9 @@
 
 This is a open-source TeamSpeak3 bot, playing music and much more.  
 
+## Build status
+![Build and Release](https://img.shields.io/github/actions/workflow/status/scheissegalo/KBTS3AudioBot/dotnet.yml?branch=master&label=Build)
+
 ## Upgraded to NET 6.0
 ensuring compatibility and taking advantage of the latest framework features and improvements. 
 This upgrade results in a more efficient application, with reduced memory usage and a significantly smaller binary size. 
@@ -113,14 +116,9 @@ Then start the bot again.
 1. Congratz, you're done! Enjoy listening to your favourite music, experimenting with the crazy command system or do whatever you whish to do ;).  
 For further reading check out the [CommandSystem](https://github.com/scheissegalo/TS3AudioBot/wiki/CommandSystem).
 
-## Building manually
-
-|master|develop|
-|:--:|:--:|
-|[![Build status](https://ci.appveyor.com/api/projects/status/i7nrhqkbntdhwpxp/branch/master?svg=true)](https://ci.appveyor.com/project/Splamy/ts3audiobot/branch/master)|[![Build status](https://ci.appveyor.com/api/projects/status/i7nrhqkbntdhwpxp/branch/develop?svg=true)](https://ci.appveyor.com/project/Splamy/ts3audiobot/branch/develop)|
 
 ### Download
-Download the git repository with `git clone --recurse-submodules https://github.com/scheissegalo/TS3AudioBot.git`.
+Download the git repository with `git clone --recurse-submodules https://github.com/scheissegalo/KBTS3AudioBot.git`.
 
 #### Linux
 1. Get the latest `dotnet core 3.1` version by following [this tutorial](https://docs.microsoft.com/dotnet/core/install/linux-package-managers) and choose your platform
