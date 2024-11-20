@@ -24,11 +24,6 @@ jobs:
         with:
           dotnet-version: '6.0.x'
       
-      - name: Setup .NET Core 3.1 
-      uses: actions/setup-dotnet@v1 
-      with: 
-        dotnet-version: 3.1.x
-      
       # Step 3: Install a compatible dotnet-script tool (version 1.0.0 is compatible with .NET 6.0) D:\a\KBTS3AudioBot\KBTS3AudioBot\TS3AudioBot ChannelChecker
       - name: Install dotnet-script tool (version 1.5.0)
         run: dotnet tool install --global dotnet-script --version 1.5.0
