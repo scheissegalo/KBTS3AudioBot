@@ -24,6 +24,18 @@ $YTDLP_PATH --username oauth2 --password 'yourpassword' "$@"
 ```
 replace "yourpassword"
 
+## Youtube will kill Oauth use Cookies instead
+```
+#!/bin/bash
+
+# Path to the yt-dlp executable in the virtual environment
+YTDLP_PATH="$HOME/yt-dlp/bin/yt-dlp"
+
+# Use the yt-dlp executable with your arguments
+$YTDLP_PATH --cookies $HOME/cookies.txt "$@"
+```
+Check: [how do i pass cookies to yt-dlp](https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp) and [export YouTube cookies](https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies)
+
 ## Plugins?
 **You do not need any plugins, but you can use them if you wish.** 
 Most of them have hardcoded channels and paths, so you will need to adjust and compile them to use them. 
