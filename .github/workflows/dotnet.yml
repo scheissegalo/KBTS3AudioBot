@@ -66,15 +66,16 @@ jobs:
 
       - name: Prepare files for release
         run: |
-          mkdir $env:GITHUB_WORKSPACE\release\win-x64
-          mkdir $env:GITHUB_WORKSPACE\release\linux-x64
-          Copy-Item -Path $env:GITHUB_WORKSPACE\output\win-x64\* -Destination $env:GITHUB_WORKSPACE\release\win-x64 -Recurse
-          Copy-Item -Path $env:GITHUB_WORKSPACE\output\linux-x64\* -Destination $env:GITHUB_WORKSPACE\release\linux-x64 -Recurse
+          New-Item -ItemType Directory -Force -Path ${{ github.workspace }}\release\win-x64
+          New-Item -ItemType Directory -Force -Path ${{ github.workspace }}\release\linux-x64
+          Copy-Item -Path ${{ github.workspace }}\output\win-x64\* -Destination ${{ github.workspace }}\release\win-x64 -Recurse
+          Copy-Item -Path ${{ github.workspace }}\output\linux-x64\* -Destination ${{ github.workspace }}\release\linux-x64 -Recurse
 
       - name: Zip output files
         run: |
-          Compress-Archive -Path $env:GITHUB_WORKSPACE\release\win-x64\* -DestinationPath $env:GITHUB_WORKSPACE\release_package_windows.zip
-          Compress-Archive -Path $env:GITHUB_WORKSPACE\release\linux-x64\* -DestinationPath $env:GITHUB_WORKSPACE\release_package_linux.zip
+          Compress-Archive -Path ${{ github.workspace }}\release\win-x64\* -DestinationPath ${{ github.workspace }}\release_package_windows.zip
+          Compress-Archive -Path ${{ github.workspace }}\release\linux-x64\* -DestinationPath ${{ github.workspace }}\release_package_linux.zip
+
 
       - name: Create Release
         id: create_release
