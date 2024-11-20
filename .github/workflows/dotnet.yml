@@ -49,6 +49,9 @@ jobs:
         run: |
           dotnet publish TS3AudioBot/TS3AudioBot.csproj -c Release -f net6.0 -o ${{ github.workspace }}/output
 
+      - name: Install zip
+        run: choco install zip
+
       - name: Zip output files
         run: |
           # Zip the bin and obj directories along with the publish output
