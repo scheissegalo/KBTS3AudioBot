@@ -14,8 +14,14 @@ if (Args.Count < 2)
 string outFile = Args[0];
 string buildConfig = Args.Count > 1 ? Args[1] : "Debug";
 //string buildConfig = Args[1];
+// TODO Get build number and increment!!!!!!!!!!
 
-string buildFile = "build_number.txt";
+string solutionRoot = Directory.GetParent(Directory.GetCurrentDirectory()).FullName;
+string writeFullVersionFile2 = Path.Combine(solutionRoot, "build_number.txt");
+
+Console.WriteLine($"File Path: {writeFullVersionFile2}");
+
+//string buildFile = "build_number.txt";
 string branchName = "master"; // Default branch
 string commitSha = "unknown"; // Default SHA
 string major = "0";
@@ -23,11 +29,11 @@ string minor = "13";
 
 // Increment the build number
 int buildNumber = 1;
-if (File.Exists(buildFile))
+if (File.Exists(writeFullVersionFile2))
 {
-    buildNumber = int.Parse(File.ReadAllText(buildFile)) + 1;
+    buildNumber = int.Parse(File.ReadAllText(writeFullVersionFile2)) + 1;
 }
-File.WriteAllText(buildFile, buildNumber.ToString());
+File.WriteAllText(writeFullVersionFile2, buildNumber.ToString());
 
 
 // Attempt to get the current Git commit SHA

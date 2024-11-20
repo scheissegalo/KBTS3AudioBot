@@ -509,20 +509,14 @@ namespace TS3AudioBot
 		{
 			
 			var tmb = new TextModBuilder(callerInfo.IsColor);
-			tmb.AppendLine("KBAudioBot zu deinen Diensten!");
-			tmb.AppendLine("Um los zu legen benutze einer der folgenden Befehle:");
-			tmb.Append("!help play", HelpCommand).AppendLine(" : Grundlage für direkte Wiedergabe");
-			tmb.Append("!help yt", HelpCommand).AppendLine(" : Grundlage für direkte Wiedergabe");
-			tmb.Append("!help add", HelpCommand).AppendLine(" : Grundlage für wiedergabe mit Playliste");
-			tmb.Append("!help playlists", HelpCommand).AppendLine(" : Playlisten verwalten");
-			tmb.Append("!help history", HelpCommand).AppendLine(" : Grundlagen Verlauf");
-			tmb.Append("!help bot", HelpCommand).AppendLine(" : Administrationswerkzeuge des Bots");
-			tmb.Append("!help all", HelpCommand).AppendLine(" : Zeige alle Befehle");
-			tmb.Append("!help command", HelpCommand).Append(" <Befehls Pfad>", HelpCommandParam).AppendLine(" : Hilfe eines bestimmten Befehls");
-			tmb.Append("!next", HelpCommand).AppendLine(" : Spielt den nächsten song in der Playliste");
-			tmb.Append("!stop", HelpCommand).AppendLine(" : Stoppt die Wiedergabe");
-			tmb.Append("!seek", HelpCommand).AppendLine(" : An stelle springen h/m/s Beispiel: !seek 2m - spult 2 min. vor.");
-			tmb.Append("!volume", HelpCommand).AppendLine(" : Wiedergabe Lautstärke 1-100");
+			tmb.AppendLine("KBAudioBot at your service!");
+			tmb.AppendLine("To get some basic help on how to get started use one of the following commands:");
+			tmb.Append("!help play", HelpCommand).AppendLine(" : basics for playing songs");
+			tmb.Append("!help playlists", HelpCommand).AppendLine(" : how to manage playlists");
+			tmb.Append("!help history", HelpCommand).AppendLine(" : viewing and accesing the play history");
+			tmb.Append("!help bot", HelpCommand).AppendLine(" : useful features to configure your bot");
+			tmb.Append("!help all", HelpCommand).AppendLine(" : show all commands");
+			tmb.Append("!help command", HelpCommand).Append(" <Befehls Pfad>", HelpCommandParam).AppendLine(" : help text of a specific command");
 			var str = tmb.ToString();
 			return str;
 		}
