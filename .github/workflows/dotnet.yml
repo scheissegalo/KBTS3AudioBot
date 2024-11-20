@@ -24,12 +24,12 @@ jobs:
         with:
           dotnet-version: '6.0.x'
       
-      # Step 3: Install a compatible dotnet-script tool (version 1.0.0 is compatible with .NET 6.0) D:\a\KBTS3AudioBot\KBTS3AudioBot\TS3AudioBot
+      # Step 3: Install a compatible dotnet-script tool (version 1.0.0 is compatible with .NET 6.0) D:\a\KBTS3AudioBot\KBTS3AudioBot\TS3AudioBot ChannelChecker
       - name: Install dotnet-script tool (version 1.5.0)
         run: dotnet tool install --global dotnet-script --version 1.5.0
 
       - name: Build Project
-        run: dotnet build --configuration Debug /p:ExcludePlugins=true
+        run: dotnet build --configuration Debug /p:ExcludePlugins=true /p:ExcludeProjects=AloneMode /p:ExcludeProjects=AutoChannel /p:ExcludeProjects=ChannelChecker /p:ExcludeProjects=Cryptoz /p:ExcludeProjects=ExternalAPI /p:ExcludeProjects=GameServer /p:ExcludeProjects=OnlineCounter /p:ExcludeProjects=RankingSystem /p:ExcludeProjects=Watchparty /p:ExcludeProjects=whatIsPlaying
 
       - name: Generate version
         run: |

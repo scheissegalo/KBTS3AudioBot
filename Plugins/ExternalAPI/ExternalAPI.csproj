@@ -1,8 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <ExcludePlugins Condition="'$(ExcludePlugins)' == 'true'">true</ExcludePlugins>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(ExcludePlugins)' == 'true'">
+    <Build>false</Build>
+  </PropertyGroup>  
+  
   <ItemGroup>
     <ProjectReference Include="..\..\TS3AudioBot\TS3AudioBot.csproj" />
     <ProjectReference Include="..\..\TSLib\TSLib.csproj" />
