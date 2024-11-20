@@ -45,9 +45,9 @@ jobs:
       # Step 5: Run tests
       #- name: Build
       #  run: dotnet build --no-restore
-      - name: Build and Publish the project
+      - name: Publish project targeting net6.0
         run: |
-          dotnet publish -c Release -o ${{ github.workspace }}/output
+          dotnet publish TS3AudioBot/TS3AudioBot.csproj -c Release -f net6.0 -o ${{ github.workspace }}/output
 
       - name: Zip output files
         run: |
