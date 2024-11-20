@@ -34,12 +34,7 @@ jobs:
       - name: Generate version
         run: |
           $version = $(dotnet script ./TS3AudioBot/build.csx TS3AudioBot/obj/Debug/net6.0/Version.g.cs Debug)
-          echo "Generated Version: $version"
-
-          echo $version > current_version.txt
-
-          $versionNumber = Select-String -Pattern 'Generated Version: (\d+\.\d+\.\d+-\S+)' -InputObject $version | ForEach-Object { $_.Matches.Groups[1].Value }
-          echo "VERSION=$versionNumber" >> $env:GITHUB_ENV
+          echo "VERSION=$version" >> $env:GITHUB_ENV
 
       - name: Restore dependencies
         run: dotnet restore
@@ -50,14 +45,6 @@ jobs:
       # Step 5: Run tests
       - name: Build
         run: dotnet build --no-restore
-
-      - name: Read version from file
-        id: read_version
-        run: |
-          # Read the version from the file
-          $version = Get-Content current_version.txt
-          echo "VERSION=$version" >> $env:GITHUB_ENV
-        shell: pwsh
 
       - name: Debug version content
         run: |
