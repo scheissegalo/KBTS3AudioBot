@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <ExcludePlugins Condition="'$(ExcludePlugins)' == 'true'">true</ExcludePlugins>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -10,6 +11,10 @@
     <ProjectReference Include="..\..\TS3AudioBot\TS3AudioBot.csproj" />
     <ProjectReference Include="..\..\TSLib\TSLib.csproj" />
   </ItemGroup>
+
+  <Target Name="Build" BeforeTargets="Build" Condition="'$(ExcludePlugins)' != 'true'">
+    <Message Importance="high" Text="Building AloneMode project." />
+  </Target>
 
   <Target Name="CustomAfterBuild" AfterTargets="Build">
     <Message Text="After party stardet" Importance="high" />
