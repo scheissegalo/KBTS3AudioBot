@@ -72,36 +72,7 @@ jobs:
       - name: Debug VERSION
         run: echo "VERSION=$VERSION"
 
-      - name: Create Git Tag
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git tag -a $VERSION -m "Release $VERSION"
-          git push origin $VERSION
-
-
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      #   with:
-      #     tag_name: ${{ env.VERSION }}
-      #     release_name: "Release ${{ env.VERSION }}"
-      #     body: |
-      #       This is the release notes for version ${{ env.VERSION }}
-      #     draft: false
-      #     prerelease: false
-
-      # - name: Upload Release Assets
-      #   uses: actions/upload-release-asset@v1
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ${{ github.workspace }}/release_package.zip
-      #     asset_name: release_package.zip
-      #     asset_content_type: application/zip
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -115,22 +86,31 @@ jobs:
           draft: false
           prerelease: false
 
+      # - name: Upload Release Assets
+      #   uses: actions/upload-release-asset@v1
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ${{ github.workspace }}/release_package.zip
+      #     asset_name: release_package.zip
+      #     asset_content_type: application/zip
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.TOKEN }}
       - name: Upload Windows Binary
         uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ github.workspace }}/release_package_windows.zip
           asset_name: release_package_windows.zip
           asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
       - name: Upload Linux Binary
         uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ github.workspace }}/release_package_linux.zip
           asset_name: release_package_linux.zip
           asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
