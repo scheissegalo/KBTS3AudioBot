@@ -19,7 +19,7 @@ string buildConfig = Args.Count > 1 ? Args[1] : "Debug";
 string solutionRoot = Directory.GetParent(Directory.GetCurrentDirectory()).FullName;
 string writeFullVersionFile2 = Path.Combine(solutionRoot, "build_number.txt");
 
-Console.WriteLine($"File Path: {writeFullVersionFile2}");
+//Console.WriteLine($"File Path: {writeFullVersionFile2}");
 
 //string buildFile = "build_number.txt";
 string branchName = "master"; // Default branch
