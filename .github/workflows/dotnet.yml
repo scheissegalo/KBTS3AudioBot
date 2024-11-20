@@ -33,8 +33,10 @@ jobs:
 
       - name: Generate version
         run: |
-          version=$(dotnet script ./TS3AudioBot/build.csx TS3AudioBot/obj/Debug/net6.0/Version.g.cs ${{ env.BuildConfiguration }})
-          echo "VERSION=$version" >> $env:GITHUB_ENV
+          # Run the script to generate the version and capture the output
+          $version = dotnet script ./TS3AudioBot/build.csx TS3AudioBot/obj/Debug/net6.0/Version.g.cs ${{ env.BuildConfiguration }}
+          # Set the VERSION environment variable in GitHub Actions
+          echo "VERSION=$version" >> $GITHUB_ENV
         env:
           BuildConfiguration: Debug
 
