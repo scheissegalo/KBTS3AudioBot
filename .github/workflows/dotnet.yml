@@ -50,19 +50,19 @@ jobs:
       #    dotnet publish TS3AudioBot/TS3AudioBot.csproj -c Release -f net6.0 -o ${{ github.workspace }}/output
       - name: Publish Windows Binary
         run: |
-          dotnet publish -c Release -r win-x64 --self-contained true -p:PublishTrimmed=true /p:ExcludePlugins=true -f net6.0
+          dotnet publish -c Release -r win-x64 --self-contained true -p:PublishTrimmed=true /p:ExcludePlugins=true -f net6.0 -o ${{ github.workspace }}\output\win-x64
 
       - name: Publish Linux Binary
         run: |
-          dotnet publish -c Release -r linux-x64 --self-contained true /p:ExcludePlugins=true -f net6.0
+          dotnet publish -c Release -r linux-x64 --self-contained true /p:ExcludePlugins=true -f net6.0 -o ${{ github.workspace }}\output\linux-x64
 
       - name: Install zip
         run: choco install zip
 
       - name: Zip output files
         run: |
-          # Zip the bin and obj directories along with the publish output
-          zip -r ${{ github.workspace }}/release_package.zip ${{ github.workspace }}/bin ${{ github.workspace }}/obj ${{ github.workspace }}/output
+          zip -r ${{ github.workspace }}\release_package_windows.zip ${{ github.workspace }}\output\win-x64
+          zip -r ${{ github.workspace }}\release_package_linux.zip ${{ github.workspace }}\output\linux-x64
 
       - name: Create Release
         id: create_release
