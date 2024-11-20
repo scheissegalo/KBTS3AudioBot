@@ -516,7 +516,7 @@ namespace TS3AudioBot
 			tmb.Append("!help history", HelpCommand).AppendLine(" : viewing and accesing the play history");
 			tmb.Append("!help bot", HelpCommand).AppendLine(" : useful features to configure your bot");
 			tmb.Append("!help all", HelpCommand).AppendLine(" : show all commands");
-			tmb.Append("!help command", HelpCommand).Append(" <Befehls Pfad>", HelpCommandParam).AppendLine(" : help text of a specific command");
+			tmb.Append("!help command", HelpCommand).Append(" <command path>", HelpCommandParam).AppendLine(" : help text of a specific command");
 			var str = tmb.ToString();
 			return str;
 		}
@@ -589,10 +589,9 @@ namespace TS3AudioBot
 		public static string CommandHelpPlay(CallerInfo callerInfo)
 		{
 			var tmb = new TextModBuilder(callerInfo.IsColor);
-			tmb.AppendLine("KBAudioBot zu deinen Diensten!");
-			tmb.AppendLine("[b]!play <url>[/b] - Spielt den stream von Youtube, Soundcloud etc");
-			tmb.AppendLine("Achtung [b]!play[/b] überschreibt die aktuelle wiedergabe!!!");
-			tmb.AppendLine("Wenn du statdessen den Song in die Playliste hinzufügen möchtest benutze bitte [b]!add <url>[/b]");
+			tmb.AppendLine("KBAudioBot at your service!");
+			tmb.AppendLine("[b]!play <url>[/b] - Plays a URL or MP3 (youtube etc)");
+			tmb.AppendLine("If you want to add the song to the playlist instead, please use [b]!add <url>[/b]");
 
 			var str = tmb.ToString();
 			return str;
@@ -602,10 +601,9 @@ namespace TS3AudioBot
 		public static string CommandHelpYt(CallerInfo callerInfo)
 		{
 			var tmb = new TextModBuilder(callerInfo.IsColor);
-			tmb.AppendLine("KBAudioBot zu deinen Diensten!");
-			tmb.AppendLine("[b]!yt <url>[/b] - Spielt den stream von Youtube, Soundcloud etc");
-			tmb.AppendLine("Achtung [b]!play[/b] überschreibt die aktuelle wiedergabe!!!");
-			tmb.AppendLine("Wenn du statdessen den Song in die Playliste hinzufügen möchtest benutze bitte [b]!add <url>[/b]");
+			tmb.AppendLine("KBAudioBot at your service!");
+			tmb.AppendLine("[b]!yt <url>[/b] - Plays the YouTube song.");
+			tmb.AppendLine("If you want to add the song to the playlist instead, please use [b]!add <url>[/b]");
 
 			var str = tmb.ToString();
 			return str;
@@ -615,10 +613,9 @@ namespace TS3AudioBot
 		public static string CommandHelpAdd(CallerInfo callerInfo)
 		{
 			var tmb = new TextModBuilder(callerInfo.IsColor);
-			tmb.AppendLine("KBAudioBot zu deinen Diensten!");
-			tmb.AppendLine("[b]!add <url>[/b] - Spielt den stream von Youtube, Soundcloud etc");
-			tmb.AppendLine("Wenn bereits ein Song abgespielt wird dann wird der Song automatisch an die Playliste angehangen und anschließend abgespielt.");
-			tmb.AppendLine("Wenn du statdessen den Song direkt abspielen möchtest benutze bitte [b]!play <url>[/b]");
+			tmb.AppendLine("KBAudioBot at your service!");
+			tmb.AppendLine("[b]!add <url>[/b] - Plays the YouTube song.");
+			tmb.AppendLine("If you want to add the song to the playlist instead, please use [b]!add <url>[/b]");
 
 			var str = tmb.ToString();
 			return str;
