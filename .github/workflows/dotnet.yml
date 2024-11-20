@@ -31,12 +31,13 @@ jobs:
       - name: Build Project
         run: dotnet build --configuration Debug
 
+      # Step 1: Generate the version and save it to a file
       - name: Generate version
         run: |
-          # Run the script to generate the version and capture the output
+          # Generate the version using dotnet script
           $version = dotnet script ./TS3AudioBot/build.csx TS3AudioBot/obj/Debug/net6.0/Version.g.cs ${{ env.BuildConfiguration }}
-          # Set the VERSION environment variable in GitHub Actions
-          echo "VERSION=$version" >> $GITHUB_ENV
+          # Save the version to a file for later use
+          echo $version | Out-File -FilePath current_version.txt -Encoding utf8
         env:
           BuildConfiguration: Debug
 
@@ -50,6 +51,14 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
 
+      # Step 2: Read the version from the file and store it in the environment variable
+      - name: Read version from file
+        id: read_version
+        run: |
+          # Read the version from the file
+          $version = Get-Content current_version.txt
+          echo "VERSION=$version" >> $GITHUB_ENV
+          
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -57,7 +66,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           tag_name: ${{ env.VERSION }}
-          release_name: "Release ${{ env.VERSION }}" # set the release name here
+          release_name: "Release ${{ env.VERSION }}"
           body: |
             This is the release notes for version ${{ env.VERSION }}
           draft: false
