@@ -77,3 +77,5 @@ jobs:
           asset_path: ${{ github.workspace }}/release_package.zip
           asset_name: release_package.zip
           asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
