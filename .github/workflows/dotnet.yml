@@ -56,23 +56,26 @@ jobs:
         run: |
           dotnet publish -c Release -r linux-x64 --self-contained true /p:ExcludePlugins=true -f net6.0 -o ${{ github.workspace }}\output\linux-x64
 
-      - name: Install zip
-        run: choco install zip
+      # - name: Install zip
+      #   run: choco install zip
 
       # - name: Zip output files
       #   run: |
-      #     zip -r ${{ github.workspace }}\release_package_windows.zip ${{ github.workspace }}\output\win-x64
-      #     zip -r ${{ github.workspace }}\release_package_linux.zip ${{ github.workspace }}\output\linux-x64
+      #     zip -r ${{ github.workspace }}/release_package_windows.zip ${{ github.workspace }}/output/win-x64
+      #     zip -r ${{ github.workspace }}/release_package_linux.zip ${{ github.workspace }}/output/linux-x64
+
+      - name: Prepare files for release
+        run: |
+          mkdir $env:GITHUB_WORKSPACE\release\win-x64
+          mkdir $env:GITHUB_WORKSPACE\release\linux-x64
+          Copy-Item -Path $env:GITHUB_WORKSPACE\output\win-x64\* -Destination $env:GITHUB_WORKSPACE\release\win-x64 -Recurse
+          Copy-Item -Path $env:GITHUB_WORKSPACE\output\linux-x64\* -Destination $env:GITHUB_WORKSPACE\release\linux-x64 -Recurse
 
       - name: Zip output files
         run: |
-          zip -r ${{ github.workspace }}/release_package_windows.zip ${{ github.workspace }}/output/win-x64
-          zip -r ${{ github.workspace }}/release_package_linux.zip ${{ github.workspace }}/output/linux-x64
+          Compress-Archive -Path $env:GITHUB_WORKSPACE\release\win-x64\* -DestinationPath $env:GITHUB_WORKSPACE\release_package_windows.zip
+          Compress-Archive -Path $env:GITHUB_WORKSPACE\release\linux-x64\* -DestinationPath $env:GITHUB_WORKSPACE\release_package_linux.zip
 
-      - name: Debug VERSION
-        run: echo "VERSION=$VERSION"
-
-          
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -86,15 +89,6 @@ jobs:
           draft: false
           prerelease: false
 
-      # - name: Upload Release Assets
-      #   uses: actions/upload-release-asset@v1
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ${{ github.workspace }}/release_package.zip
-      #     asset_name: release_package.zip
-      #     asset_content_type: application/zip
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.TOKEN }}
       - name: Upload Windows Binary
         uses: actions/upload-release-asset@v1
         with:
