@@ -51,14 +51,21 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
 
-      # Step 2: Read the version from the file and store it in the environment variable
       - name: Read version from file
         id: read_version
         run: |
           # Read the version from the file
           $version = Get-Content current_version.txt
           echo "VERSION=$version" >> $GITHUB_ENV
-          
+        shell: pwsh
+
+      - name: Debug version content
+        run: |
+          $versionContent = Get-Content current_version.txt
+          echo "Version content: $versionContent"
+          echo "VERSION from environment: $env:VERSION"
+        shell: pwsh
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
