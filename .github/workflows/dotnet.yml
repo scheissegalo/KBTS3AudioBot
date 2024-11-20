@@ -59,10 +59,15 @@ jobs:
       - name: Install zip
         run: choco install zip
 
+      # - name: Zip output files
+      #   run: |
+      #     zip -r ${{ github.workspace }}\release_package_windows.zip ${{ github.workspace }}\output\win-x64
+      #     zip -r ${{ github.workspace }}\release_package_linux.zip ${{ github.workspace }}\output\linux-x64
+
       - name: Zip output files
         run: |
-          zip -r ${{ github.workspace }}\release_package_windows.zip ${{ github.workspace }}\output\win-x64
-          zip -r ${{ github.workspace }}\release_package_linux.zip ${{ github.workspace }}\output\linux-x64
+          zip -r ${{ github.workspace }}/release_package_windows.zip ${{ github.workspace }}/output/win-x64
+          zip -r ${{ github.workspace }}/release_package_linux.zip ${{ github.workspace }}/output/linux-x64
 
       - name: Create Release
         id: create_release
@@ -90,7 +95,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/bin/Release/net6.0/win-x64/publish/release_package_windows.zip
+          asset_path: ${{ github.workspace }}/release_package_windows.zip
           asset_name: release_package_windows.zip
           asset_content_type: application/zip
         env:
@@ -100,7 +105,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/bin/Release/net6.0/linux-x64/publish/release_package_linux.zip
+          asset_path: ${{ github.workspace }}/release_package_linux.zip
           asset_name: release_package_linux.zip
           asset_content_type: application/zip
         env:
