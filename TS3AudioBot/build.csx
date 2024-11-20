@@ -63,7 +63,7 @@ namespace TS3AudioBot.Environment
 }}
 ";
 
-Console.WriteLine($"Generated Version: {version}");
+Console.WriteLine($"{version}");
 var writeFull = Path.GetFullPath(outFile);
 
 // Get the path to the output file
@@ -78,7 +78,7 @@ if (!Directory.Exists(outputDirectory))
 // Set the environment variable that GitHub Actions can read
 Environment.SetEnvironmentVariable("VERSION", version, EnvironmentVariableTarget.Process);
 
-Console.WriteLine($"{version}");
+//Console.WriteLine($"{version}");
 File.WriteAllText(writeFull, genFile);
 File.WriteAllText(writeFullVersionFile, version);
 
