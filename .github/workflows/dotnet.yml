@@ -17,6 +17,8 @@ jobs:
     steps:
       # Step 1: Checkout code
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       # Step 2: Setup .NET (use the appropriate version for your project)
       - name: Setup .NET
@@ -35,6 +37,7 @@ jobs:
         run: |
           $version = $(dotnet script ./TS3AudioBot/build.csx TS3AudioBot/obj/Debug/net6.0/Version.g.cs Debug)
           echo "VERSION=$version" >> $env:GITHUB_ENV
+          Write-Host "Generated Version: $version"
 
       - name: Restore dependencies
         run: dotnet restore
