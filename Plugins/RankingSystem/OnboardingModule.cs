@@ -313,7 +313,7 @@ namespace RankingSystem
 //[color=green]{_localizationManager.GetTranslation(userCountryCode, "level")}[/color][b]: [color=red]{GetUserLevel(user.OnlineTime)}[/color][/b]
 //{ChannelString}\n[color=green]{_localizationManager.GetTranslation(userCountryCode, "ownChannel")}[/color][b]: [color=red]{hasOwnChannel}[/color][/b]
 
-//{_localizationManager.GetTranslation(user.CountryCode, "typeHelp")}", user.ClientID);
+//{_localizationManager.GetTranslation(user.CountryCode, "typeHelp")}", user.ClientID); dev
 						break;
 					}
 				default:
