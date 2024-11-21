@@ -27,6 +27,9 @@
     <Version>1.0.0</Version>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="NLog.config" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="CliWrap" Version="3.1.0" />
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
     <PackageReference Include="NLog" Version="4.7.3" />
@@ -61,6 +64,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <PackagePath>.</PackagePath>
       <Pack>true</Pack>
+    </Content>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
