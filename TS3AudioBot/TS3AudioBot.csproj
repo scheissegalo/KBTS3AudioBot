@@ -18,6 +18,7 @@
     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
     <RepositoryUrl>https://github.com/scheissegalo/KBTS3AudioBot.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PublishSingleFile>true</PublishSingleFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>

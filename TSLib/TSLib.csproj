@@ -9,6 +9,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <DebugType>portable</DebugType>
+    <PublishSingleFile>false</PublishSingleFile>
     <RepositoryUrl>https://github.com/Splamy/TS3AudioBot.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
