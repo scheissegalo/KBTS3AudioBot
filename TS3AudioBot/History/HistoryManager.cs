@@ -185,41 +185,6 @@ namespace TS3AudioBot.History
 		/// The entries are sorted by last playtime descending.</summary>
 		/// <param name="search">All search criteria.</param>
 		/// <returns>A list of all found entries.</returns>
-		//public IEnumerable<AudioLogEntry> Search(SeachQuery search)
-		//{
-		//	if (search is null)
-		//		throw new ArgumentNullException(nameof(search));
-
-		//	if (search.MaxResults <= 0)
-		//		return Array.Empty<AudioLogEntry>();
-
-		//	var query = Query.All(nameof(AudioLogEntry.Timestamp), Query.Descending);
-
-		//	if (!string.IsNullOrEmpty(search.TitlePart))
-		//	{
-		//		var titleLower = search.TitlePart.ToLowerInvariant();
-		//		query = Query.And(query,
-		//			BsonExpression.Create($"{ResourceTitleQueryColumn} LIKE '%{titleLower}%'"));
-		//		//Query.Where(ResourceTitleQueryColumn, val => val.AsString.Contains(titleLower)));
-
-		//	}
-
-		//	if (search.UserUid != null)
-		//		query = Query.And(query, BsonExpression.Create($"{nameof(AudioLogEntry.Timestamp)} >= @0", search.LastInvokedAfter.Value));
-
-		//	//query = Query.And(query, Query.EQ(nameof(AudioLogEntry.UserUid), search.UserUid));
-
-		//	if (search.LastInvokedAfter != null)
-		//		query = Query.And(query, BsonExpression.Create($"{nameof(AudioLogEntry.UserUid)} = @0", search.UserUid));
-		//	//query = Query.And(query, Query.GTE(nameof(AudioLogEntry.Timestamp), search.LastInvokedAfter.Value));
-
-		//	return audioLogEntries.Find(query, 0, search.MaxResults);
-		//}
-
-		/// <summary>Gets all Entries matching the search criteria.
-		/// The entries are sorted by last playtime descending.</summary>
-		/// <param name="search">All search criteria.</param>
-		/// <returns>A list of all found entries.</returns>
 		public IEnumerable<AudioLogEntry> Search(SeachQuery search)
 		{
 			if (search is null)
@@ -228,35 +193,83 @@ namespace TS3AudioBot.History
 			if (search.MaxResults <= 0)
 				return Array.Empty<AudioLogEntry>();
 
-			// List to hold individual conditions
-			var conditions = new List<string>();
+			var query = Query.All(nameof(AudioLogEntry.Timestamp), Query.Descending);
+
+			// Start with a basic "true" filter to ensure it’s never null
+			// Initialize the base filter
+			// Initialize the base filter
+			// Start with a default filter
+			var filters = new List<BsonExpression>();
+
+			// Start with a default BsonExpression
+			BsonExpression combinedFilter = BsonExpression.Create("1 = 1");
 
 			if (!string.IsNullOrEmpty(search.TitlePart))
 			{
 				var titleLower = search.TitlePart.ToLowerInvariant();
-				conditions.Add($"LOWER($.{ResourceTitleQueryColumn}) LIKE '%{titleLower}%'");
+				filters.Add(BsonExpression.Create($"LOWER($.{ResourceTitleQueryColumn}) LIKE \"%{titleLower}%\""));
 			}
 
 			if (search.UserUid != null)
 			{
-				conditions.Add($"$.{nameof(AudioLogEntry.UserUid)} = \"{search.UserUid}\"");
+				filters.Add(BsonExpression.Create($"$.{nameof(AudioLogEntry.UserUid)} = {search.UserUid}"));
 			}
 
 			if (search.LastInvokedAfter != null)
 			{
-				conditions.Add($"$.{nameof(AudioLogEntry.Timestamp)} >= \"{search.LastInvokedAfter.Value:o}\""); // use 'o' for round-trip date/time pattern
+				filters.Add(BsonExpression.Create($"$.{nameof(AudioLogEntry.Timestamp)} >= {search.LastInvokedAfter.Value.Ticks}"));
 			}
 
-			// Combine conditions using AND operator
-			var combinedConditions = string.Join(" AND ", conditions);
-			var queryExpression = string.IsNullOrEmpty(combinedConditions) ? "true" : combinedConditions;
+			//if (search.UserUid != null)
+			//	query = Query.And(query, Query.EQ(nameof(AudioLogEntry.UserUid), search.UserUid));
 
-			// Create the BsonExpression with combined conditions and sorting
-			var finalQuery = BsonExpression.Create(queryExpression + $" ORDER BY $.{nameof(AudioLogEntry.Timestamp)} DESC");
+			//if (search.LastInvokedAfter != null)
+			//	query = Query.And(query, Query.GTE(nameof(AudioLogEntry.Timestamp), search.LastInvokedAfter.Value));
 
-			// Return the result of the find query with the applied filters
-			return audioLogEntries.Find(finalQuery).Take(search.MaxResults);
+			return audioLogEntries.Find(query, 0, search.MaxResults);
 		}
+
+		/// <summary>Gets all Entries matching the search criteria.
+		/// The entries are sorted by last playtime descending.</summary>
+		/// <param name="search">All search criteria.</param>
+		/// <returns>A list of all found entries.</returns>
+		//public IEnumerable<AudioLogEntry> Search(SeachQuery search)
+		//{
+		//	if (search is null)
+		//		throw new ArgumentNullException(nameof(search));
+
+		//	if (search.MaxResults <= 0)
+		//		return Array.Empty<AudioLogEntry>();
+
+		//	// List to hold individual conditions
+		//	var conditions = new List<string>();
+
+		//	if (!string.IsNullOrEmpty(search.TitlePart))
+		//	{
+		//		var titleLower = search.TitlePart.ToLowerInvariant();
+		//		conditions.Add($"LOWER($.{ResourceTitleQueryColumn}) LIKE '%{titleLower}%'");
+		//	}
+
+		//	if (search.UserUid != null)
+		//	{
+		//		conditions.Add($"$.{nameof(AudioLogEntry.UserUid)} = \"{search.UserUid}\"");
+		//	}
+
+		//	if (search.LastInvokedAfter != null)
+		//	{
+		//		conditions.Add($"$.{nameof(AudioLogEntry.Timestamp)} >= \"{search.LastInvokedAfter.Value:o}\""); // use 'o' for round-trip date/time pattern
+		//	}
+
+		//	// Combine conditions using AND operator
+		//	var combinedConditions = string.Join(" AND ", conditions);
+		//	var queryExpression = string.IsNullOrEmpty(combinedConditions) ? "true" : combinedConditions;
+
+		//	// Create the BsonExpression with combined conditions and sorting
+		//	var finalQuery = BsonExpression.Create(queryExpression + $" ORDER BY $.{nameof(AudioLogEntry.Timestamp)} DESC");
+
+		//	// Return the result of the find query with the applied filters
+		//	return audioLogEntries.Find(finalQuery).Take(search.MaxResults);
+		//}
 
 
 
