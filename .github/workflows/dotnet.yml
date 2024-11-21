@@ -58,7 +58,10 @@ jobs:
       - name: Publish Linux Binary
         run: |
           dotnet publish -c Release -r linux-x64 --self-contained true /p:ExcludePlugins=true -f net6.0 -o ${{ github.workspace }}\output\linux-x64
-
+          
+      - name: Run publish script
+        run: |
+          .\Plugins\publish_plugins.bat
       # - name: Install zip
       #   run: choco install zip
 
@@ -109,6 +112,17 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ github.workspace }}/release_package_linux.zip
           asset_name: release_package_linux.zip
+          asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+      # Upload the Plugin DLLs
+      - name: Upload Plugin DLLs
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/Plugins/published_plugins.zip
+          asset_name: published_plugins.zip
           asset_content_type: application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}

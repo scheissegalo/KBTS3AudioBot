@@ -1,0 +1,122 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: Build and Release
+
+on:
+  push:
+    #branches: [ "disabled" ]
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+    #branches: [ "disabled" ]
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      # Step 1: Checkout code
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # Step 2: Setup .NET (use the appropriate version for your project)
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+      
+      # Step 3: Install a compatible dotnet-script tool (version 1.0.0 is compatible with .NET 6.0) D:\a\KBTS3AudioBot\KBTS3AudioBot\TS3AudioBot ChannelChecker
+      - name: Install dotnet-script tool (version 1.5.0)
+        run: dotnet tool install --global dotnet-script --version 1.5.0
+
+      - name: Build Project
+        run: dotnet build --configuration Debug /p:ExcludePlugins=true /p:ExcludeProjects=AloneMode /p:ExcludeProjects=AutoChannel /p:ExcludeProjects=ChannelChecker /p:ExcludeProjects=Cryptoz /p:ExcludeProjects=ExternalAPI /p:ExcludeProjects=GameServer /p:ExcludeProjects=OnlineCounter /p:ExcludeProjects=RankingSystem /p:ExcludeProjects=Watchparty /p:ExcludeProjects=whatIsPlaying
+
+      - name: Generate version
+        run: |
+          $version = $(dotnet script ./TS3AudioBot/build.csx TS3AudioBot/obj/Debug/net6.0/Version.g.cs Debug)
+          echo "VERSION=$version" >> $env:GITHUB_ENV
+          Write-Host "Generated Version: $version"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+
+      # - name: Publish Windows Binary
+      #   run: |
+      #     dotnet publish -c Release -r win-x64 --self-contained true /p:ExcludePlugins=true -f net6.0 -o ${{ github.workspace }}\output\win-x64
+
+      # - name: Publish Linux Binary
+      #   run: |
+      #     dotnet publish -c Release -r linux-x64 --self-contained true /p:ExcludePlugins=true -f net6.0 -o ${{ github.workspace }}\output\linux-x64
+          
+      - name: Run publish script
+        run: |
+          .\Plugins\publish_plugins.bat
+      # - name: Install zip
+      #   run: choco install zip
+
+      # - name: Zip output files
+      #   run: |
+      #     zip -r ${{ github.workspace }}/release_package_windows.zip ${{ github.workspace }}/output/win-x64
+      #     zip -r ${{ github.workspace }}/release_package_linux.zip ${{ github.workspace }}/output/linux-x64
+
+      # - name: Prepare files for release
+      #   run: |
+      #     New-Item -ItemType Directory -Force -Path ${{ github.workspace }}\release\win-x64
+      #     New-Item -ItemType Directory -Force -Path ${{ github.workspace }}\release\linux-x64
+      #     Copy-Item -Path ${{ github.workspace }}\output\win-x64\* -Destination ${{ github.workspace }}\release\win-x64 -Recurse
+      #     Copy-Item -Path ${{ github.workspace }}\output\linux-x64\* -Destination ${{ github.workspace }}\release\linux-x64 -Recurse
+
+      # - name: Zip output files
+      #   run: |
+      #     Compress-Archive -Path ${{ github.workspace }}\release\win-x64\* -DestinationPath ${{ github.workspace }}\release_package_windows.zip
+      #     Compress-Archive -Path ${{ github.workspace }}\release\linux-x64\* -DestinationPath ${{ github.workspace }}\release_package_linux.zip
+
+
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      #   with:
+      #     tag_name: ${{ env.VERSION }}
+      #     release_name: "Release ${{ env.VERSION }}"
+      #     body: |
+      #       This is the release notes for version ${{ env.VERSION }}
+      #     draft: false
+      #     prerelease: false
+
+      # - name: Upload Windows Binary
+      #   uses: actions/upload-release-asset@v1
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ${{ github.workspace }}/release_package_windows.zip
+      #     asset_name: release_package_windows.zip
+      #     asset_content_type: application/zip
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+      # - name: Upload Linux Binary
+      #   uses: actions/upload-release-asset@v1
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ${{ github.workspace }}/release_package_linux.zip
+      #     asset_name: release_package_linux.zip
+      #     asset_content_type: application/zip
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+      # Upload the Plugin DLLs
+      # - name: Upload Plugin DLLs
+      #   uses: actions/upload-release-asset@v1
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ${{ github.workspace }}/Plugins/published_plugins.zip
+      #     asset_name: published_plugins.zip
+      #     asset_content_type: application/zip
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.TOKEN }}
