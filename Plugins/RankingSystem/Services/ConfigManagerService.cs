@@ -1,47 +1,40 @@
-// KBTS3AudioBot - An advanced Musicbot for Teamspeak 3
-// Copyright (C) 2024 KBTS3AudioBot contributors
-// https://github.com/scheissegalo/KBTS3AudioBot
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the Open Software License v. 3.0
-//
-// You should have received a copy of the Open Software License along with this
-// program. If not, see <https://opensource.org/licenses/OSL-3.0>.
-
 using System;
+using System.IO;
 using System.Collections.Generic;
 using TSLib;
 
-namespace RankingSystem
+
+namespace RankingSystem.Services
 {
-	internal class Constants
+	public class UserSettings
 	{
-		public readonly string fileName = "ranking.toml";
+		public string fileName = "ranking.toml";
 		//public readonly List<uint> BotGroups = new List<uint> { 11, 47, 115 };
-		public readonly List<ServerGroupId> BotGroupsE = new List<ServerGroupId> { (ServerGroupId)11, (ServerGroupId)47, (ServerGroupId)115 };
-		public readonly ServerGroupId AdminGroup = (ServerGroupId)90;
-		public readonly ChannelId onlineCountChannel = (ChannelId)171;
-		public readonly ChannelId AfkChannel = (ChannelId)18;
-		public readonly ServerGroupId NoAfkGroup = (ServerGroupId)69;
+		public List<ServerGroupId> BotGroupsE = new List<ServerGroupId> { (ServerGroupId)11, (ServerGroupId)47, (ServerGroupId)115 };
+		public ServerGroupId AdminGroup = (ServerGroupId)90;
+		public ChannelId onlineCountChannel = (ChannelId)171;
+		public ChannelId AfkChannel = (ChannelId)18;
+		public ServerGroupId NoAfkGroup = (ServerGroupId)69;
 		public ServerGroupId memberGroup = (ServerGroupId)7;
 		public ChannelId CustomParentChannel = (ChannelId)68;
 
 		// Define the reset time as a TimeSpan (e.g., 18:00 for 6 PM)
-		public readonly TimeSpan ResetTime = new TimeSpan(6, 0, 0); // 6AM
-		public readonly int AFKTime = 30; // in Minutes
-		public readonly int UpdateInterval = 2; // in minutes
-		public readonly float ScorePerTick = 0.03f;
-		public readonly bool onboardingEnabled = true;
-		public readonly bool SendAFKNotice = false;
-		public readonly bool SendDaylyMessage = false;
-		public readonly TimeSpan timeToAllowChannelCreation = TimeSpan.FromMinutes(30);
+		public TimeSpan ResetTime = new TimeSpan(6, 0, 0); // 6AM
+		public int AFKTime = 30; // in Minutes
+		public int UpdateInterval = 2; // in minutes
+		public float ScorePerTick = 0.03f;
+		public bool onboardingEnabled = true;
+		public bool SendAFKNotice = false;
+		public bool SendDaylyMessage = false;
+		public TimeSpan timeToAllowChannelCreation = TimeSpan.FromMinutes(30);
 
-		public readonly string messageHeader = @$"
+		public string messageHeader = @$"
 [b]══════════════════════════════════════════════[/b]
 [b]  [color=#24336b]███[/color][color=#0095db]██[/color]  [color=#24336b]North[/color][color=#0095db]Industries[/color] - Free Secure Gaming Services  [color=#0095db]██[/color][color=#24336b]███[/color]  [/b]
 [b]══════════════════════════════════════════════[/b]
 
 ";
-		public readonly string messageFooter = $@"
+		public string messageFooter = $@"
 
 [b]══════════════════════════════════════════════[/b]
 [b][url=https://north-industries.com]HOME[/url] | [url=https://north-industries.com/news/]NEWS[/url] | [url=https://north-industries.com/teamspeak-connect/#rules]RULES[/url] | [url=https://north-industries.com/teamspeak-help]HELP[/url] | [url=https://teamspeak-servers.org/server/12137/vote/]VOTE[/url] | [url=https://north-industries.com/ts-viewer/]TS-VIEWER[/url] | [url=https://north-industries.com/teamspeak-connect/]SHARE[/url][/b]
@@ -105,6 +98,33 @@ namespace RankingSystem
 				//new ServerGroupInfo { OnlineTimeThreshold = TimeSpan.FromDays(755), ServerGroup = (ServerGroupId)129 },//24 Monate
 			};
 
+
+		public UserSettings() {}
+
 	}
+
+	public class ConfigManagerService
+	{
+
+		private const string ConfigFilePath = "rankingconfig.yml";
+
+		public UserSettings LoadConfig()
+		{
+			Console.WriteLine("Loading Ranking config");
+
+			//var serializer = new SerializerBuilder()
+			//	.WithNamingConvention(CamelCaseNamingConvention.Instance)
+			//	.WithTypeConverter(new ServerGroupIdConverter())  // Register our custom converter
+			//	.Build();
+
+
+			UserSettings settings = new UserSettings();
+			//Console.WriteLine($"{settings.}");
+
+			return settings;
+		}
+
+
+
 
 }

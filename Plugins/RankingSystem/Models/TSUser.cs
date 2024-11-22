@@ -35,6 +35,7 @@ namespace RankingSystem.Models
 		public string SteamID { get; set; }
 		public bool NotificationSend { get; set; } = false;
 		public bool DailyStatusEnabled { get; set; } = true;
+		public bool NotificationChannelsUnlocked {  get; set; } = false;
 		public string CountryCode { get; set; } = "en";
 		public bool RankingEnabled { get; set; } = true;
 		public ChannelId ChannelID { get; set; }

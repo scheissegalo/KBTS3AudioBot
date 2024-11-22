@@ -90,7 +90,7 @@ namespace RankingSystem
 									{
 										string noticeMessage = localizationManager.GetTranslation(client.Value.CountryCode, "warningMessage");
 										await tsFullClient.SendPrivateMessage(noticeMessage, client.Value.Id);
-										Console.WriteLine($"Sendind User message {ci.Name} AFKNoticeTime is: {totalMinutesAfk}>={AFKNotice}");
+										//Console.WriteLine($"Sendind User message {ci.Name} AFKNoticeTime is: {totalMinutesAfk}>={AFKNotice}");
 									}
 									
 									// Mark the user as warned by setting the current date

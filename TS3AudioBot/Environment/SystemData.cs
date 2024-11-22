@@ -134,6 +134,7 @@ namespace TS3AudioBot.Environment
 		private static PlatformVersion? GetNetCoreVersion()
 		{
 			var assembly = typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly;
+			//var assemblyPath = CodeBase.Location?.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
 			var assemblyPath = assembly.Location?.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
 			if (assemblyPath is null)
 				return null;

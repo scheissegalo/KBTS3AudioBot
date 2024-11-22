@@ -38,8 +38,8 @@ Check: [how do i pass cookies to yt-dlp](https://github.com/yt-dlp/yt-dlp/wiki/F
 
 ## Plugins?
 **You do not need any plugins, but you can use them if you wish.** 
-Most of them have hardcoded channels and paths, so you will need to adjust and compile them to use them. 
-I have already planned a real-time compiler so you can simply use .cs files directly in the plugins folder.
+Most of them have hardcoded channels and paths, so you will need to adjust and place the .cs file into the Plugins folder.
+alternatively you can also compile it to an dll.
 
 
 - **Got questions?** Check out our [Wiki](https://github.com/scheissegalo/TS3AudioBot/wiki), [FAQ](https://github.com/scheissegalo/TS3AudioBot/wiki/FAQ).

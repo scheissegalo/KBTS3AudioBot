@@ -14,8 +14,8 @@ using TSLib.Full;
 using RankingSystem.Interfaces;
 using TSLib;
 using RankingSystem.Models;
-using Microsoft.VisualBasic;
 using System.Collections.Generic;
+using static RankingSystem.RankingModule;
 
 namespace RankingSystem.Services
 {
@@ -58,6 +58,8 @@ namespace RankingSystem.Services
 			try
 			{
 				var allUsers = await _tsFullClient.ClientList();
+
+				//Console.WriteLine($"Allusers: {allUsers.Value.Length}");
 
 				foreach (var user in allUsers.Value)
 				{
@@ -147,32 +149,45 @@ namespace RankingSystem.Services
 												string setupDone = TranslateBool(tsuser.SetupDone);
 												string skippedSetup = TranslateBool(tsuser.SkipSetup);
 												string hasOwnChannel = TranslateBool(tsuser.WantsOwnChannel);
+												string TSCountryCode = await GetUserCountryCodeFromTS(tsuser);
+												string userCountryCode = tsuser.CountryCode;
+
 												//yourTime disableStatusMessage
-												await _tsFullClient.SendPrivateMessage(@$"
-******* [b][color=#24336b]North[/color][color=#0095db]Industries - {_localizationManager.GetTranslation(tsuser.CountryCode, "dailyPersonalStatus")}[/color][/b] *******
-[color=green]{_localizationManager.GetTranslation(tsuser.CountryCode, "user")}[/color] : {tsuser.Name} | [color=green]{_localizationManager.GetTranslation(tsuser.CountryCode, "level")}[/color][b]: [color=red]{GetUserLevel(tsuser.OnlineTime)}[/color][/b]
-[color=green]{_localizationManager.GetTranslation(tsuser.CountryCode, "OnlineTime")}[/color][b]: [color=red]{FormatTimeSpan(tsuser.OnlineTime)}[/color][/b]
-[color=green]{_localizationManager.GetTranslation(tsuser.CountryCode, "score")}[/color][b]: [color=red]{tsuser.Score}[/color][/b]
-[color=green]{_localizationManager.GetTranslation(tsuser.CountryCode, "rulesAccepted")}[/color][b]: [color=red]{acceptedRules}[/color][/b]
-[color=green]{_localizationManager.GetTranslation(tsuser.CountryCode, "rankingEnabled")}[/color][b]: [color=red]{rankingDisabled}[/color][/b]
-[color=green]{_localizationManager.GetTranslation(tsuser.CountryCode, "setupDone")}[/color][b]: [color=red]{setupDone}[/color][/b]
-[color=green]{_localizationManager.GetTranslation(tsuser.CountryCode, "skippedSetup")}[/color][b]: [color=red]{skippedSetup}[/color][/b]
-[color=green]{_localizationManager.GetTranslation(tsuser.CountryCode, "ownChannel")}[/color][b]: [color=red]{hasOwnChannel}[/color][/b]
+												string ChannelString;
+												if (tsuser.WantsOwnChannel && tsuser.ChannelIDInt != 0)
+												{
+													var chanInfo = await _tsFullClient.ChannelInfo((ChannelId)tsuser.ChannelIDInt);
+													ChannelString = $"[color=green]Your Channel[/color][b]: [color=red]{chanInfo.Value[0].Name} ({tsuser.ChannelIDInt})[/color][/b]";
+												}
+												else
+												{
+													ChannelString = "No own Channel";
+												}
+												//await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "welcomeBack") + " " + user.Name + "!", user.ClientID);
+												await SendPrivateMessage(@$"[b][color=blue]═══════════- Personal Daily Status -══════════[/color][/b] 
 
-{_localizationManager.GetTranslation(tsuser.CountryCode, "disableStatusMessage")}
+[b]•[/b] Username: [color=#aa4400]{tsuser.Name}[/color]  
+[b]•[/b] Online Time: [color=#00FF00]{FormatTimeSpan(tsuser.OnlineTime, userCountryCode)}[/color]  
+[b]•[/b] Credits: [color=#00FF00]{(float)Math.Round(tsuser.Score, 2)}[/color]  
+[b]•[/b] Level: [color=cyan]{GetUserLevel(tsuser.OnlineTime)}[/color]  
+[b]•[/b] Channel: [color=white]{ChannelString} [/color]
 
-", tsuser.ClientID);
+{_localizationManager.GetTranslation(tsuser.CountryCode, "noDailyStatus")}", user.ClientId);
+
 												tsuser.NotificationSend = true;
 												tsuser.LastNotification = DateTime.Now;
 												_userRepository.Update(tsuser);
 											}
 											else
 											{
-												//send to own channel etc
-												await _tsFullClient.SendPrivateMessage("Hey you have still not Completed the onboarding!", tsuser.ClientID);
-												tsuser.NotificationSend = true;
-												tsuser.LastNotification = DateTime.Now;
-												_userRepository.Update(tsuser);
+												if (!tsuser.DailyStatusEnabled)
+												{
+													//send to own channel etc noDailyStatus
+													await SendPrivateMessage("Hey you have still not Completed the onboarding!\ntype anything here to get started", tsuser.ClientID, true);
+													tsuser.NotificationSend = true;
+													tsuser.LastNotification = DateTime.Now;
+													_userRepository.Update(tsuser);
+												}
 											}
 
 										}
@@ -186,8 +201,15 @@ namespace RankingSystem.Services
 									//check if user over 30 min and wants a channel
 									if (HasUserSurpassedTimeThreshold(constants.timeToAllowChannelCreation, tsuser) && tsuser.WantsOwnChannel && tsuser.ChannelIDValue != 0 && !tsuser.WantsOwnChannelNotificationSend)
 									{
-										await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(tsuser.CountryCode, "enoughTime"), tsuser.ClientID);
+										await SendPrivateMessage(_localizationManager.GetTranslation(tsuser.CountryCode, "enoughTime"), tsuser.ClientID, true);
 										tsuser.WantsOwnChannelNotificationSend = true;
+										_userRepository.Update(tsuser);
+									}
+
+									if (HasUserSurpassedTimeThreshold(TimeSpan.FromHours(5), tsuser) && !tsuser.NotificationChannelsUnlocked && tsuser.OnlineTime <= TimeSpan.FromHours(6))
+									{
+										await SendPrivateMessage(_localizationManager.GetTranslation(tsuser.CountryCode, "enterAndUseChannel"), tsuser.ClientID, true);
+										tsuser.NotificationChannelsUnlocked = true;
 										_userRepository.Update(tsuser);
 									}
 
@@ -285,6 +307,14 @@ namespace RankingSystem.Services
 								}
 							}
 						}
+						else
+						{
+							//Console.WriteLine($"User {user.Name} is a Bot");
+						}
+					}
+					else
+					{
+						//Console.WriteLine($"User {user.Name} is a query");
 					}
 				}
 
@@ -317,38 +347,33 @@ namespace RankingSystem.Services
 			return userLevel;
 		}
 
-		public string FormatTimeSpan(TimeSpan timeSpan)
+		public string FormatTimeSpan(TimeSpan timeSpan, string userCountryCode)
 		{
-			var parts = new List<string>();
-
+			List<string> list = new List<string>();
 			if (timeSpan.Days >= 365)
 			{
-				int years = timeSpan.Days / 365;
-				parts.Add($"{years} year{(years > 1 ? "s" : "")}");
+				int num = timeSpan.Days / 365;
+				list.Add($"{num} {((num > 1) ? _localizationManager.GetTranslation(userCountryCode, "years") : _localizationManager.GetTranslation(userCountryCode, "year"))}");
 			}
-
 			if (timeSpan.Days % 365 > 0)
 			{
-				int remainingDays = timeSpan.Days % 365;
-				parts.Add($"{remainingDays} day{(remainingDays > 1 ? "s" : "")}");
+				int num2 = timeSpan.Days % 365;
+				list.Add($"{num2} {((num2 > 1) ? _localizationManager.GetTranslation(userCountryCode, "days") : _localizationManager.GetTranslation(userCountryCode, "day"))}");
 			}
-
 			if (timeSpan.Hours > 0)
 			{
-				parts.Add($"{timeSpan.Hours} hour{(timeSpan.Hours > 1 ? "s" : "")}");
+				list.Add($"{timeSpan.Hours} {((timeSpan.Hours > 1) ? _localizationManager.GetTranslation(userCountryCode, "hours") : _localizationManager.GetTranslation(userCountryCode, "hour"))}");
 			}
-
 			if (timeSpan.Minutes > 0)
 			{
-				parts.Add($"{timeSpan.Minutes} minute{(timeSpan.Minutes > 1 ? "s" : "")}");
+				list.Add($"{timeSpan.Minutes} {((timeSpan.Minutes > 1) ? _localizationManager.GetTranslation(userCountryCode, "minutes") : _localizationManager.GetTranslation(userCountryCode, "minute"))}");
 			}
-
 			if (timeSpan.Seconds > 0)
 			{
-				parts.Add($"{timeSpan.Seconds} second{(timeSpan.Seconds > 1 ? "s" : "")}");
+				list.Add($"{timeSpan.Seconds} {((timeSpan.Seconds > 1) ? _localizationManager.GetTranslation(userCountryCode, "seconds") : _localizationManager.GetTranslation(userCountryCode, "second"))}");
 			}
-			Console.WriteLine($"Result: {string.Join(" ", parts)} | Orig: {timeSpan}");
-			return string.Join(" ", parts);
+			//Console.WriteLine($"Result: {string.Join(" ", list)} | Orig: {timeSpan}");
+			return string.Join(" ", list);
 		}
 
 		public ServerGroupId GetServerGroup(TimeSpan onlineTime)
@@ -383,25 +408,29 @@ namespace RankingSystem.Services
 		public async Task StartUserOnboarding(TSUser tsUser)
 		{
 			string message;
+			string messageEN = "";
 			//string answer;
 			string TSCountryCode = await GetUserCountryCodeFromTS(tsUser);
 
-			//Send english Backup incase user is on VPN
-			if (TSCountryCode != "en")
+			if (tsUser.CountryCode != "en")
 			{
-				string messageEN = _localizationManager.GetTranslation("en", "welcomeMessage");
-				await _tsFullClient.SendPrivateMessage($"Backup English: \n{_localizationManager.GetTranslation("en", "hello")} {tsUser.Name}!\n {messageEN}\n", tsUser.ClientID);
-			}
-			message = _localizationManager.GetTranslation(TSCountryCode, "welcomeMessage");
-			await _tsFullClient.SendPrivateMessage($"\n{_localizationManager.GetTranslation(TSCountryCode, "hello")} {tsUser.Name}!\n {message}\n", tsUser.ClientID);
 
-			if (TSCountryCode != "en")
-			{
-				string messageEN = _localizationManager.GetTranslation("en", "whatIsYourLanguage");
-				await _tsFullClient.SendPrivateMessage($"\nBackup English:{_localizationManager.GetTranslation("en", "skipSetup")}\n{messageEN} [b]{TSCountryCode}[/b]!", tsUser.ClientID);
+				//message = _localizationManager.GetTranslation(TSCountryCode, "welcomeMessage");
+				//await _tsFullClient.SendPrivateMessage($"{_localizationManager.GetTranslation(TSCountryCode, "hello")} {user.Name}!\n {message}", user.ClientID);
+				message = _localizationManager.GetTranslation(TSCountryCode, "welcomeMessage") + " " + _localizationManager.GetTranslation(TSCountryCode, "whatIsYourLanguage");
+				await SendPrivateMessage($"{_localizationManager.GetTranslation(TSCountryCode, "skipSetup")} {message} [b]{TSCountryCode}[/b]!", tsUser.ClientID);
 			}
-			message = _localizationManager.GetTranslation(TSCountryCode, "whatIsYourLanguage");
-			await _tsFullClient.SendPrivateMessage($"\n{_localizationManager.GetTranslation(TSCountryCode, "skipSetup")}\n{message} [b]{TSCountryCode}[/b]!", tsUser.ClientID);
+			else
+			{
+				if (TSCountryCode != "en")
+				{
+					messageEN = "Backup English:" + _localizationManager.GetTranslation("en", "welcomeMessage");
+					messageEN += _localizationManager.GetTranslation("en", "whatIsYourLanguage");
+					//await _tsFullClient.SendPrivateMessage($"Backup English:{_localizationManager.GetTranslation("en", "skipSetup")}\n{messageEN} [b]{TSCountryCode}[/b]!", user.ClientID);
+				}
+				message = $"{messageEN} | " + _localizationManager.GetTranslation(TSCountryCode, "welcomeMessage") + _localizationManager.GetTranslation(TSCountryCode, "whatIsYourLanguage");
+				await SendPrivateMessage($"{_localizationManager.GetTranslation(TSCountryCode, "skipSetup")}\n{message} [b]{TSCountryCode}[/b]!", tsUser.ClientID);
+			}
 
 			//Send user to Select Language step
 			tsUser.SetupStep = (int)SetupStep.AskPreferredLanguage;
@@ -413,55 +442,22 @@ namespace RankingSystem.Services
 			return tsuser.OnlineTime >= threshold;
 		}
 
-		//public async Task UpdateUsers()
-		//{
-		//	//Console.WriteLine("Updating users...");
+		private async Task<bool> SendPrivateMessage(string message, ClientId client, bool format = false)
+		{
+			if (format)
+			{
+				message = $@"[b][color=red]{message}[/color][/b]";
+			}
 
-		//	var allUsers = await _tsFullClient.ClientList();
+			string formattetMessage = $@"{constants.messageHeader} {message} {constants.messageFooter}";
+			var result = await _tsFullClient.SendPrivateMessage(formattetMessage, client);
 
-		//	foreach (var user in allUsers.Value)
-		//	{
-		//		// Skip query clients
-		//		if (user.ClientType != ClientType.Full) continue;
+			if (result.Ok)
+			{
+				return true;
+			}
 
-		//		var fullUser = await _tsFullClient.ClientInfo(user.ClientId);
-
-		//		if (fullUser.Value == null) continue;
-
-		//		// Check if the user exists in the database
-		//		TSUser? tsUser = _userRepository.FindOne(fullUser.Value.Uid);
-		//		if (tsUser == null)
-		//		{
-		//			// Add new user
-		//			tsUser = new TSUser
-		//			{
-		//				UserID = fullUser.Value.Uid,
-		//				Name = fullUser.Value.Name,
-		//				ClientID = user.ClientId,
-		//				LastUpdate = DateTime.Now,
-		//				OnlineTime = TimeSpan.Zero
-		//			};
-		//			_userRepository.Insert(tsUser);
-		//			//Console.WriteLine($"New user added: {tsUser.Name}");
-		//		}
-		//		else
-		//		{
-		//			// Update existing user
-		//			tsUser.LastUpdate = DateTime.Now;
-		//			tsUser.isOnline = true;
-
-		//			var timeSinceLastUpdate = DateTime.Now - tsUser.LastUpdate;
-		//			if (timeSinceLastUpdate.TotalMinutes > 5)
-		//			{
-		//				tsUser.isOnline = false;
-		//			}
-
-		//			_userRepository.Update(tsUser);
-		//			Console.WriteLine($"User updated: {tsUser.Name}");
-		//		}
-		//	}
-
-		//	Console.WriteLine("User updates complete.");
-		//}
+			return false;
+		}
 	}
 }

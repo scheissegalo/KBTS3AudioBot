@@ -9,7 +9,6 @@
 
 using System;
 using System.Threading.Tasks;
-using LiteDB;
 using RankingSystem.Interfaces;
 using TSLib.Full;
 using TSLib;
@@ -17,6 +16,8 @@ using TSLib.Messages;
 using RankingSystem.Models;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
+
 
 namespace RankingSystem.Modules
 {
@@ -28,6 +29,7 @@ namespace RankingSystem.Modules
 		private Constants constants = new Constants();
 		private LocalizationManager localizationManager = new LocalizationManager();
 		private TsFullClient _tsFullClient;
+		private List<ShopItem> _shopItems = new List<ShopItem>();
 
 		public OnboardingCommandModule(IUserRepository userRepository, IServerGroupManager serverGroupManager, IChannelManager channelManager, TsFullClient tsFullClient)
 		{
@@ -35,6 +37,70 @@ namespace RankingSystem.Modules
 			_serverGroupManager = serverGroupManager;
 			_channelManager = channelManager;
 			_tsFullClient = tsFullClient;
+
+			_shopItems.Add(new ShopItem {
+				ID = 1,
+				Command = "bannermsg",
+				Description = "add a message to the server banner.",
+				Example = "[color=red]shop[/color] [color=green]bannermsg[/color] TS clan is the best",
+				Price = 15,
+			});
+			_shopItems.Add(new ShopItem
+			{
+				ID = 2,
+				Command = "addchannel",
+				Description = "additional channel",
+				Example = "[color=red]shop[/color] [color=green]addchannel[/color]",
+				Price = 35,
+			});
+			_shopItems.Add(new ShopItem
+			{
+				ID = 3,
+				Command = "addbanner",
+				Description = "add your own banner background",
+				Example = "[color=red]shop[/color] [color=green]addbanner[/color] https://imgur.com/hc/article_attachments/26512175039515.jpg",
+				Price = 50,
+			});
+			_shopItems.Add(new ShopItem
+			{
+				ID = 4,
+				Command = "moveright",
+				Description = "The right to move other clients {automatic after rank 8}",
+				Example = "[color=red]shop[/color] [color=green]moveright[/color]",
+				Price = 50,
+			});
+			_shopItems.Add(new ShopItem
+			{
+				ID = 5,
+				Command = "banright",
+				Description = "The right to ban other clients {automatic after rank 25}",
+				Example = "[color=red]shop[/color] [color=green]banright[/color]",
+				Price = 100,
+			});
+			_shopItems.Add(new ShopItem
+			{
+				ID = 6,
+				Command = "moderator",
+				Description = "Moderator rights (ban, move, elevated rights",
+				Example = "[color=red]shop[/color] [color=green]moderator[/color]",
+				Price = 250,
+			});
+			_shopItems.Add(new ShopItem
+			{
+				ID = 7,
+				Command = "moderatorplus",
+				Description = "Moderator rights + Create and edit channels",
+				Example = "[color=red]shop[/color] [color=green]moderatorplus[/color]",
+				Price = 300,
+			});
+			_shopItems.Add(new ShopItem
+			{
+				ID = 8,
+				Command = "administrator",
+				Description = "Administrator rights",
+				Example = "[color=red]shop[/color] [color=green]administrator[/color]",
+				Price = 500,
+			});
 		}
 
 		public void RegisterCommands(Services.CommandManager commandManager)
@@ -59,7 +125,7 @@ namespace RankingSystem.Modules
 			commandManager.RegisterCommand("sendcredits", HandleSendCredit);
 			commandManager.RegisterCommand("disablestatus", HandleDisableStatus);
 			//commandManager.RegisterCommand("importdb", HandleDBImport);
-			//commandManager.RegisterCommand("addsteam", HandleAddSteam);
+			commandManager.RegisterCommand("addsteam", HandleAddSteam);
 			// Register Admin Commands
 			commandManager.RegisterCommand("addcredit", HandleAddCredit);
 			commandManager.RegisterCommand("addusercredit", HandleAddUserCredit);
@@ -72,7 +138,7 @@ namespace RankingSystem.Modules
 			if (user == null)
 			{
 				// Handle case where user is not found
-				Console.WriteLine("User not found");
+				//Console.WriteLine("User not found");
 				return;
 			}
 
@@ -83,16 +149,16 @@ namespace RankingSystem.Modules
 			{
 				// No argument provided
 				//string errorMessage = "Too many arguments";
-				await SendPrivateMessage("Not enought arguments", user.ClientID);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "notEnoughtArguments"), user.ClientID, true);
 				return;
 			}
 
-			// Extract the argument (language code)
+			// Extract the argument (language code)steamAddSuccess
 			string argument = parts[1].Trim().ToLower();
 
 			user.SteamID = argument;
 			_userRepository.Update(user);
-			await SendPrivateMessage("Steam ID Added", user.ClientID);
+			await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "steamAddSuccess"), user.ClientID, true);
 		}
 
 		private async Task HandleSetStep(TextMessage message)
@@ -101,7 +167,7 @@ namespace RankingSystem.Modules
 			if (user == null)
 			{
 				// Handle case where user is not found
-				Console.WriteLine("User not found");
+				//Console.WriteLine("User not found");
 				return;
 			}
 
@@ -232,9 +298,15 @@ namespace RankingSystem.Modules
 			if (user == null)
 			{
 				// Handle case where user is not found
-				//Console.WriteLine("User not found");
+				//Console.WriteLine("User not found");noCreditToYourself
 				return;
 			}
+
+			if (user.Name == message.InvokerName)
+			{
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "noCreditToYourself"), user.ClientID, true);
+			}
+
 			// Split the message into command and argument
 			string[] parts = message.Message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
@@ -254,7 +326,7 @@ namespace RankingSystem.Modules
 			{
 				if (!CheckIfUserHasEnoughtCredit(user, floatValue))
 				{
-					await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "notEnoughtCredits")+ "😥", user.ClientID, true);
+					await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "notEnoughtCredits")+ " 😥", user.ClientID, true);
 					return;
 				}
 
@@ -318,6 +390,7 @@ namespace RankingSystem.Modules
 				TSUser? updateUser = _userRepository.FindOneByName(username);
 				if (updateUser == null)
 				{
+
 					// Handle case where user is not found
 					//Console.WriteLine("User null");
 					await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "userNotFound"), user.ClientID, true);
@@ -349,6 +422,7 @@ namespace RankingSystem.Modules
 			{
 				// Handle case where user is not found
 				//Console.WriteLine("User null");
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "contactAdmin"), user.ClientID, true);
 				return;
 			}
 			if (!await IsUserAdministrator(user))
@@ -393,6 +467,7 @@ namespace RankingSystem.Modules
 			if (user == null)
 			{
 				// Handle case where user is not found
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "contactAdmin"), user.ClientID, true);
 				return;
 			}
 			if (user.SkipSetup)
@@ -400,25 +475,17 @@ namespace RankingSystem.Modules
 				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "skippedSetupNoChannel"), user.ClientID, true);
 				return;
 			}
+			//Build Shoppage workInProgress
+			string ShopPage = @$"[color=red][b]{localizationManager.GetTranslation(user.CountryCode, "feature")}[/b][/color] | [color=green]{localizationManager.GetTranslation(user.CountryCode, "price")}[/color] | [i]{localizationManager.GetTranslation(user.CountryCode, "description")}[/i] - {localizationManager.GetTranslation(user.CountryCode, "example")}
 
-			string ShopPage = @$"
-******* [b][color=#24336b]North[/color][color=#0095db]Industries[/color][/b] *******
---- {localizationManager.GetTranslation(user.CountryCode, "shop")} --- | --- {localizationManager.GetTranslation(user.CountryCode, "shop")} --- | --- {localizationManager.GetTranslation(user.CountryCode, "shop")} ---
-
-[color=green][b]{localizationManager.GetTranslation(user.CountryCode, "feature")}[/b][/color] | [color=green]{localizationManager.GetTranslation(user.CountryCode, "price")}[/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "description")} [/color]
-
-Work in Progress! use at your own risk :D
-
-bannermsg | 15 | add a message to the server banner.
-addchannel | 35 | additional channel
-addbanner | 50 | add your own banner background.
-moveright | 50 | The right to move other clients.
-banright | 100 | The right to ban other clients.
-moderator | 250 | Moderator rights (ban, move, elevated rights).
-moderatorplus | 300 | Moderator rights + Create and edit channels.
-administrator | 500 | Administrator rights
+{localizationManager.GetTranslation(user.CountryCode, "workInProgress")}
 
 ";
+			foreach (var shopitem in _shopItems)
+			{
+				ShopPage += $"● [{shopitem.ID}] [color=red][b]{shopitem.Command}[/b][/color] | [color=green][b]{shopitem.Price}[/b][/color] | [i]{shopitem.Description}[/i] - {shopitem.Example} \n";
+			}
+			ShopPage += "\nYou can also just use the ID istead of the command. Example: shop 2";
 
 			// Split the message into command and argument
 			string[] parts = e.Message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -427,7 +494,7 @@ administrator | 500 | Administrator rights
 			{
 				// No argument provided
 				//string errorMessage = "Too many arguments";
-				await _tsFullClient.SendPrivateMessage(ShopPage, user.ClientID);
+				await SendPrivateMessage(ShopPage, user.ClientID);
 				return;
 			}
 
@@ -435,34 +502,61 @@ administrator | 500 | Administrator rights
 			string argument = parts[1].Trim().ToLower();
 			string statusMessage = "";
 			//Aditinal checks
-			switch (argument)
+			// Try to find the shop item by ID or Command
+			ShopItem selectedItem = _shopItems.FirstOrDefault(item =>
+				item.Command.ToLower() == argument || item.ID.ToString() == argument);
+
+
+			if (selectedItem != null)
 			{
-			case "show":
-				statusMessage = ShopPage;
-				break;
-			case "addchannel":
-				if (CheckIfUserHasEnoughtCredit(user, 25f))
+				// Check user credits
+				if (CheckIfUserHasEnoughtCredit(user, selectedItem.Price))
 				{
-					//create channel logic
-					user.Score -= 25;
-					_userRepository.Update(user);
-					await CreateAdditionalChannel(user);
-					await SendPrivateMessage($"You have successfully bought a new channel your credits: {user.Score}", user.ClientID, true);
+					// Handle specific commands
+					switch (selectedItem.Command)
+					{
+					case "addchannel":
+						user.Score -= selectedItem.Price;
+						_userRepository.Update(user);
+						await CreateAdditionalChannel(user);
+						await SendPrivateMessage($"You successfully bought {selectedItem.Description}. Remaining credits: {(float)Math.Round(user.Score, 2)}\n{localizationManager.GetTranslation(user.CountryCode, "addPassword")}", user.ClientID, true);
+						break;
+					case "bannermsg":
+						await SendPrivateMessage($"The command '{selectedItem.Command}' is not working yet.", user.ClientID, true);
+						break;
+					case "addbanner":
+						await SendPrivateMessage($"The command '{selectedItem.Command}' is not working yet.", user.ClientID, true);
+						break;
+					case "moveright":
+						await SendPrivateMessage($"The command '{selectedItem.Command}' is not working yet.", user.ClientID, true);
+						break;
+					case "banright":
+						await SendPrivateMessage($"The command '{selectedItem.Command}' is not working yet.", user.ClientID, true);
+						break;
+					case "moderator":
+						await SendPrivateMessage($"The command '{selectedItem.Command}' is not working yet.", user.ClientID, true);
+						break;
+					case "moderatorplus":
+						await SendPrivateMessage($"The command '{selectedItem.Command}' is not working yet.", user.ClientID, true);
+						break;
+					case "administrator":
+						await SendPrivateMessage($"The command '{selectedItem.Command}' is not working yet.", user.ClientID, true);
+						break;
+					default:
+						await SendPrivateMessage($"The command '{selectedItem.Command}' is recognized but not implemented.", user.ClientID, true);
+						break;
+					}
 				}
 				else
 				{
-					await SendPrivateMessage($"You do not have enought credits to buy a new channel. Your credits: {user.Score}", user.ClientID, true);
+					await SendPrivateMessage($"You do not have enough credits to buy {selectedItem.Description}. Your credits: {(float)Math.Round(user.Score, 2)}", user.ClientID, true);
 				}
-				//handle addchannel
-				break;
-			case "moveright":
-				//handle addchannel
-				break;
-			default:
-				//code
-				break;
 			}
-			await SendPrivateMessage(statusMessage, user.ClientID);
+			else
+			{
+				// Invalid command or ID
+				await SendPrivateMessage($"The shop item '{argument}' does not exist. Use 'shop' to see available items.", user.ClientID, true);
+			}
 		}
 
 		private bool CheckIfUserHasEnoughtCredit(TSUser user, float amount)
@@ -485,6 +579,7 @@ administrator | 500 | Administrator rights
 			if (user == null)
 			{
 				// Handle case where user is not found
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "contactAdmin"), user.ClientID, true);
 				return;
 			}
 			if (user.SkipSetup)
@@ -522,6 +617,7 @@ administrator | 500 | Administrator rights
 			if (user == null)
 			{
 				// Handle case where user is not found
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "contactAdmin"), user.ClientID, true);
 				return;
 			}
 
@@ -553,11 +649,7 @@ administrator | 500 | Administrator rights
 			{
 				// Handle invalid country code
 				string tsCountryCode = await GetUserCountryCodeFromTS(user);
-
-				string errorMessage = localizationManager.GetTranslation(tsCountryCode, "notValidCountryCode");
-				//string languagePrompt = localizationManager.GetTranslation(tsCountryCode, "whatIsYourLanguage");description
-
-				await SendPrivateMessage(errorMessage, user.ClientID, true);
+				await SendPrivateMessage(localizationManager.GetTranslation(tsCountryCode, "notValidCountryCode"), user.ClientID, true);
 			}
 		}
 
@@ -565,7 +657,6 @@ administrator | 500 | Administrator rights
 		{
 			if (message.InvokerUid == null)
 			{
-				Console.WriteLine("InvokerUid is null.");
 				return;
 			}
 
@@ -585,13 +676,7 @@ addusercredit | <amount> <user> | add credit to user.
 ";
 			}
 			//setLanguage
-			await _tsFullClient.SendPrivateMessage(@$"
-******* [b][color=#24336b]North[/color][color=#0095db]Industries[/color][/b] *******
---- {localizationManager.GetTranslation(user.CountryCode, "help")} --- | --- {localizationManager.GetTranslation(user.CountryCode, "help")} --- | --- {localizationManager.GetTranslation(user.CountryCode, "help")} ---
-
-[color=green][b]Command[/b][/color] | [color=green]<argument> optional[/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "description")} [/color]
-
-(* commands not work atm)
+			await SendPrivateMessage(@$"[color=green][b]Command[/b][/color] | [color=green]<argument> optional[/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "description")} [/color]
 
 [color=green][b]help[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "sendsThisHelp")}[/color]
 [color=green][b]hello/hi/sup[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "sendTestText")}[/color]
@@ -604,10 +689,8 @@ addusercredit | <amount> <user> | add credit to user.
 [color=green][b]shop/buy[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "shopDescript")}[/color]
 [color=green][b]setlanguage[/b][/color] [color=green]<language code>[/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "setLanguage")} (en/de/tr/ru/ir/cz/pl/ae/pt/hu/fi)[/color]
 [color=green][b]sendcredit[/b][/color] [color=green]<amount> <username>[/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "sendcredit")}[/color]
-[color=green][b]*addsteam[/b][/color] [color=green]<steamid>[/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "addSteam")}[/color]
-{adminHelp}
-
-", message.InvokerId);
+[color=green][b]addsteam[/b][/color] [color=green]<steamid>[/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "addSteam")}[/color]
+{adminHelp}", message.InvokerId);
 		}
 
 		private async Task HandleCreateMyChannel(TextMessage message)
@@ -615,7 +698,7 @@ addusercredit | <amount> <user> | add credit to user.
 			TSUser? user = _userRepository.FindOne(message.InvokerUid.Value);
 			if (user == null)
 			{
-				await SendPrivateMessage("User not found in the database.", message.InvokerId);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "contactAdmin"), user.ClientID, true);
 				return;
 			}
 
@@ -690,7 +773,7 @@ addusercredit | <amount> <user> | add credit to user.
 		{
 			if (user == null)
 			{
-				await SendPrivateMessage("User not found in the database.", user.ClientID, true);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "contactAdmin"), user.ClientID, true);
 				return;
 			}
 
@@ -700,6 +783,11 @@ addusercredit | <amount> <user> | add credit to user.
 				return;
 			}
 
+			if (user.ChannelIDInt == 0)
+			{
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "stillNoChannel"), user.ClientID, true);
+			}
+
 			if (HasUserSurpassedTimeThreshold(constants.timeToAllowChannelCreation, user))
 			{
 				var generator = new RandomNameGenerator();
@@ -707,14 +795,8 @@ addusercredit | <amount> <user> | add credit to user.
 				var newChannelId = await _channelManager.CreateChannel(user.Name);
 				if (newChannelId.HasValue)
 				{
-					user.ChannelIDInt = newChannelId.Value.Value;
-					user.ChannelID = newChannelId.Value;
-					user.WantsOwnChannel = true;
-					_userRepository.Update(user);
-
 					await _tsFullClient.ClientMove(user.ClientID, newChannelId.Value);
 					await _tsFullClient.ChannelGroupAddClient((ChannelGroupId)5, newChannelId.Value, dbuser.Value.ClientDbId);
-					await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "addPassword"), user.ClientID, true);
 				}
 			}
 			else
@@ -740,12 +822,18 @@ addusercredit | <amount> <user> | add credit to user.
 			}
 			TSUser? user = _userRepository.FindOne(message.InvokerUid.Value);
 
+			if (user == null)
+			{
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "contactAdmin"), user.ClientID, true);
+				return;
+			}
+
 			if (user.ChannelIDInt == 0)
 			{
 				user.SetupDate = DateTime.UtcNow;
 				user.SetupStep = 0;
 				_userRepository.Update(user);
-				await SendPrivateMessage($"{localizationManager.GetTranslation(user.CountryCode, "restartSetup")}", user.ClientID, true);
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "restartSetup"), user.ClientID, true);
 			}
 			else
 			{
@@ -860,7 +948,62 @@ addusercredit | <amount> <user> | add credit to user.
 			return false;
 		}
 
+		//static string AddOrUpdateUserInDatabase(string TSID, string SteamID)
+		//{
+		//	string response = "no response";
+
+		//	string databaseFolderPath = "Data Source=steam_ids.db;Upgrade=true;";
+		//	using (var connection = new SQLiteConnection(databaseFolderPath))
+		//	{
+		//		connection.Open();
+
+		//		// Check if the user with the given Steam ID already exists
+		//		using (var checkCmd = new SQLiteCommand("SELECT COUNT(*) FROM SteamIds WHERE steam_id = @steamId;", connection))
+		//		{
+		//			checkCmd.Parameters.AddWithValue("@steamId", SteamID);
+		//			int count = Convert.ToInt32(checkCmd.ExecuteScalar());
+
+		//			if (count > 0)
+		//			{
+		//				// User with Steam ID exists, update the TeamSpeak ID
+		//				using (var updateCmd = new SQLiteCommand("UPDATE SteamIds SET teamspeak_id = @teamspeakId WHERE steam_id = @steamId;", connection))
+		//				{
+		//					updateCmd.Parameters.AddWithValue("@steamId", SteamID);
+		//					updateCmd.Parameters.AddWithValue("@teamspeakId", TSID);
+		//					updateCmd.ExecuteNonQuery();
+		//					response = "user updated";
+		//				}
+		//			}
+		//			else
+		//			{
+		//				// User with Steam ID doesn't exist, add a new record
+		//				using (var insertCmd = new SQLiteCommand("INSERT INTO SteamIds (steam_id, teamspeak_id) VALUES (@steamId, @teamspeakId);", connection))
+		//				{
+		//					insertCmd.Parameters.AddWithValue("@steamId", SteamID);
+		//					insertCmd.Parameters.AddWithValue("@teamspeakId", TSID);
+		//					insertCmd.ExecuteNonQuery();
+		//					response = "New user added";
+		//				}
+		//			}
+		//		}
+		//	}
+
+		//	return response;
+		//}
+
 	}
+
+	public class ShopItem
+	{
+		public string Command { get; set; }
+		public int ID { get; set; }
+		public string Example { get; set; }
+		public string Description { get; set; }
+		public float Price { get; set; }
+
+
+	}
+
 
 	//public class User
 	//{

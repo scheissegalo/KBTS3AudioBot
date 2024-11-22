@@ -7,15 +7,13 @@
 // You should have received a copy of the Open Software License along with this
 // program. If not, see <https://opensource.org/licenses/OSL-3.0>.
 
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Newtonsoft.Json.Linq;
 using RankingSystem.Interfaces;
 using RankingSystem.Models;
 using RankingSystem.Modules;
 using RankingSystem.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TSLib;
@@ -206,12 +204,11 @@ namespace RankingSystem
 							_userRepository.Update(user);
 							user = _userRepository.FindById(user);
 							user.SetupStep = 3;
-							await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "rankingDisabled") ?? "", user.ClientID);
+							await SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "rankingDisabled"), user.ClientID, true);
 						}
 						else
 						{
-							await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "acceptRules") ?? "", user.ClientID);
-							await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "onlyYesOrNo"), user.ClientID);
+							await SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "acceptRules")+"\n"+ _localizationManager.GetTranslation(userCountryCode, "onlyYesOrNo"), user.ClientID, true);
 						}
 						break;
 					}
@@ -222,12 +219,11 @@ namespace RankingSystem
 						{
 							user.RankingEnabled = answer.Equals(localizedYes, StringComparison.OrdinalIgnoreCase);
 							user.SetupStep = 4;
-							await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "yourOwnChannel") ?? "", user.ClientID);
+							await SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "yourOwnChannel"), user.ClientID, true);
 						}
 						else
 						{
-							await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "rankingDisabled") ?? "", user.ClientID);
-							await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "onlyYesOrNo") ?? "", user.ClientID);
+							await SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "rankingDisabled"+"\n"+ _localizationManager.GetTranslation(userCountryCode, "onlyYesOrNo")), user.ClientID, true);
 						}
 						break;
 					}
@@ -248,25 +244,28 @@ namespace RankingSystem
 							{
 								if (!HasUserSurpassedTimeThreshold(constants.timeToAllowChannelCreation, user))
 								{
-									await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "notEnoughTime"), user.ClientID);
+									await SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "notEnoughTime"), user.ClientID,true);
 								}
 								else
 								{
 									ChannelId? newChannelId = await _channelManager.CreateChannel(user.Name);
 									await _tsFullClient.ClientMove(user.ClientID, newChannelId.Value);
 									await _tsFullClient.ChannelGroupAddClient((ChannelGroupId)5uL, newChannelId.Value, dbuser.Value.ClientDbId);
-									await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "addPassword"), user.ClientID);
+									await SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "addPassword")+"\n"+ _localizationManager.GetTranslation(userCountryCode, "setupComplete"), user.ClientID, true);
 									user.ChannelIDInt = newChannelId.Value.Value;
 									user.ChannelID = newChannelId.Value;
 									_userRepository.Update(user);
 								}
 							}
-							await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "setupComplete") ?? "", user.ClientID);
+							else
+							{
+								await SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "setupComplete"), user.ClientID, true);
+							}
+							
 						}
 						else
 						{
-							await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "yourOwnChannel") ?? "", user.ClientID);
-							await _tsFullClient.SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "onlyYesOrNo") ?? "", user.ClientID);
+							await SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "yourOwnChannel")+"\n"+ _localizationManager.GetTranslation(userCountryCode, "onlyYesOrNo"), user.ClientID, true);
 						}
 						break;
 					}
@@ -292,11 +291,11 @@ namespace RankingSystem
 [b]•[/b] Users Online Today: [color=green]{_onlineCounterModule.userIDS.Count} [/color]  
 [b]•[/b] Current Online Users: [color=#0044aa]{_onlineCounterModule.count}[/color]  
 
-[b][color=blue]═══════════- Personal Daily Status -══════════[/color][/b] 
+[b][color=blue]═══════════- Personal Status -══════════[/color][/b] 
 
 [b]•[/b] Username: [color=#aa4400]{user.Name}[/color]  
-[b]•[/b] Online Time: [color=#00FF00]{FormatTimeSpan(user.OnlineTime, userCountryCode)}[/color]  
-[b]•[/b] Credits: [color=#00FF00]{user.Score}[/color]  
+[b]•[/b] Your Online Time: [color=#00FF00]{FormatTimeSpan(user.OnlineTime, userCountryCode)}[/color]  
+[b]•[/b] Credits: [color=#00FF00]{(float)Math.Round(user.Score, 2)}[/color]  
 [b]•[/b] Level: [color=cyan]{GetUserLevel(user.OnlineTime)}[/color]  
 [b]•[/b] Channel: [color=white]{ChannelString} [/color]",user.ClientID);
 //						await _tsFullClient.SendPrivateMessage(@$"

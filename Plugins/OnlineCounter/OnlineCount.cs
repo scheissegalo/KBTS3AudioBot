@@ -153,7 +153,7 @@ namespace OnlineCounter
 
 			// Write back the entire updated list
 			System.IO.File.WriteAllText("user_statistics.json", JsonConvert.SerializeObject(currentStatistics));
-			Console.WriteLine("Statistics Recorded!");
+			//Console.WriteLine("Statistics Recorded!");
 		}
 
 
@@ -286,7 +286,8 @@ namespace OnlineCounter
 
 		private async void OnUserDisconnected(object sender, IEnumerable<ClientLeftView> clients)
 		{
-			await CheckOnlineUsersNeu(false);
+			await Task.Delay(500);
+			await CheckOnlineUsersNeu(false, clients);
 		}
 
 		// Method to save user data to a file
@@ -320,7 +321,7 @@ namespace OnlineCounter
 			}
 		}
 
-		private async Task CheckOnlineUsersNeu(bool connected)
+		private async Task CheckOnlineUsersNeu(bool connected, IEnumerable<ClientLeftView> clients = null)
 		{
 			if (isChecking) { return; }
 			isChecking = true;
@@ -333,6 +334,11 @@ namespace OnlineCounter
 			//bool skipCurrentClient = false;
 			foreach (var oneuser in serverView.Clients)
 			{
+				if (oneuser.Value == null)
+				{
+					continue;
+				}
+
 				if (CheckBadUsernames(oneuser.Value.Name))
 				{
 				    var cci = await tsFullClient.GetClientConnectionInfo(oneuser.Value.Id);

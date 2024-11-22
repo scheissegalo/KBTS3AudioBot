@@ -29,6 +29,7 @@ namespace RankingSystem
 		private Ts3Client ts3Client;
 		private Connection serverView;
 		private Constants constants = new Constants();
+		//private ConfigManagerService configManagerService = new ConfigManagerService();
 		public static Ranking Instance { get; private set; }
 		//LocalizationManager localizationManager = new LocalizationManager();
 		private bool looping = true;
@@ -60,6 +61,7 @@ namespace RankingSystem
 		{
 			// Build Modules
 			//ranking = new RankingModule(ts3Client, tsFullClient, serverView);
+			//configManagerService.LoadConfig();
 			onlineCounter = new OnlineCounterModule(ts3Client, tsFullClient, serverView);
 			afk = new AfkModule(ts3Client, tsFullClient, serverView);
 			admin = new AdminModule(ts3Client, tsFullClient, serverView);
@@ -69,7 +71,7 @@ namespace RankingSystem
 			userStatusUpdater = new UserStatusUpdater(mockRepo, serverGroupManager, channelManager, localizationManager, tsFullClient);
 			_onboardingModule = new OnboardingModule(mockRepo, commandManager, channelManager, serverGroupManager, localizationManager, userStatusUpdater, onlineCounter, tsFullClient);
 			statistics = new StatisticsModule(onlineCounter, _onboardingModule);
-
+			
 
 			//onlineboarding = new OnboardingModule(TSUser);
 
@@ -90,7 +92,6 @@ namespace RankingSystem
 
 			//Start main loop BLOCKS (await to infinity)!!!!!dfd
 			await StartLoop();
-
 		}
 
 		private async Task StartLoop()

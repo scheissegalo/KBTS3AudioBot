@@ -408,16 +408,13 @@ namespace AutoChannel
 			"HP",     // Health Points
 			"XP",     // Experience Points
 			"DPS",    // Damage Per Second
-			"GUNS",    // Away From Keyboard
 			"LIMA",    // Heads-Up Display
 			"BLIZ",   // Game mode
 			"TANGO",    // Game environment
 			"RACE",   // Racing games or mode
 			"TEAM",   // Team-based play
-			"WAR",   // Character customization
 			"ZONE",   // Game region or level
 			"RELOAD",    // Modifications
-			"GUN",    // Weapons
 			"CHARGE",    // Tagging mechanics
 			"MED",    // Health or medkit
 			"SQUAD",  // Team or group
@@ -427,7 +424,100 @@ namespace AutoChannel
 			"BATTALION",   // Waves of enemies
 			"COMPANY",  // Player level or stage
 			"WIN",    // Winning a game
-			"SQUAD"    // Losing a game
+			"SQUAD",   // Losing a game
+			"HUNTER",   // Losing a game
+			"WIZARD",   // Losing a game
+			"MYSTIC",   // Losing a game
+			"TITAN",   // Losing a game
+			"SLAYER",   // Losing a game
+			"PHANTOM",   // Losing a game
+			"DRAGON",   // Losing a game
+			"NEXUS",   // Losing a game
+			"GOBLIN",   // Losing a game
+			"PORTAL",   // Losing a game
+			"EMPIRE",   // Losing a game
+			"DRUID",   // Losing a game
+			"GLADIATOR",   // Losing a game
+			"INFERNO",   // Losing a game
+			"SHADOW"    // Losing a game
+		};
+
+		private static readonly List<string> emojis = new List<string>
+		{
+			"🎮",
+			"☢️",
+			"💀",
+			"❤️",
+			"☣️",
+			"🔥",
+			"😈",
+			"👽",
+			"⚔️",
+			"⭐",
+			"💥",
+			"✨",
+			"🍻",
+			"👺",
+			"⚡",
+			"👻",
+			"💲",
+			"🚨",
+			"🌸",
+			"👮‍",
+			"🤙",
+			"👿",
+			"❄️",
+			"💎",
+			"🥇",
+			"🌍",
+			"🍌",
+			"🎲",
+			"🕹️",
+			"🍀",
+			"💯",
+			"👍",
+			"😂",
+			"🤖",
+			"🚀",
+			"🚬",
+			"💪",
+			"🔪",
+			"💬",
+			"🥴",
+			"🤟",
+			"🤼🏽",
+			"🍕",
+			"💣",
+			"💡",
+			"🍒",
+			"🐜",
+			"⚽",
+			"🦐",
+			"🍍",
+			"🧙‍",
+			"🤝",
+			"🐱",
+			"🐭",
+			"🌲",
+			"🔧",
+			"🏋",
+			"👑",
+			"🐼",
+			"🤮",
+			"🎯",
+			"⛏",
+			"👁️‍🗨️",
+			"🦢",
+			"🦙",
+			"🦅",
+			"✈",
+			"🐘",
+			"𐐘💥╾━╤デ╦︻ඞා",
+			"εつ▄█▀█●",
+			"╾━╤デ╦︻",
+			"⋆༺𓆩☠︎𓆪༻⋆",
+			"▄︻デ══━一💥",
+
 		};
 
 		private static readonly Random random = new Random();
@@ -436,7 +526,8 @@ namespace AutoChannel
 		{
 			// Get a random index to select a word from the list
 			int index = random.Next(ThreeLetterWords.Count);
-			return ThreeLetterWords[index];
+			int emojiIndex = random.Next(emojis.Count);
+			return ThreeLetterWords[index]+" "+emojis[emojiIndex];
 		}
 	}
 }
