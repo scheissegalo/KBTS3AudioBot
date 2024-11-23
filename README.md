@@ -90,10 +90,16 @@ Pick and download the build for your platform and liking:
 
 #### Linux
 Install the required dependencies:
-* on **Ubuntu**/**Debian**:  
-Run `sudo apt-get install libopus-dev ffmpeg`
-* on **Arch Linux**:  
-Run `sudo pacman -S opus ffmpeg`
+
+~~ * on **Ubuntu**/**Debian**:  ~~
+~~ Run `sudo apt-get install libopus-dev ffmpeg`~~ 
+~~ * on **Arch Linux**:  ~~ 
+~~ Run `sudo pacman -S opus ffmpeg`~~ 
+Since KBTS3AudioBot v0.13.160, opus v1.5.2 is included.
+* on **Ubuntu**/**Debian**:
+Run `sudo apt-get install ffmpeg`
+* on **Arch Linux**:
+Run `sudo pacman -S ffmpeg`
 * on **CentOS 7**:  
 Run
     ```
@@ -101,6 +107,7 @@ Run
     sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
     sudo yum -y install ffmpeg opus-devel
 	```
+
 * **manually**:
     1. Make sure you have a C compiler installed
     1. Make the Opus script runnable with `chmod u+x InstallOpus.sh` and run it with `./InstallOpus.sh`
@@ -117,7 +124,7 @@ If the bot can't play some youtube videos it might be due to some embedding rest
 You can install the [youtube-dl](https://github.com/rg3/youtube-dl/) binary or source folder (and specify the path in the config) to try to bypass this.
 
 ### First time setup
-1. Run the bot with `./TS3AudioBot` (Linux) or `TS3AudioBot.exe` (Windows) and follow the setup instructions.
+1. Run the bot with `./start.sh` (Linux) or `TS3AudioBot.exe` (Windows) and follow the setup instructions.
 1. (Optional) Close the bot and configure your `rights.toml` to your desires.
 You can use the template rules as suggested in the automatically generated file,
 or dive into the rights syntax [here](https://github.com/scheissegalo/TS3AudioBot/wiki/Rights).
@@ -133,13 +140,13 @@ For further reading check out the [CommandSystem](https://github.com/scheissegal
 Download the git repository with `git clone --recurse-submodules https://github.com/scheissegalo/KBTS3AudioBot.git`.
 
 #### Linux
-1. Get the latest `dotnet core 3.1` version by following [this tutorial](https://docs.microsoft.com/dotnet/core/install/linux-package-managers) and choose your platform
+1. Get the latest `dotnet 6` version by following [this tutorial](https://docs.microsoft.com/dotnet/core/install/linux-package-managers) and choose your platform
 1. Go into the directory of the repository with `cd KBTS3AudioBot`
 1. Execute `dotnet build --framework netcoreapp3.1 --configuration Release KBTS3AudioBot` to build the AudioBot
-1. The binary will be in `./KBTS3AudioBot/bin/Release/netcoreapp3.1` and can be run with `dotnet KBTS3AudioBot.dll`
+1. The binary will be in `./KBTS3AudioBot/bin/Release/net6` and can be run with `dotnet KBTS3AudioBot.dll`
 
 #### Windows
-1. Make sure you have `Visual Studio` with the `dotnet core 3.1` development toolchain installed
+1. Make sure you have `Visual Studio` with the `dotnet 6` development toolchain installed
 1. Build the AudioBot with Visual Studio.
 
 ### Building the WebInterface
