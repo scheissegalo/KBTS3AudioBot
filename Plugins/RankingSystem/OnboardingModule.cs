@@ -218,8 +218,18 @@ namespace RankingSystem
 						if (answer.Equals(localizedYes, StringComparison.OrdinalIgnoreCase) || answer.Equals(localizedNo, StringComparison.OrdinalIgnoreCase))
 						{
 							user.RankingEnabled = answer.Equals(localizedYes, StringComparison.OrdinalIgnoreCase);
-							user.SetupStep = 4;
-							await SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "yourOwnChannel"), user.ClientID, true);
+							if (user.AcceptedRules)
+							{
+								user.SetupStep = 4;
+								await SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "yourOwnChannel"), user.ClientID, true);
+							}
+							else
+							{
+								user.SetupStep = 5;
+								user.SetupDone = true;
+								_userRepository.Update(user);
+								await SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "setupComplete"), user.ClientID, true);
+							}
 						}
 						else
 						{

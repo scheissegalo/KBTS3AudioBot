@@ -25,17 +25,35 @@ namespace TSLib.Helper
 
 		public static bool DirectLoadLibrary(string lib, Action? dummyLoad = null)
 		{
+			//foreach (var path in LibPathOptions(lib))
+			//{
+			//	Log.Debug($"Trying path: {path} with library: {lib}");
+			//}
 			if (Tools.IsLinux)
 			{
-				try
+				foreach (var libPath in LibPathOptions(lib))
 				{
-					dummyLoad?.Invoke();
+					try
+					{
+						// Temporarily change the library search path if necessary
+						Environment.SetEnvironmentVariable("LD_LIBRARY_PATH", Path.GetDirectoryName(libPath));
+						dummyLoad?.Invoke();
+						return true;
+					}
+					catch (DllNotFoundException ex)
+					{
+						Log.Error(ex, "Failed to load library \"{0}\" from path \"{1}\".", lib, libPath);
+					}
 				}
-				catch (DllNotFoundException ex)
-				{
-					Log.Error(ex, "Failed to load library \"{0}\".", lib);
-					return false;
-				}
+				//try
+				//{
+				//	dummyLoad?.Invoke();
+				//}
+				//catch (DllNotFoundException ex)
+				//{
+				//	Log.Error(ex, "Failed to load library \"{0}\".", lib);
+				//	return false;
+				//}
 			}
 			else
 			{

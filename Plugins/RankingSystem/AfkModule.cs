@@ -14,6 +14,9 @@ using TSLib.Full.Book;
 using TSLib.Full;
 using TSLib;
 using System.Collections.Generic;
+using RankingSystem.Interfaces;
+using RankingSystem.Models;
+using System.Linq;
 
 namespace RankingSystem
 {
@@ -24,6 +27,7 @@ namespace RankingSystem
 		private Connection serverView;
 		private Constants constants = new Constants();
 		LocalizationManager localizationManager = new LocalizationManager();
+		public readonly IUserRepository _userRepository;
 
 		private int AFKNotice;
 
@@ -31,11 +35,12 @@ namespace RankingSystem
 		//Dictionary<int, bool> warnedUsers = new Dictionary<int, bool>();
 		Dictionary<int, DateTime> warnedUsers = new Dictionary<int, DateTime>();
 
-		public AfkModule(Ts3Client ts3Client, TsFullClient tsFullClient, Connection serverView)
+		public AfkModule(Ts3Client ts3Client, TsFullClient tsFullClient, Connection serverView, IUserRepository userRepository)
 		{
 			this.ts3Client = ts3Client;
 			this.tsFullClient = tsFullClient;
 			this.serverView = serverView;
+			_userRepository = userRepository;
 		}
 
 		public void StartAfkModule()
@@ -67,7 +72,14 @@ namespace RankingSystem
 					if (skipCurrentClient)
 						continue;
 
-					if (GetUserCountFromChannelId(client.Value.Channel) > 1	&& client.Value.Channel != constants.AfkChannel && !client.Value.ServerGroups.Contains(constants.NoAfkGroup))
+					TSUser? tsuser = _userRepository.FindOne(client.Value.Uid.Value);
+					if (tsuser != null)
+					{
+						if (!tsuser.RankingEnabled)
+							continue;
+					}
+
+					if (GetUserCountFromChannelId(client.Value.Channel) > 1 && client.Value.Channel != constants.AfkChannel && !client.Value.ServerGroups.Contains(constants.NoAfkGroup))
 					{
 						var ci = await ts3Client.GetClientInfoById(client.Value.Id);
 
@@ -92,7 +104,7 @@ namespace RankingSystem
 										await tsFullClient.SendPrivateMessage(noticeMessage, client.Value.Id);
 										//Console.WriteLine($"Sendind User message {ci.Name} AFKNoticeTime is: {totalMinutesAfk}>={AFKNotice}");
 									}
-									
+
 									// Mark the user as warned by setting the current date
 									warnedUsers[client.Value.Id.Value] = DateTime.Now;
 								}

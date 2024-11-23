@@ -63,6 +63,8 @@ namespace RankingSystem.Services
 
 				foreach (var user in allUsers.Value)
 				{
+					if (user == null)
+						{ continue; }
 
 					//Check if user is not a query user
 					if (user.ClientType.Equals(ClientType.Full))
@@ -193,10 +195,6 @@ namespace RankingSystem.Services
 										}
 									}
 
-									if (!tsuser.RankingEnabled)
-									{
-										continue;
-									}
 
 									//check if user over 30 min and wants a channel
 									if (HasUserSurpassedTimeThreshold(constants.timeToAllowChannelCreation, tsuser) && tsuser.WantsOwnChannel && tsuser.ChannelIDValue != 0 && !tsuser.WantsOwnChannelNotificationSend)
@@ -211,6 +209,11 @@ namespace RankingSystem.Services
 										await SendPrivateMessage(_localizationManager.GetTranslation(tsuser.CountryCode, "enterAndUseChannel"), tsuser.ClientID, true);
 										tsuser.NotificationChannelsUnlocked = true;
 										_userRepository.Update(tsuser);
+									}
+
+									if (!tsuser.RankingEnabled)
+									{
+										continue;
 									}
 
 									if (fulluser.Value.ChannelId == constants.AfkChannel)

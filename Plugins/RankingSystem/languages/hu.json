@@ -100,5 +100,6 @@
   "disableStatus": "A napi státusz üzenet letiltása vagy engedélyezése.",
   "addSteam": "Add hozzá a Steam ID-dat, hogy jutalmakat kapj a szavazásért. Nézd meg [url=https://www.steamidfinder.com/]ezt az oldalt[/url] a ID-d kereséséhez.",
   "shopDescript": "Szerezz további funkciókat. Írd be shop vagy buy parancsot több információért.",
-  "setLanguage": "Állítsd be a preferált nyelved."
+  "setLanguage": "Állítsd be a preferált nyelved.",
+  "notAcceptedRules": "Sajnáljuk, ez nem lehetséges, mivel nem fogadtad el a szabályainkat! Írd be, hogy 'restart', ha újra szeretnéd kezdeni a beállítást!"
 }

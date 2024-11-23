@@ -100,5 +100,6 @@
   "stillNoChannel": "Hala kendi kanalınızı oluşturmadınız! Şimdi createmychannel yazabilirsiniz.",
   "disableStatus": "Günlük durum mesajını etkinleştirir veya devre dışı bırakır.",
   "addSteam": "Oylama için ödüller almak adına Steam ID'nizi ekleyin. ID'nizi bulmak için [url=https://www.steamidfinder.com/]bu sayfaya[/url] göz atabilirsiniz.",
-  "shopDescript": "Ek özelliklerin kilidini açın. Daha fazla bilgi için shop veya buy yazın."
+  "shopDescript": "Ek özelliklerin kilidini açın. Daha fazla bilgi için shop veya buy yazın.",
+  "notAcceptedRules": "Üzgünüm, bu mümkün değil çünkü kurallarımızı kabul etmediniz! Onboarding'i yeniden başlatmak için 'restart' yazın!"
 }

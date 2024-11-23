@@ -89,6 +89,7 @@
   "steamAddSuccess": "Your Steam ID has been successfully added.",
   "dialyStatus": "Daily Status Disabled.",
   "price": "Price",
+  "notAcceptedRules": "Sorry, that is not possible since you have not accepted our rules! Type 'restart' to restart the onboarding!!",
   "enterAndUseChannel": "Congrats! You can now enter and use channels with 🔒 on them.",
   "noCreditToYourself": "You cannot send credits to yourself!",
   "alreadySetupDone": "You already completed the setup!",

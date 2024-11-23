@@ -116,8 +116,7 @@ namespace TS3AudioBot
 		{
 			bool loaded = TSLib.Audio.Opus.NativeMethods.PreloadLibrary();
 			if (!loaded)
-				Log.Error("Couldn't find libopus. Make sure it is installed or placed in the correct folder.");
-				Log.Info("have you installed the required dependencies? apt install libopus-dev");
+				Log.Error("Couldn't find libopus. Make sure it is installed or placed in the correct folder.\nhave you installed the required dependencies? apt install libopus-dev");
 			return loaded;
 		}
 

@@ -63,7 +63,7 @@ namespace RankingSystem
 			//ranking = new RankingModule(ts3Client, tsFullClient, serverView);
 			//configManagerService.LoadConfig();
 			onlineCounter = new OnlineCounterModule(ts3Client, tsFullClient, serverView);
-			afk = new AfkModule(ts3Client, tsFullClient, serverView);
+			afk = new AfkModule(ts3Client, tsFullClient, serverView, mockRepo);
 			admin = new AdminModule(ts3Client, tsFullClient, serverView);
 
 			channelManager = new ChannelManager(tsFullClient);

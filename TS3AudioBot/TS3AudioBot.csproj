@@ -27,7 +27,11 @@
     <Version>1.0.0</Version>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="lib\x64\libopus.so" />
+    <None Remove="lib\x86\libopus.so" />
     <None Remove="NLog.config" />
+    <None Remove="Resources\start.sh" />
+    <None Remove="WebInterface\readme.txt" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CliWrap" Version="3.1.0" />
@@ -60,12 +64,24 @@
       <PackagePath>.</PackagePath>
       <Pack>true</Pack>
     </Content>
+    <Content Include="lib\x64\libopus.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="lib\x86\libopus.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <PackagePath>.</PackagePath>
       <Pack>true</Pack>
     </Content>
+    <Content Include="lib\x86\libopus.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\start.sh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebInterface\readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

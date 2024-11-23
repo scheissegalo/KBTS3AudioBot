@@ -15,8 +15,6 @@ namespace RankingSystem
 {
 	internal class Constants
 	{
-		public readonly string fileName = "ranking.toml";
-		//public readonly List<uint> BotGroups = new List<uint> { 11, 47, 115 };
 		public readonly List<ServerGroupId> BotGroupsE = new List<ServerGroupId> { (ServerGroupId)11, (ServerGroupId)47, (ServerGroupId)115 };
 		public readonly ServerGroupId AdminGroup = (ServerGroupId)90;
 		public readonly ChannelId onlineCountChannel = (ChannelId)171;
@@ -35,6 +33,8 @@ namespace RankingSystem
 		public readonly bool SendDaylyMessage = false;
 		public readonly TimeSpan timeToAllowChannelCreation = TimeSpan.FromMinutes(30);
 
+		public readonly string helpHeader = "[b]└─────────────────↓═- HELP -═↓─────────────────┘[/b]";
+		public readonly string shopHeader = "[b]└─────────────────↓═- SHOP -═↓─────────────────┘[/b]";
 		public readonly string messageHeader = @$"
 [b]══════════════════════════════════════════════[/b]
 [b]  [color=#24336b]███[/color][color=#0095db]██[/color]  [color=#24336b]North[/color][color=#0095db]Industries[/color] - Free Secure Gaming Services  [color=#0095db]██[/color][color=#24336b]███[/color]  [/b]

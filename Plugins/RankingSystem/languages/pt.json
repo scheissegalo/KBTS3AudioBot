@@ -100,5 +100,6 @@
   "stillNoChannel": "Você ainda não criou seu próprio canal gratuito! Basta digitar createmychannel.",
   "disableStatus": "Desativa ou ativa a mensagem de status diário.",
   "addSteam": "Adicione seu Steam ID para ganhar recompensas por votar. Confira [url=https://www.steamidfinder.com/]esta página[/url] para encontrar seu ID.",
-  "shopDescript": "Desbloqueie recursos adicionais. Digite shop ou buy para mais informações."
+  "shopDescript": "Desbloqueie recursos adicionais. Digite shop ou buy para mais informações.",
+  "notAcceptedRules": "Desculpe, isso não é possível, pois você não aceitou nossas regras! Digite 'restart' para reiniciar o processo de integração!"
 }

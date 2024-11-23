@@ -100,5 +100,6 @@
   "stillNoChannel": "Stále jste nevytvořili svůj vlastní bezplatný kanál! Stačí napsat createmychannel.",
   "disableStatus": "Zakáže nebo povolí denní stavovou zprávu.",
   "addSteam": "Přidejte své Steam ID pro získání odměn za hlasování. Podívejte se na [url=https://www.steamidfinder.com/]tuto stránku[/url] pro nalezení vašeho ID.",
-  "shopDescript": "Odemkněte další funkce. Napište shop nebo buy pro více informací."
+  "shopDescript": "Odemkněte další funkce. Napište shop nebo buy pro více informací.",
+  "notAcceptedRules": "Je nám líto, ale to není možné, protože jste nepřijali naše pravidla! Zadejte 'restart', abyste znovu zahájili onboarding!"
 }

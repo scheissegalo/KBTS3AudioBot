@@ -17,6 +17,7 @@ using RankingSystem.Models;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using static RankingSystem.RankingModule;
 
 
 namespace RankingSystem.Modules
@@ -476,9 +477,11 @@ namespace RankingSystem.Modules
 				return;
 			}
 			//Build Shoppage workInProgress
-			string ShopPage = @$"[color=red][b]{localizationManager.GetTranslation(user.CountryCode, "feature")}[/b][/color] | [color=green]{localizationManager.GetTranslation(user.CountryCode, "price")}[/color] | [i]{localizationManager.GetTranslation(user.CountryCode, "description")}[/i] - {localizationManager.GetTranslation(user.CountryCode, "example")}
+			string ShopPage = @$"{constants.shopHeader}
 
-{localizationManager.GetTranslation(user.CountryCode, "workInProgress")}
+[color=red][b]{localizationManager.GetTranslation(user.CountryCode, "feature")}[/b][/color] | [color=green]{localizationManager.GetTranslation(user.CountryCode, "price")}[/color] | [i]{localizationManager.GetTranslation(user.CountryCode, "description")}[/i] - {localizationManager.GetTranslation(user.CountryCode, "example")}
+
+{localizationManager.GetTranslation(user.CountryCode, "workInProgress")} [color=#aa4400]Your available Credits: [b]{(float)Math.Round(user.Score, 2)}[/b][/color]
 
 ";
 			foreach (var shopitem in _shopItems)
@@ -522,25 +525,25 @@ namespace RankingSystem.Modules
 						await SendPrivateMessage($"You successfully bought {selectedItem.Description}. Remaining credits: {(float)Math.Round(user.Score, 2)}\n{localizationManager.GetTranslation(user.CountryCode, "addPassword")}", user.ClientID, true);
 						break;
 					case "bannermsg":
-						await SendPrivateMessage($"The command '{selectedItem.Command}' is not working yet.", user.ClientID, true);
+						await SendComingSoon(selectedItem.Command, user);
 						break;
 					case "addbanner":
-						await SendPrivateMessage($"The command '{selectedItem.Command}' is not working yet.", user.ClientID, true);
+						await SendComingSoon(selectedItem.Command, user);
 						break;
 					case "moveright":
-						await SendPrivateMessage($"The command '{selectedItem.Command}' is not working yet.", user.ClientID, true);
+						await SendComingSoon(selectedItem.Command, user);
 						break;
 					case "banright":
-						await SendPrivateMessage($"The command '{selectedItem.Command}' is not working yet.", user.ClientID, true);
+						await SendComingSoon(selectedItem.Command, user);
 						break;
 					case "moderator":
-						await SendPrivateMessage($"The command '{selectedItem.Command}' is not working yet.", user.ClientID, true);
+						await SendComingSoon(selectedItem.Command, user);
 						break;
 					case "moderatorplus":
-						await SendPrivateMessage($"The command '{selectedItem.Command}' is not working yet.", user.ClientID, true);
+						await SendComingSoon(selectedItem.Command, user);
 						break;
 					case "administrator":
-						await SendPrivateMessage($"The command '{selectedItem.Command}' is not working yet.", user.ClientID, true);
+						await SendComingSoon(selectedItem.Command, user);
 						break;
 					default:
 						await SendPrivateMessage($"The command '{selectedItem.Command}' is recognized but not implemented.", user.ClientID, true);
@@ -557,6 +560,11 @@ namespace RankingSystem.Modules
 				// Invalid command or ID
 				await SendPrivateMessage($"The shop item '{argument}' does not exist. Use 'shop' to see available items.", user.ClientID, true);
 			}
+		}
+
+		private async Task SendComingSoon(string item, TSUser user)
+		{
+			await SendPrivateMessage($"The item '{item}' is not available yet. Please check back regularly, as the feature might become available soon.", user.ClientID, true);
 		}
 
 		private bool CheckIfUserHasEnoughtCredit(TSUser user, float amount)
@@ -585,6 +593,11 @@ namespace RankingSystem.Modules
 			if (user.SkipSetup)
 			{
 				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "skippedSetupNoChannel"), user.ClientID, true);
+				return;
+			}
+			if (!user.AcceptedRules)
+			{
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "notAcceptedRules"), user.ClientID, true);
 				return;
 			}
 
@@ -676,20 +689,22 @@ addusercredit | <amount> <user> | add credit to user.
 ";
 			}
 			//setLanguage
-			await SendPrivateMessage(@$"[color=green][b]Command[/b][/color] | [color=green]<argument> optional[/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "description")} [/color]
+			await SendPrivateMessage(@$"{constants.helpHeader}
 
-[color=green][b]help[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "sendsThisHelp")}[/color]
-[color=green][b]hello/hi/sup[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "sendTestText")}[/color]
-[color=green][b]skipsetup[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "toSkipOnboarding")}[/color]
-[color=green][b]restart[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "restartOnboarding")}[/color]
-[color=green][b]deletemychannel[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "deleteYourOwnChannel")}[/color]
-[color=green][b]createmychannel[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "createYourOwnChannel")}[/color]
-[color=green][b]mychannel[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "movesIntoYourChannel")}[/color]
-[color=green][b]disablestatus[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "disableStatus")}[/color]
-[color=green][b]shop/buy[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "shopDescript")}[/color]
-[color=green][b]setlanguage[/b][/color] [color=green]<language code>[/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "setLanguage")} (en/de/tr/ru/ir/cz/pl/ae/pt/hu/fi)[/color]
-[color=green][b]sendcredit[/b][/color] [color=green]<amount> <username>[/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "sendcredit")}[/color]
-[color=green][b]addsteam[/b][/color] [color=green]<steamid>[/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "addSteam")}[/color]
+[color=green][b]Command[/b][/color] | [color=green]<argument> optional[/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "description")} [/color]
+
+[b]•[/b]| [color=green][b]help[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "sendsThisHelp")}[/color]
+[b]•[/b]| [color=green][b]hello/hi/sup[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "sendTestText")}[/color]
+[b]•[/b]| [color=green][b]skipsetup[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "toSkipOnboarding")}[/color]
+[b]•[/b]| [color=green][b]restart[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "restartOnboarding")}[/color]
+[b]•[/b]| [color=green][b]deletemychannel[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "deleteYourOwnChannel")}[/color]
+[b]•[/b]| [color=green][b]createmychannel[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "createYourOwnChannel")}[/color]
+[b]•[/b]| [color=green][b]mychannel[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "movesIntoYourChannel")}[/color]
+[b]•[/b]| [color=green][b]disablestatus[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "disableStatus")}[/color]
+[b]•[/b]| [color=green][b]shop/buy[/b][/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "shopDescript")}[/color]
+[b]•[/b]| [color=green][b]setlanguage[/b][/color] [color=green]<language code>[/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "setLanguage")} (en/de/tr/ru/ir/cz/pl/ae/pt/hu/fi)[/color]
+[b]•[/b]| [color=green][b]sendcredit[/b][/color] [color=green]<amount> <username>[/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "sendcredit")}[/color]
+[b]•[/b]| [color=green][b]addsteam[/b][/color] [color=green]<steamid>[/color] | [color=red]{localizationManager.GetTranslation(user.CountryCode, "addSteam")}[/color]
 {adminHelp}", message.InvokerId);
 		}
 
@@ -705,6 +720,12 @@ addusercredit | <amount> <user> | add credit to user.
 			if (user.SkipSetup)
 			{
 				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "skippedSetupNoChannel"), user.ClientID, true);
+				return;
+			}
+
+			if (!user.AcceptedRules)
+			{
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "notAcceptedRules"), user.ClientID, true);
 				return;
 			}
 
@@ -747,6 +768,11 @@ addusercredit | <amount> <user> | add credit to user.
 		private async Task HandleDeleteMyChannel(TextMessage message)
 		{
 			TSUser? user = _userRepository.FindOne(message.InvokerUid.Value);
+			if (!user.AcceptedRules)
+			{
+				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "notAcceptedRules"), user.ClientID, true);
+				return;
+			}
 			if (user == null || user.ChannelIDInt == 0)
 			{
 				await SendPrivateMessage(localizationManager.GetTranslation(user.CountryCode, "noChannelToDelete"), message.InvokerId, true);
@@ -930,7 +956,7 @@ addusercredit | <amount> <user> | add credit to user.
 			return tsuser.OnlineTime >= threshold;
 		}
 
-		private async Task<bool> SendPrivateMessage(string message, ClientId client, bool format = false)
+		private async Task<bool> SendPrivateMessage(string message, ClientId client, bool format = false, bool noSpace = false)
 		{
 			if (format)
 			{

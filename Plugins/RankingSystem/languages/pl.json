@@ -100,5 +100,6 @@
   "stillNoChannel": "Wciąż nie stworzyłeś swojego własnego, darmowego kanału! Wpisz createmychannel.",
   "disableStatus": "Wyłącza lub włącza codzienny status.",
   "addSteam": "Dodaj swój identyfikator Steam, aby otrzymywać nagrody za głosowanie. Sprawdź [url=https://www.steamidfinder.com/]tę stronę[/url], aby znaleźć swój identyfikator.",
-  "shopDescript": "Odblokuj dodatkowe funkcje. Wpisz shop lub buy, aby uzyskać więcej informacji."
+  "shopDescript": "Odblokuj dodatkowe funkcje. Wpisz shop lub buy, aby uzyskać więcej informacji.",
+  "notAcceptedRules": "Przepraszamy, to nie jest możliwe, ponieważ nie zaakceptowałeś naszych zasad! Wpisz 'restart', aby ponownie rozpocząć wprowadzenie!"
 }

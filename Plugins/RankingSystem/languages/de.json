@@ -100,5 +100,6 @@
   "stillNoChannel": "Du hast noch keinen eigenen kostenlosen Channel erstellt! Tippe einfach createmychannel.",
   "disableStatus": "Deaktiviert oder aktiviert die tägliche Statusnachricht.",
   "addSteam": "Füge deine Steam-ID hinzu, um Belohnungen für das Abstimmen zu erhalten. Besuche [url=https://www.steamidfinder.com/]diese Seite[/url], um deine ID zu finden.",
-  "shopDescript": "Schalte zusätzliche Funktionen frei. Tippe shop oder buy für mehr Informationen."
+  "shopDescript": "Schalte zusätzliche Funktionen frei. Tippe shop oder buy für mehr Informationen.",
+  "notAcceptedRules": "Entschuldigung, das ist nicht möglich, da Sie unsere Regeln nicht akzeptiert haben! Geben Sie 'restart' ein, um die Einführung neu zu starten!"
 }

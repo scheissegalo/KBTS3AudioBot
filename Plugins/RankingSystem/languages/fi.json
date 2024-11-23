@@ -100,5 +100,6 @@
   "stillNoChannel": "Et ole vielä luonut omaa ilmaista kanavaasi! Kirjoita 'createmychannel'.",
   "disableStatus": "Poistaa käytöstä tai ottaa käyttöön päivittäisen tilan viestin.",
   "addSteam": "Lisää Steam ID:si saadaksesi palkintoja äänestämisestä. Tarkista [url=https://www.steamidfinder.com/]tämä sivu[/url] löytääksesi ID:si.",
-  "shopDescript": "Avaa lisäominaisuuksia. Kirjoita 'shop' tai 'buy' saadaksesi lisätietoja."
+  "shopDescript": "Avaa lisäominaisuuksia. Kirjoita 'shop' tai 'buy' saadaksesi lisätietoja.",
+  "notAcceptedRules": "Valitettavasti tämä ei ole mahdollista, koska et ole hyväksynyt sääntöjämme! Kirjoita 'restart' aloittaaksesi aloitusprosessin uudelleen!"
 }
