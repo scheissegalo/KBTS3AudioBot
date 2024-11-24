@@ -77,7 +77,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           tag_name: ${{ env.VERSION }}
-          release_name: "Dev-Release ${{ env.VERSION }}"
+          release_name: "Pre-Release ${{ env.VERSION }}"
           body: |
             This is the release notes for version ${{ env.VERSION }}
           draft: false
