@@ -23,6 +23,7 @@ namespace AutoChannel
 		private TsFullClient tsFullClient;
 		private Ts3Client ts3Client;
 		private Connection serverView;
+		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
 		// Create by Player count Channel ID to create subchannels in (Remote: 589 | Local: 506
 		private ChannelId parentChannelId;// = (ChannelId)589;
@@ -42,31 +43,34 @@ namespace AutoChannel
 			Instance = this;
 		}
 
-		private void LoadParentChannels()
+		private async Task LoadParentChannels()
 		{
 			// Retrieve all channels under the main parent channel
-			var channels = serverView.Channels; // Replace with actual method to get channels
+			//var channels = serverView.Channels; // Replace with actual method to get channels
+			var channels = await tsFullClient.ChannelList();
 
-			Console.WriteLine($"Iteration over {channels.Count} channels");
+			//Console.WriteLine($"Iteration over {channels.Value.Count()} channels");
+			Log.Debug($"Iteration over {channels.Value.Count()} channels");
 
-			foreach (var channel in channels)
+			foreach (var channel in channels.Value)
 			{
 				// Check if channel matches your parent naming pattern
-				if (channel.Value.Name.StartsWith("▪ ■ ┐ (") && channel.Value.Name.Contains("Player-Channels"))
+				if (channel.Name.StartsWith("▪ ■ ┐ (") && channel.Name.Contains("Player-Channels"))
 				{
 					// Extract the maxClients number from the name (assuming it's always formatted this way)
-					var maxClientsString = channel.Value.Name.Split('(')[1].Split(')')[0];
+					var maxClientsString = channel.Name.Split('(')[1].Split(')')[0];
 					if (int.TryParse(maxClientsString, out int maxClients))
 					{
 						if (!parentChannels.ContainsKey(maxClients))
 						{
 							parentChannels[maxClients] = new List<ChannelId>();
 						}
-						parentChannels[maxClients].Add(channel.Value.Id);
+						parentChannels[maxClients].Add(channel.ChannelId);
 					}
 				}
 			}
-			Console.WriteLine($"{parentChannels.Count.ToString()} Parent channels Loaded");
+			//Console.WriteLine($"{parentChannels.Count.ToString()} Parent channels Loaded");
+			Log.Debug($"{parentChannels.Count.ToString()} Parent channels Loaded");
 		}
 
 		private async Task CreateParentChannels()
@@ -107,7 +111,8 @@ namespace AutoChannel
 						}
 						catch (Exception ex)
 						{
-							Console.WriteLine($"Error deleting channel {channel.Name}: {ex.Message}");
+							//Console.WriteLine($"Error deleting channel {channel.Name}: {ex.Message}");
+							Log.Error($"Error deleting channel {channel.Name}: {ex.Message}");
 						}
 						//Console.WriteLine($"Delete Channel {channel.Name}");
 						//await tsFullClient.ChannelDelete(channel.ChannelId);
@@ -116,7 +121,8 @@ namespace AutoChannel
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Error fetching channel list: {ex.Message}");
+				//Console.WriteLine($"Error fetching channel list: {ex.Message}");
+				Log.Error($"Error fetching channel list: {ex.Message}");
 			}
 		}
 
@@ -164,7 +170,7 @@ namespace AutoChannel
 			//Console.WriteLine($"Started Channel Check");
 			occupancyChannels.Clear();
 			var chanList = await tsFullClient.ChannelList();
-			Dictionary<ChannelId, Channel> serverChannels = serverView.Channels;
+			//Dictionary<ChannelId, Channel> serverChannels = serverView.Channels;
 
 			// Pre-build a lookup dictionary of parent channel IDs for quick access
 			var parentChannelLookup = new Dictionary<ChannelId, int>();
@@ -207,7 +213,8 @@ namespace AutoChannel
 			}
 
 			var allClients = await tsFullClient.ClientList();
-			Console.WriteLine($"Finished Refresh list {occupancyChannels.Count} channels");
+			//Console.WriteLine($"Finished Refresh list {occupancyChannels.Count} channels");
+			Log.Debug($"Finished Refresh list {occupancyChannels.Count} channels");
 			// Ensure each occupancy level has exactly 2 free channels
 			foreach (var entry in parentChannels)
 			{
@@ -262,7 +269,7 @@ namespace AutoChannel
 		{
 			if (Instance == null)
 			{
-				Console.WriteLine("AutoChannelCreator instance is not initialized.");
+				Log.Error("AutoChannelCreator instance is not initialized.");
 				return;  // Or handle the error as needed
 			}
 
@@ -274,7 +281,7 @@ namespace AutoChannel
 		{
 			if (Instance == null)
 			{
-				Console.WriteLine("AutoChannelCreator instance is not initialized.");
+				Log.Error("AutoChannelCreator instance is not initialized.");
 				return;  // Or handle the error as needed
 			}
 
@@ -282,15 +289,15 @@ namespace AutoChannel
 		}
 
 		[Command("loadparentchannels")]
-		public void CommandLoadParentChannel(ClientCall invoker)
+		public async Task CommandLoadParentChannel(ClientCall invoker)
 		{
 			if (Instance == null)
 			{
-				Console.WriteLine("AutoChannelCreator instance is not initialized.");
+				Log.Error("AutoChannelCreator instance is not initialized.");
 				return;  // Or handle the error as needed
 			}
 
-			Instance.LoadParentChannels();
+			await Instance.LoadParentChannels();
 		}
 
 		[Command("deletechannel")]
@@ -298,7 +305,8 @@ namespace AutoChannel
 		{
 			if (Instance == null)
 			{
-				Console.WriteLine("AutoChannelCreator instance is not initialized.");
+				//Console.WriteLine("AutoChannelCreator instance is not initialized.");
+				Log.Error("AutoChannelCreator instance is not initialized.");
 				return;  // Or handle the error as needed
 			}
 
@@ -310,7 +318,7 @@ namespace AutoChannel
 		{
 			if (Instance == null)
 			{
-				Console.WriteLine("AutoChannelCreator instance is not initialized.");
+				Log.Error("AutoChannelCreator instance is not initialized.");
 				return;  // Or handle the error as needed
 			}
 
@@ -324,6 +332,7 @@ namespace AutoChannel
 			if (System.IO.File.Exists("local.txt"))
 			{
 				parentChannelId = (ChannelId)506; // Local setting
+				Log.Warn("Loading Auto Channel Creator - Local Setting");
 			}
 			else
 			{
@@ -334,13 +343,16 @@ namespace AutoChannel
 			{
 				tsFullClient.OnClientMoved += OnUserMoved;
 				
-				LoadParentChannels();
+				await LoadParentChannels();
+				Log.Info("Auto Channel Creator - Initialized");
 				await StartLoop();
+
 				//await CheckSubChannels();
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Error during initialization: {ex.Message}");
+				//Console.WriteLine($"Error during initialization: {ex.Message}");
+				Log.Error($"Error during initialization: {ex.Message}");
 			}
 
 		}

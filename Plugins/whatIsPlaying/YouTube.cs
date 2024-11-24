@@ -19,8 +19,9 @@ namespace whatIsPlaying
 	{
 		private static readonly HttpClient httpClient = new HttpClient();
 		//API Key AIzaSyAFZHRQL7HQH6ZnqBHPmGpSFzCdTb_EOjc
-		private static readonly string ApiKey = "AIzaSyAFZHRQL7HQH6ZnqBHPmGpSFzCdTb_EOjc"; // Replace with your YouTube API Key
+		private static readonly string ApiKey = "AIzaSyAFZHRQL7HQH6ZnqBHPmGpSFzCdTb_EOjc"; // Replace with your YouTube API Key (it is IP restricted :P don't even try, Kevin)
 		public static int requests = 0;
+		//private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
 		public static async Task<string> GetTitleFromUrlAsync(string videoUrl)
 		{

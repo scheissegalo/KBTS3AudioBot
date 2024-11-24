@@ -16,6 +16,7 @@ using TSLib;
 using RankingSystem.Models;
 using System.Collections.Generic;
 using static RankingSystem.RankingModule;
+//using NLog.Fluent;
 
 namespace RankingSystem.Services
 {
@@ -27,6 +28,7 @@ namespace RankingSystem.Services
 		private readonly ILocalizationManager _localizationManager;
 		private readonly TsFullClient _tsFullClient;
 		private readonly Constants constants = new Constants();
+		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 		private bool isChecking = false;
 
 		public UserStatusUpdater(
@@ -96,7 +98,7 @@ namespace RankingSystem.Services
 								{
 									await StartUserOnboarding(tSUser);
 								}
-								//Console.WriteLine("User Created");
+								Log.Info($"New user {tSUser.Name} created");
 
 							}
 							else
@@ -202,6 +204,7 @@ namespace RankingSystem.Services
 										await SendPrivateMessage(_localizationManager.GetTranslation(tsuser.CountryCode, "enoughTime"), tsuser.ClientID, true);
 										tsuser.WantsOwnChannelNotificationSend = true;
 										_userRepository.Update(tsuser);
+										Log.Info($"User {tsuser.Name} has passed time to allow channel creation, the user has been notified");
 									}
 
 									if (HasUserSurpassedTimeThreshold(TimeSpan.FromHours(5), tsuser) && !tsuser.NotificationChannelsUnlocked && tsuser.OnlineTime <= TimeSpan.FromHours(6))
@@ -209,6 +212,7 @@ namespace RankingSystem.Services
 										await SendPrivateMessage(_localizationManager.GetTranslation(tsuser.CountryCode, "enterAndUseChannel"), tsuser.ClientID, true);
 										tsuser.NotificationChannelsUnlocked = true;
 										_userRepository.Update(tsuser);
+										Log.Info($"User {tsuser.Name} has passed time to allow channel with lock, the user has been notified");
 									}
 
 									if (!tsuser.RankingEnabled)
@@ -267,6 +271,11 @@ namespace RankingSystem.Services
 									}
 
 									//Console.WriteLine($"User {tsuser.Name} Credits: {tsuser.Score}. Last Checked: {tsuser.LastUpdate.ToString("HH:mm:ss")} Online Time: {tsuser.OnlineTime}");
+								}
+								else
+								{
+									Log.Warn($"User is null: {fulluser.Value.Name}, continue.");
+									continue;
 								}
 								//Checking for adding or removing group
 								var userGroups = await _tsFullClient.ServerGroupsByClientDbId(fulluser.Value.DatabaseId);
@@ -330,7 +339,8 @@ namespace RankingSystem.Services
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.ToString());
+				//Console.WriteLine(ex.ToString());
+				Log.Error(ex.Message);
 			}
 			isChecking = false;
 		}
@@ -390,7 +400,8 @@ namespace RankingSystem.Services
 			}
 
 			// If the online time exceeds all thresholds, return the last server group in the list
-			Console.WriteLine("Online Time Exceedet");
+			//Console.WriteLine("Online Time Exceedet");
+			Log.Warn("Online Time Exceedet! We need higher servergroups!");
 			return constants._serverGroupList.Last().ServerGroup;
 		}
 
@@ -410,6 +421,7 @@ namespace RankingSystem.Services
 
 		public async Task StartUserOnboarding(TSUser tsUser)
 		{
+			Log.Info($"Automatic Onboarding started for user: {tsUser.Name}.");
 			string message;
 			string messageEN = "";
 			//string answer;

@@ -7,7 +7,6 @@
 // You should have received a copy of the Open Software License along with this
 // program. If not, see <https://opensource.org/licenses/OSL-3.0>.
 
-using Newtonsoft.Json.Linq;
 using RankingSystem.Interfaces;
 using RankingSystem.Models;
 using RankingSystem.Modules;
@@ -19,6 +18,7 @@ using System.Threading.Tasks;
 using TSLib;
 using TSLib.Full;
 using TSLib.Messages;
+using static RankingSystem.RankingModule;
 
 namespace RankingSystem
 {
@@ -31,6 +31,7 @@ namespace RankingSystem
 		private readonly IUserStatusUpdater _userStatusUpdater;
 		private readonly CommandManager _commandManager = new CommandManager();
 		private readonly OnlineCounterModule _onlineCounterModule;
+		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 		TsFullClient _tsFullClient;
 
 		private Constants constants = new Constants();
@@ -59,7 +60,8 @@ namespace RankingSystem
 		{
 			_tsFullClient.OnEachTextMessage += new EventHandler<TextMessage>(OnEachTextMessage);
 			_tsFullClient.OnClientEnterView += new NotifyEventHandler<ClientEnterView>(OnClientEnterView);
-			Console.WriteLine("Onboarding Module Initialized");
+			Log.Info("Onboarding Module Initialized");
+			//Console.WriteLine("Onboarding Module Initialized");
 		}
 
 		private async void OnClientEnterView(object sender, IEnumerable<ClientEnterView> e)
@@ -134,12 +136,15 @@ namespace RankingSystem
 			string userCountryCode;
 			if (user == null)
 			{
+				Log.Error("User is NULL in Database!");
 				await SendPrivateMessage("Something went wrong! Please contact an admin!", e.InvokerId, true);
+				return;
 			}
 			else
 			{
 				if (await _commandManager.TryHandleCommand(e))
 				{
+					Log.Info($"User {user.Name} is using command: {e.Message}!");
 					return;
 				}
 				string TSCountryCode = await GetUserCountryCodeFromTS(user);
@@ -151,6 +156,7 @@ namespace RankingSystem
 				switch ((SetupStep)user.SetupStep)
 				{
 				case SetupStep.Welcome:
+					Log.Info($"User {user.Name} manually started Onboarding!");
 					if (userCountryCode != "en")
 					{
 					
@@ -174,6 +180,7 @@ namespace RankingSystem
 					break;
 				case SetupStep.AskPreferredLanguage:
 					{
+						Log.Info($"Onboarding for user: {user.Name} at select Language step. Current Lang: {user.CountryCode}");
 						if (IsValidCountryCode(e.Message))
 						{
 							user.CountryCode = e.Message;
@@ -209,11 +216,13 @@ namespace RankingSystem
 						else
 						{
 							await SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "acceptRules")+"\n"+ _localizationManager.GetTranslation(userCountryCode, "onlyYesOrNo"), user.ClientID, true);
+							Log.Info($"Onboarding for user: {user.Name} Entered wrong answer: {answer}. Current Lang: {user.CountryCode}");
 						}
 						break;
 					}
 				case SetupStep.AskRankingPreference:
 					{
+						Log.Info($"Onboarding for user: {user.Name} Asking ranking preference");
 						string answer = e.Message.ToLower();
 						if (answer.Equals(localizedYes, StringComparison.OrdinalIgnoreCase) || answer.Equals(localizedNo, StringComparison.OrdinalIgnoreCase))
 						{
@@ -234,11 +243,13 @@ namespace RankingSystem
 						else
 						{
 							await SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "rankingDisabled"+"\n"+ _localizationManager.GetTranslation(userCountryCode, "onlyYesOrNo")), user.ClientID, true);
+							Log.Info($"Onboarding for user: {user.Name} Entered wrong answer: {answer}");
 						}
 						break;
 					}
 				case SetupStep.AskChannelPreference:
 					{
+						Log.Info($"Onboarding for user: {user.Name} Asking channel preference");
 						string answer = e.Message.ToLower();
 						if (answer.Equals(localizedYes, StringComparison.OrdinalIgnoreCase) || answer.Equals(localizedNo, StringComparison.OrdinalIgnoreCase))
 						{
@@ -265,22 +276,26 @@ namespace RankingSystem
 									user.ChannelIDInt = newChannelId.Value.Value;
 									user.ChannelID = newChannelId.Value;
 									_userRepository.Update(user);
+									Log.Info($"Onboarding for user: {user.Name} Channel created");
 								}
 							}
 							else
 							{
 								await SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "setupComplete"), user.ClientID, true);
+								Log.Info($"Onboarding for user: {user.Name} Entered wrong answer: {answer}");
 							}
 							
 						}
 						else
 						{
 							await SendPrivateMessage(_localizationManager.GetTranslation(userCountryCode, "yourOwnChannel")+"\n"+ _localizationManager.GetTranslation(userCountryCode, "onlyYesOrNo"), user.ClientID, true);
+							Log.Info($"Onboarding for user: {user.Name} Does not want own channel");
 						}
 						break;
 					}
 				case SetupStep.Completed:
 					{
+						Log.Info($"User {user.Name} has finished Onboarding");
 						string acceptedRules = TranslateBool(user.AcceptedRules);
 						string rankingDisabled = TranslateBool(user.RankingEnabled);
 						string setupDone = TranslateBool(user.SetupDone);
@@ -326,6 +341,7 @@ namespace RankingSystem
 						break;
 					}
 				default:
+					Log.Error("User is in unusual state!");
 					await _tsFullClient.SendPrivateMessage("Something went wrong with your setup.", user.ClientID);
 					break;
 				}

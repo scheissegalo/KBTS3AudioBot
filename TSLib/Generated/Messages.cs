@@ -8614,6 +8614,8 @@ namespace TSLib.Messages
 
 		public ClientDbId ClientDbId { get; set; }
 		public str? Name { get; set; }
+
+		public str? GroupName { get; set; }
 		public ServerGroupId ServerGroupId { get; set; }
 		public Uid? Uid { get; set; }
 		#pragma warning restore CS8618
@@ -8627,6 +8629,7 @@ namespace TSLib.Messages
 			case "client_nickname": Name = (str)TsString.Unescape(value); break;
 			case "client_unique_identifier": Uid = (Uid)TsString.Unescape(value); break;
 			case "sgid": { if(Utf8Parser.TryParse(value, out u64 oval, out _)) ServerGroupId = (ServerGroupId)oval; } break;
+			case "name": GroupName = (str)TsString.Unescape(value); break;
 			case "return_code": ReturnCode = (str)TsString.Unescape(value); break;
 			}
 
@@ -8642,6 +8645,7 @@ namespace TSLib.Messages
 
 				case "cldbid": foreach(var toi in toc) { toi.ClientDbId = ClientDbId; } break;
 				case "client_nickname": foreach(var toi in toc) { toi.Name = Name; } break;
+				case "name": foreach (var toi in toc) { toi.GroupName = GroupName; } break;
 				case "client_unique_identifier": foreach(var toi in toc) { toi.Uid = Uid; } break;
 				case "sgid": foreach(var toi in toc) { toi.ServerGroupId = ServerGroupId; } break;
 				}

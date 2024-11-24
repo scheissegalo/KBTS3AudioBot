@@ -430,6 +430,13 @@ namespace TSLib
 				{ getNames ? new CommandOption("names") : null }
 			}, NotificationType.ServerGroupClientList);
 
+		public Task<R<ServerGroupList[], CommandError>> GetServerGroupList()
+			=> SendHybrid<ServerGroupList>(
+				new TsCommand("servergrouplist"),
+				NotificationType.ServerGroupList // Correct notification type
+			);
+
+
 		#endregion
 	}
 }

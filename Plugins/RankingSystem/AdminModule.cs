@@ -26,6 +26,7 @@ namespace RankingSystem
 		private Ts3Client ts3Client;
 		private Connection serverView;
 		private Constants constants = new Constants();
+		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
 		public static string filePath = "badusernames.txt";
 
@@ -52,7 +53,8 @@ namespace RankingSystem
 			tsFullClient.OnClientServerGroupRemoved += onClientServerGroupRemoved;
 			tsFullClient.OnServerEdited += onServerEdited;
 
-			Console.WriteLine("Admin Module initialized!");
+			Log.Info("Admin Module initialized!");
+			//Console.WriteLine("Admin Module initialized!");
 		}
 
 		private async void onUserConnected(object sender, IEnumerable<ClientEnterView> e) => await CheckForBadUsernames();
@@ -78,6 +80,7 @@ namespace RankingSystem
 						continue;
 
 					await ReportAdmin($"{item.InvokerName} has modified the server!");
+					//Log.Info($"{item.InvokerName} has modified the server!");
 				}
 			}
 		}
@@ -102,7 +105,8 @@ namespace RankingSystem
 				if (skipCurrentClient)
 					continue;
 
-				await ReportAdmin($"{item.InvokerName} has removed Server Group {item.ServerGroupId} from {item.Name}");
+				//await ReportAdmin($"{item.InvokerName} has removed Server Group {item.ServerGroupId} from {item.Name}");
+				await ReportAdmin($"{item.InvokerName} has removed Server Group {await GetServerGroupName(item.ServerGroupId)}({item.ServerGroupId}) from {item.Name}");
 			}
 		}
 		private async void onClientServerGroupAdded(object sender, IEnumerable<ClientServerGroupAdded> e)
@@ -126,9 +130,26 @@ namespace RankingSystem
 				if (skipCurrentClient)
 					continue;
 
-				await ReportAdmin($"{item.InvokerName} has added Server Group {item.ServerGroupId} to {item.Name}");
+				await ReportAdmin($"{item.InvokerName} has added Server Group {await GetServerGroupName(item.ServerGroupId)}({item.ServerGroupId}) to {item.Name}");
+
 			}
 		}
+
+		private async Task<string> GetServerGroupName(ServerGroupId sgID)
+		{
+			var serverGroups = await tsFullClient.GetServerGroupList();
+			var matchingServerGroup = serverGroups.Value.FirstOrDefault(group => group.ServerGroupId == sgID);
+			if (matchingServerGroup != null)
+			{
+				return matchingServerGroup.Name;
+			}
+			else
+			{
+				return "Not Found";
+			}
+			
+		}
+
 		private async void onClientMoved(object sender, IEnumerable<ClientMoved> e)
 		{
 			foreach (var item in e)
@@ -172,6 +193,7 @@ namespace RankingSystem
 					}
 				}
 			}
+			Log.Info($"Admin Report: {message}");
 		}
 
 		public async Task TestTask()
@@ -204,6 +226,7 @@ namespace RankingSystem
 			// Check if the file exists
 			if (!System.IO.File.Exists(filePath))
 			{
+				Log.Error($"File not found: {filePath}");
 				throw new FileNotFoundException($"File not found: {filePath}");
 			}
 

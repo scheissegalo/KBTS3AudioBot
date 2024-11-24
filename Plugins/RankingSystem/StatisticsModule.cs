@@ -18,6 +18,7 @@ namespace RankingSystem
 	{
 		private OnlineCounterModule onlineCounterModule;
 		private OnboardingModule boardingModule; // maybe need to Grab Users
+		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
 		private List<UserStatistic> userStatistics = new List<UserStatistic>();
 		private bool initialCheck = true;
@@ -31,7 +32,8 @@ namespace RankingSystem
 		public void StartStatisticsModule()
 		{
 			//await Task.Delay(200);
-			Console.WriteLine("Statistics Module initialized!");
+			//Console.WriteLine("Statistics Module initialized!");
+			Log.Info("Statistics Module initialized!");
 			//LogUserCount();
 		}
 

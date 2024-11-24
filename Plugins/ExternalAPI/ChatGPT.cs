@@ -12,7 +12,6 @@ using System.IO;
 using TS3AudioBot;
 using TS3AudioBot.Plugins;
 using TSLib.Full.Book;
-using TSLib;
 using TSLib.Full;
 using System.Net.Http.Headers;
 using System.Net.Http;
@@ -29,6 +28,7 @@ namespace ExternalAPI
 		//private PlayManager playManager;
 		private Ts3Client ts3Client;
 		private Connection serverView;
+		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
 		private static string apiKey = "no key";
 
@@ -49,14 +49,15 @@ namespace ExternalAPI
 			{
 				// Read the API key from the text file
 				apiKey = System.IO.File.ReadAllText(filePath);
-
+				Log.Info("ChatGPT - Initialized!");
 				// Now you can use the apiKey as needed
 				//Console.WriteLine("API Key: " + apiKey);
 			}
 			catch (IOException e)
 			{
-				Console.WriteLine("Error reading the file: " + e.Message);
+				Log.Error("Error reading the file: " + e.Message);
 			}
+			//Log.Info("Display Crypto - Initialized!");
 		}
 
 		[Command("gpt")]

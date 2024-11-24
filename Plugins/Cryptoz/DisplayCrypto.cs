@@ -29,10 +29,12 @@ namespace Cryptoz
 		//private PlayManager playManager;
 		private Ts3Client ts3Client;
 		private Connection serverView;
+		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 		//test
 
 		bool checkVotes = true;
 		bool enabledDebugs = false;
+		bool looping = false;
 
 		// endpoints
 		private string BTC = "https://north-industries.com/getcry.php?cry=BTC";
@@ -137,6 +139,7 @@ namespace Cryptoz
 
 		public async void Initialize()
 		{
+			looping = true;
 			string fileName = ".local.txt";
 
 			if (System.IO.File.Exists(fileName))
@@ -150,6 +153,7 @@ namespace Cryptoz
 			}
 
 			await SetCryptoChannelInfo();
+			Log.Info("Display Crypto - Initialized!");
 			await StartLoop();
 			await GetVotesAndGroups();
 
@@ -158,7 +162,7 @@ namespace Cryptoz
 		private async Task StartLoop()
 		{
 			int update = UpdateInterval;
-			while (true)
+			while (looping)
 			{
 				try
 				{
@@ -180,7 +184,7 @@ namespace Cryptoz
 				}
 				catch (Exception ex)
 				{
-					Console.WriteLine($"Error in Display Crypto Loop. Error: {ex.Message}");
+					Log.Error($"Error in Display Crypto Loop. Error: {ex.Message}");
 				}
 
 				update--;
@@ -193,7 +197,7 @@ namespace Cryptoz
 			DateTime now = DateTime.Now;
 			string formattedTime = now.ToString("HH:mm");
 
-			Console.WriteLine("Changing Channel");
+			//Log.Info("Changing Channel");
 			string newChanDis = $"[b]Complete List: [/b]";
 			string newChannelName = "Crypto & Metal - Last Update " + formattedTime;
 			ChannelId channelId = new ChannelId(CryptoChannel);
@@ -216,7 +220,7 @@ namespace Cryptoz
 				Console.WriteLine("Votes Disabled, skipping!");
 				return;
 			}
-			Console.WriteLine("Scanning Voters!");
+			//Log.Info("Scanning Voters!");
 			// Step 2: Retrieve Data from the API
 			string apiUrl = "https://teamspeak-servers.org/api/?object=servers&element=voters&key=s5b78c4OcL5UV6pDxTMnDeaMjNEotEUN6iA&month=current&format=json&rank=steamid";
 			List<String> voterList = new List<String>();
@@ -554,11 +558,12 @@ namespace Cryptoz
 				}
 				catch (HttpRequestException e)
 				{
-					Console.WriteLine($"Request error: {e.Message}");
+				Log.Error($"Request error: {e.Message}");
+				
 				}
 				catch (Exception e)
 				{
-					Console.WriteLine($"An error occurred: {e.Message}");
+				Log.Error($"An error occurred: {e.Message}");
 				}
 		}
 
@@ -609,7 +614,7 @@ namespace Cryptoz
 
 		public void Dispose()
 		{
-
+			looping = false;
 		}
 	}
 

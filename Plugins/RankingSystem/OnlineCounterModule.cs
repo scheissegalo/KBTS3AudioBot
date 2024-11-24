@@ -28,6 +28,7 @@ namespace RankingSystem
 		private Ts3Client ts3Client;
 		private Connection serverView;
 		private Constants constants = new Constants();
+		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 		//private Timer resetTimer;
 
 		public bool isChecking = false;
@@ -57,7 +58,8 @@ namespace RankingSystem
 			tsFullClient.OnClientLeftView += onUserDisconnected;
 
 			//StartDailyResetTimer();
-			Console.WriteLine("OnlineCounter Module initialized!");
+			//Console.WriteLine("OnlineCounter Module initialized!");
+			Log.Info("OnlineCounter Module initialized!");
 		}
 
 		private async void onUserDisconnected(object sender, IEnumerable<ClientLeftView> e) => await CheckOnlineUsers(false);
@@ -226,7 +228,8 @@ namespace RankingSystem
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Failed to update channel name: {ex.Message}");
+				//Console.WriteLine($"Failed to update channel name: {ex.Message}");
+				Log.Error($"Failed to update channel name: {ex.Message}");
 			}
 		}
 
@@ -239,6 +242,7 @@ namespace RankingSystem
 		{
 			await Task.Delay(1000);
 			Console.WriteLine("Tested Online Counter done!");
+
 		}
 
 		// Define a class for the user data

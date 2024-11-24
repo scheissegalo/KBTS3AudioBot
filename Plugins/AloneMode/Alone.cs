@@ -15,6 +15,7 @@ using TSLib;
 using TSLib.Full;
 using TS3AudioBot.Config;
 using System.Threading.Tasks;
+using TS3AudioBot.Audio;
 //using Org.BouncyCastle.Asn1;
 
 namespace AloneMode
@@ -24,26 +25,36 @@ namespace AloneMode
 		private TsFullClient tsFullClient;
 		private Ts3Client ts3Client;
 		private Connection serverView;
+		private PlayManager playManager;
 		private ConfBot config;
+		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 		private ulong botDefaultChannel;
 
-		public Alone(Ts3Client ts3Client, Connection serverView, TsFullClient tsFull, ConfBot configs)
+		public Alone(Ts3Client ts3Client, Connection serverView, TsFullClient tsFull, ConfBot configs, PlayManager playManager)
 		{
 			//this.playManager = playManager;
 			this.ts3Client = ts3Client;
 			this.tsFullClient = tsFull;
 			this.serverView = serverView;
 			this.config = configs;
+			this.playManager = playManager;
 		}
 
 		public void Initialize()
 		{
 			string cs = config.Connect.Channel.ToString();
-			Console.WriteLine("Config: " + cs);
+			if (string.IsNullOrEmpty(cs))
+			{
+				Log.Error("No default channel specified in the bot configuration! Unable to load!");
+				return;
+			}
+			//Console.WriteLine("Config: " + cs);
 			int newcs = Int32.Parse(cs.Replace("/", ""));
-			Console.WriteLine(newcs.ToString());
+			//Console.WriteLine(newcs.ToString());
 			botDefaultChannel = (ulong)newcs;
 			ts3Client.OnAloneChanged += OnAloneChanged;
+
+			Log.Info($"Alone Mode initialized! Default channel: {newcs.ToString()}");
 		}
 
 		private async Task OnAloneChanged(object sender, AloneChanged args)
@@ -62,6 +73,8 @@ namespace AloneMode
 					//Console.WriteLine("Changing to default channel");
 					ChannelId channelId = new ChannelId(botDefaultChannel);
 					await ts3Client.MoveTo(channelId);
+					await playManager.Stop();
+					Log.Info($"Bot {config.Name} stopped playing and moved to default channel!");
 				}
 			}
 		}

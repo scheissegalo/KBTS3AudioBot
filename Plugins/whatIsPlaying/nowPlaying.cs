@@ -39,6 +39,7 @@ namespace whatIsPlaying
 		private int MusicCodecQuality = 10;
 		private ChannelId currentChannel;
 		private string msgFoot;
+		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 		//private readonly ConfBot config;
 
 		// Your dependencies will be injected into the constructor of your class.
@@ -64,6 +65,8 @@ namespace whatIsPlaying
 
 			await setChannelCommander();
 			await GetCurrentChannelId();
+
+			Log.Info("NowPlaying - Initialized!");
 
 			msgFoot = @"
 

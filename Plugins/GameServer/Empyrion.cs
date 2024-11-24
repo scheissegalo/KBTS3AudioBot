@@ -30,6 +30,7 @@ namespace GameServer
 		private PlayManager playManager;
 		private Ts3Client ts3Client;
 		private Connection serverView;
+		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
 		private string empyrionServerApiKey = "fEyVHKHbjxIUkad33XJaQ1PJoWJuOUUNLck"; // Replace with your API key
 		private string empyrionServerID = "59988"; // ID of the server
@@ -82,8 +83,9 @@ namespace GameServer
 			}
 			catch (IOException e)
 			{
-				Console.WriteLine("Error reading the file: " + e.Message);
+				Log.Error("Error reading the file: " + e.Message);
 			}
+			Log.Info("Game Server - Initialized");
 			//And start the Timer
 			StartLoop();
 			//GetVotes();
@@ -140,7 +142,7 @@ namespace GameServer
 				}
 				catch (Exception ex)
 				{
-					Console.WriteLine($"Error: {ex.Message}");
+					Log.Error($"Error: {ex.Message}");
 				}
 			}
 		}
@@ -189,7 +191,7 @@ namespace GameServer
 			}
 			catch (WebException ex)
 			{
-				Console.WriteLine($"Error: {ex.Message}");
+				Log.Error($"Error: {ex.Message}");
 			}
 		}
 
@@ -291,17 +293,17 @@ namespace GameServer
 						}
 						else
 						{
-							Console.WriteLine("No player data available.");
+							Log.Error("No player data available.");
 						}
 					}
 					else
 					{
-						Console.WriteLine($"Failed to retrieve player information. Status code: {response.StatusCode}");
+						Log.Error($"Failed to retrieve player information. Status code: {response.StatusCode}");
 					}
 				}
 				catch (Exception ex)
 				{
-					Console.WriteLine($"Error: {ex.Message}");
+					Log.Error($"Error: {ex.Message}");
 				}
 			}
 		}
@@ -392,12 +394,12 @@ namespace GameServer
 						}
 						else
 						{
-							Console.WriteLine("No player data available.");
+							Log.Error("No player data available.");
 						}
 					}
 					else
 					{
-						Console.WriteLine($"Failed to retrieve player information. Status code: {response.StatusCode}");
+						Log.Error($"Failed to retrieve player information. Status code: {response.StatusCode}");
 						//string newChanDis = $"[b]User Vote List:[/b]\n{userVotesList}"; getUsersfromCSV()
 						ChannelId channelId = new ChannelId(bms.channelID);
 						string newChannelName = bms.serverName + " - Offline";
@@ -406,7 +408,7 @@ namespace GameServer
 				}
 				catch (Exception ex)
 				{
-					Console.WriteLine($"Error: {ex.Message}");
+					Log.Error($"Error: {ex.Message}");
 					ChannelId channelId = new ChannelId(bms.channelID);
 					string newChannelName = bms.serverName + " - Offline";
 					await tsFullClient.ChannelEdit(channelId, name: newChannelName);

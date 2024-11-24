@@ -28,6 +28,7 @@ namespace RankingSystem
 		private Constants constants = new Constants();
 		LocalizationManager localizationManager = new LocalizationManager();
 		public readonly IUserRepository _userRepository;
+		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
 		private int AFKNotice;
 
@@ -46,7 +47,9 @@ namespace RankingSystem
 		public void StartAfkModule()
 		{
 			AFKNotice = constants.AFKTime - 5;
-			Console.WriteLine($"AFK Module initialized! AFKTime: {constants.AFKTime} AFKNoticeTime: {AFKNotice}");
+			//Console.WriteLine($"AFK Module initialized! AFKTime: {constants.AFKTime} AFKNoticeTime: {AFKNotice}");
+			Log.Info($"AFK Module initialized! AFKTime: {constants.AFKTime} AFKNoticeTime: {AFKNotice}");
+
 		}
 
 		public async Task UserIdleCheck()
@@ -143,7 +146,8 @@ namespace RankingSystem
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine("Error: " + e.Message);
+				//Console.WriteLine);
+				Log.Error("Error: " + e.Message);
 			}
 		}
 

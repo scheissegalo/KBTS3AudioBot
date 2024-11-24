@@ -28,6 +28,7 @@ namespace ChannelChecker
 		private TsFullClient tsFullClient;
 		private Ts3Client ts3Client;
 		private Connection serverView;
+		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
 		// Store ignored channels in a HashSet for fast lookups.
 		private HashSet<ulong> ignoredChannelIds = new();
@@ -64,6 +65,7 @@ namespace ChannelChecker
 			{
 				parentChannelId = (ChannelId)506; // Local setting
 				adminChannel = (ChannelId)266;
+				Log.Warn("Local Settings loaded!");
 			}
 			else
 			{
@@ -74,6 +76,7 @@ namespace ChannelChecker
 			tsFullClient.OnClientMoved += TsFullClient_OnChannelChanged;
 			LoadVisitData(); // Load existing data on startup.
 			LoadIgnoredChannels();
+			Log.Info("Delete Old Channels - Initialized!");
 		}
 
 		// Command method must be static and access the singleton instance.

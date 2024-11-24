@@ -23,6 +23,7 @@ namespace Watchparty
 		private static readonly HttpClient client = new HttpClient();
 		private const string HOST_NAME = "https://w.karich.design";
 		private const string API_NAME = "https://w.karich.design";
+		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
 		public Watch(Ts3Client ts3Client, TsFullClient tsFull)
 		{
@@ -56,16 +57,19 @@ namespace Watchparty
 					// Generate the room URL
 					string roomUrl = HOST_NAME + "/watch" + roomName;
 
+					Log.Info($"New WatchParty room was created: {roomUrl}");
 					return $"[b][color=red]Created a new WatchParty room[/color][/b]{(video != null ? $" with video {video}" : string.Empty)}!\n{roomUrl}";
 				}
 				else
 				{
+					//Log.Error($"An error occurred: {ex.Message}");
 					return "Failed to create a WatchParty room. Please try again.";
 				}
 			}
 			catch (Exception ex)
 			{
 				// Handle any exceptions
+				Log.Error($"An error occurred: {ex.Message}");
 				return $"An error occurred: {ex.Message}";
 			}
 		}
@@ -80,7 +84,7 @@ namespace Watchparty
 
 		public void Initialize()
 		{
-
+			Log.Info("Watchparty - Initialized");
 		}
 
 		public void Dispose()

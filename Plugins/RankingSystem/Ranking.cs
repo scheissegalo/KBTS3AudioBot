@@ -20,6 +20,9 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using RankingSystem.Services;
 using RankingSystem.Interfaces;
+using System.Linq;
+//using NLog.Fluent;
+//using NLog;
 
 namespace RankingSystem
 {
@@ -28,6 +31,7 @@ namespace RankingSystem
 		private TsFullClient tsFullClient;
 		private Ts3Client ts3Client;
 		private Connection serverView;
+		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 		private Constants constants = new Constants();
 		//private ConfigManagerService configManagerService = new ConfigManagerService();
 		public static Ranking Instance { get; private set; }
@@ -53,6 +57,7 @@ namespace RankingSystem
 			this.ts3Client = ts3Client;
 			this.tsFullClient = tsFull;
 			this.serverView = serverView;
+			//this.Log = _log;
 
 			Instance = this;
 		}
@@ -71,7 +76,9 @@ namespace RankingSystem
 			userStatusUpdater = new UserStatusUpdater(mockRepo, serverGroupManager, channelManager, localizationManager, tsFullClient);
 			_onboardingModule = new OnboardingModule(mockRepo, commandManager, channelManager, serverGroupManager, localizationManager, userStatusUpdater, onlineCounter, tsFullClient);
 			statistics = new StatisticsModule(onlineCounter, _onboardingModule);
-			
+
+			//NLog.LogManager.Configuration = NLog.LogManager.Configuration ?? new NLog.Config.XmlLoggingConfiguration("NLog.config");
+
 
 			//onlineboarding = new OnboardingModule(TSUser);
 
@@ -87,8 +94,15 @@ namespace RankingSystem
 
 			statistics.StartStatisticsModule();
 			await onlineCounter.CheckOnlineUsers(true);
-			Console.WriteLine("All Modules Initialized!");
-			Console.WriteLine("-- Ranking System Fully up and running! --");
+			//Console.WriteLine("All Modules Initialized!");
+			//Console.WriteLine($"NLog conf loded: {NLog.LogManager.Configuration}!");
+			//Console.WriteLine($"LogManager.Configuration: {NLog.LogManager.Configuration != null}");
+			//Console.WriteLine($"NLog config path: {NLog.LogManager.Configuration?}");
+
+			//Log.Info($"Logger name: {Log.Name}");
+			//Console.WriteLine($"Logger name: {Log.Name}");
+			//Console.WriteLine("-- Ranking System Fully up and running! --");
+			Log.Info("-- Ranking System Fully up and running! --");
 
 			//Start main loop BLOCKS (await to infinity)!!!!!dfd
 			await StartLoop();
