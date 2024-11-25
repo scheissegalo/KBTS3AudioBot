@@ -54,16 +54,22 @@ namespace RankingSystem
 			LoadUserData();
 			lastResetTime = DateTime.UtcNow;
 
-			tsFullClient.OnClientEnterView += onUserConnected;
-			tsFullClient.OnClientLeftView += onUserDisconnected;
+			//tsFullClient.OnClientEnterView += onUserConnected;
+			tsFullClient.OnEachClientEnterView += TsFullClient_OnEachClientEnterView;
+			//tsFullClient.OnClientLeftView += onUserDisconnected;
+			tsFullClient.OnEachClientLeftView += OnEachClientLeftView;
 
 			//StartDailyResetTimer();
 			//Console.WriteLine("OnlineCounter Module initialized!");
 			Log.Info("OnlineCounter Module initialized!");
 		}
 
-		private async void onUserDisconnected(object sender, IEnumerable<ClientLeftView> e) => await CheckOnlineUsers(false);
-		private async void onUserConnected(object sender, IEnumerable<ClientEnterView> e) => await CheckOnlineUsers(true);
+		private async void TsFullClient_OnEachClientEnterView(object sender, ClientEnterView e) => await CheckOnlineUsers(false);
+
+		private async void OnEachClientLeftView(object sender, ClientLeftView e) => await CheckOnlineUsers(false);
+
+		//private async void onUserDisconnected(object sender, IEnumerable<ClientLeftView> e) => await CheckOnlineUsers(false);
+		//private async void onUserConnected(object sender, IEnumerable<ClientEnterView> e) => await CheckOnlineUsers(true);
 
 		// Method that runs every 2 minutes
 		public async Task CheckForDailyReset()
@@ -128,10 +134,12 @@ namespace RankingSystem
 			if (isChecking) { return; }
 			isChecking = true;
 
-			await Task.Delay(500); // Add a 500ms delay before starting the method
+			//await Task.Delay(500); // Add a 500ms delay before starting the method
 
 			count = 0;
 			var allUsers = await tsFullClient.ClientList();
+			if (allUsers.Value == null) return;
+
 			foreach (var oneuser in allUsers.Value)
 			{
 				//Console.WriteLine($"Checking {oneuser.Name}");

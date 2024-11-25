@@ -13,7 +13,7 @@ using TSLib;
 
 namespace RankingSystem
 {
-	internal class Constants
+	public class Constants
 	{
 		public readonly List<ServerGroupId> BotGroupsE = new List<ServerGroupId> { (ServerGroupId)11, (ServerGroupId)47, (ServerGroupId)115 };
 		public readonly ServerGroupId AdminGroup = (ServerGroupId)90;

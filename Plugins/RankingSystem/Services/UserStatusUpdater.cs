@@ -62,7 +62,7 @@ namespace RankingSystem.Services
 				var allUsers = await _tsFullClient.ClientList();
 
 				//Console.WriteLine($"Allusers: {allUsers.Value.Length}");
-
+				if (allUsers.Value == null) return;
 				foreach (var user in allUsers.Value)
 				{
 					if (user == null)

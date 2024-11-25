@@ -39,14 +39,16 @@ namespace TS3AudioBot
 		public event EventHandler? OnWhisperNoTarget;
 
 		private static readonly string[] QuitMessages = {
-			"I'm outta here", "You're boring", "Have a nice day", "Bye", "Good night",
-			"Nothing to do here", "Taking a break", "Lorem ipsum dolor sit amet…",
-			"Nothing can hold me back", "It's getting quiet", "Drop the bazzzzzz",
-			"Never gonna give you up", "Never gonna let you down", "Keep rockin' it",
-			"?", "c(ꙩ_Ꙩ)ꜿ", "I'll be back", "Your advertisement could be here",
-			"connection lost", "disconnected", "Requested by API.",
+			"Going offline. Be right... oh, too late.", "You can’t fire me, I quit!", "Well, that escalated quickly.", "Disconnecting... Just kidding! No, wait, I’m serious.",
+			"This was intentional. Trust me.", "Taking a break", "Server? What server?",
+			"Nothing can hold me back", "I swear it wasn’t my fault!", "Oops, unplugged myself again.",
+			"Never gonna give you up", "Never gonna let you down", "BRB, grabbing a coffee.",
+			"?", "My developer seems to enjoy restarts.", "I'll be back", "Starting... No wait, what is that?",
+			"Connection lost, or did I crash?", "Just a boring: disconnected.", "Requested by API.",
 			"Robert'); DROP TABLE students;--", "It works!! No, wait...",
-			"Notice me, senpai", ":wq", "Soon™", "It's not a bug, it's a feature"
+			"Checking server status... Oh, error!", "Guess who’s back? Not me, for now.", "I told you I needed an update.", "It's not a bug, it's a feature",
+			"This is fine. Everything is fine.","Bot overboard!","Houston, we have a problem.","Ctrl+Alt+Del fixes everything, right?","Error 420: The bot broke itself.",
+			"Oops, I dropped the connection.", "Who needs uptime anyway?", "Disconnecting... Because why not?","I need a break too, you know.","Let’s pretend this didn’t happen."
 		};
 
 		private bool closed = false;

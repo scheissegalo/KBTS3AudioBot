@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\TS3AudioBot\TS3AudioBot.csproj" />
     <ProjectReference Include="..\..\TSLib\TSLib.csproj" />
+    <ProjectReference Include="..\RankingSystem\RankingSystem.csproj" />
   </ItemGroup>
 
   <Target Name="CustomAfterBuild" AfterTargets="Build">
