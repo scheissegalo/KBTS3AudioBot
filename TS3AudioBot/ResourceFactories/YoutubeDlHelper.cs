@@ -218,10 +218,10 @@ namespace TS3AudioBot.ResourceFactories
 				//}
 				//else if (best == null)
 				//{
-				//	// Fallback if no English found default format.format?.Contains("default")
+				//	// Fallback if no English found default format.format?.Contains("Default")
 				//	best = format;
 				//}
-				if (format.format.Contains("original") || format.format.Contains("default"))
+				if (format.format.ToLower().Contains("original") || format.format.ToLower().Contains("default") || format.format.ToLower().Contains("medium") || format.format.ToLower().Contains("high"))
 				{
 					//File.AppendAllText("testinglog.log", format.format + "\n");
 					if (best == null
