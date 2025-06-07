@@ -200,45 +200,91 @@ namespace TS3AudioBot.ResourceFactories
 			//	fmt.format?.Contains("original") == true || fmt.format?.Contains("default") == true;
 
 
+			//foreach (var format in formats)
+			//{
+			//	if (format.acodec == "none")
+			//		continue;
+
+			//	if (format.format.ToLower().Contains("original")
+			//		|| format.format.ToLower().Contains("default")
+			//		|| format.format.ToLower().Contains("medium")
+			//		|| format.format.ToLower().Contains("high"))
+			//	{
+			//		//File.AppendAllText("testinglog.log", format.format + "\n");
+			//		if (best == null
+			//		|| format.abr > best.abr
+			//		|| (format.vcodec == "none" && format.abr >= best.abr))
+			//		{
+			//			best = format;
+			//		}
+			//	}
+
+			//	//if (best == null
+			//	//	|| format.abr > best.abr
+			//	//	|| (format.vcodec == "none" && format.abr >= best.abr))
+			//	//{
+			//	//	best = format;
+			//	//}
+
+			//}
+
+			// First pass: look for "original" format with highest abr
 			foreach (var format in formats)
 			{
-				if (format.acodec == "none")
-					continue;
-
-				//File.WriteAllLines("testinglog.log", System.Text.Json.JsonSerializer.Serialize(formats);
-
-				//File.AppendAllText("testinglog.log", format.format + "\n");
-
-				// Prefer English formats
-				//if (IsOriginal(format))
-				//{
-				//	//format.format
-				//	if (best == null || format.abr > best.abr)
-				//		best = format;
-				//}
-				//else if (best == null)
-				//{
-				//	// Fallback if no English found default format.format?.Contains("Default")
-				//	best = format;
-				//}
-				if (format.format.ToLower().Contains("original") || format.format.ToLower().Contains("default") || format.format.ToLower().Contains("medium") || format.format.ToLower().Contains("high"))
+				if (format.format.ToLower().Contains("original"))
 				{
-					//File.AppendAllText("testinglog.log", format.format + "\n");
-					if (best == null
-					|| format.abr > best.abr
-					|| (format.vcodec == "none" && format.abr >= best.abr))
+					if (best == null || format.abr > best.abr ||
+						(format.vcodec == "none" && format.abr >= best.abr))
 					{
 						best = format;
 					}
 				}
+			}
 
-				//if (best == null
-				//	|| format.abr > best.abr
-				//	|| (format.vcodec == "none" && format.abr >= best.abr))
-				//{
-				//	best = format;
-				//}
+			// If no original found, look for "medium"
+			if (best == null)
+			{
+				foreach (var format in formats)
+				{
+					if (format.format.ToLower().Contains("medium"))
+					{
+						if (best == null || format.abr > best.abr ||
+							(format.vcodec == "none" && format.abr >= best.abr))
+						{
+							best = format;
+						}
+					}
+				}
+			}
 
+			// If no medium found, look for others ("default", "high")
+			if (best == null)
+			{
+				foreach (var format in formats)
+				{
+					if (format.format.ToLower().Contains("default") ||
+						format.format.ToLower().Contains("high"))
+					{
+						if (best == null || format.abr > best.abr ||
+							(format.vcodec == "none" && format.abr >= best.abr))
+						{
+							best = format;
+						}
+					}
+				}
+			}
+
+			if (best == null)
+			{
+				foreach (var format in formats)
+				{
+					if (best == null
+						|| format.abr > best.abr
+						|| (format.vcodec == "none" && format.abr >= best.abr))
+					{
+						best = format;
+					}
+				}
 			}
 
 			Log.Debug("Picked: {@format}", best);
