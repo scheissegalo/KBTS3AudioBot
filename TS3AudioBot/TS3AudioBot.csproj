@@ -36,6 +36,7 @@
   <ItemGroup>
     <PackageReference Include="CliWrap" Version="3.1.0" />
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="NLog" Version="4.7.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="LiteDB" Version="5.0.17" />
@@ -101,13 +102,13 @@
       <LastGenOutput>strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
+  <!--
   <Target Name="GenerateBuildVersion" BeforeTargets="BeforeCompile">
     <ItemGroup>
       <VersionBuildScript Include="build.csx" />
       <VersionBuildOutputFile Include="$(IntermediateOutputPath)Version.g.cs" />
     </ItemGroup>
-    <Exec Command="dotnet script @(VersionBuildScript) -- @(VersionBuildOutputFile) $(Configuration)" />
+    <Exec Command="dotnet script @(VersionBuildScript)  @(VersionBuildOutputFile) $(Configuration)" />
     <ItemGroup>
       <FileWrites Include="@(VersionBuildOutputFile)" />
       <Compile Include="@(VersionBuildOutputFile)">
@@ -115,5 +116,5 @@
       </Compile>
     </ItemGroup>
   </Target>
-  
+  -->
 </Project>

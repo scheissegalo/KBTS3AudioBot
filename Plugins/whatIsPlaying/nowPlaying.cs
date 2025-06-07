@@ -97,7 +97,15 @@ namespace whatIsPlaying
 
 		private async Task Start(object sender, EventArgs e)
 		{
-			var self = serverView.OwnClient;
+			var pd = playManager.CurrentPlayData;
+			var ownClient = await tsFullClient.GetClientUidFromClientId(serverView.OwnClient);
+			if (ownClient.Value.ClientUid == pd.Invoker.ClientUid)
+			{
+				//Log.Info($"Don't send if bot was initiator");
+				return;
+			}
+
+
 			try
 			{
 				string currentSong;
@@ -118,17 +126,7 @@ namespace whatIsPlaying
 					await ts3Client.SendChannelMessage($"Now playing: {currentSong} | Today: {YouTube.requests} requests");
 				}
 
-				//await Task.Delay(500);
-				//string currentTitle = await YouTube.GetTitleFromUrlAsync(playManager.CurrentPlayData.SourceLink);
-				//if (!string.IsNullOrEmpty(currentTitle))
-				//{
-				//	await ts3Client.SendChannelMessage($"Now playing: {currentTitle} | Today: {YouTube.requests} requests");
-				//}
-				//else
-				//{
-				//	await ts3Client.SendChannelMessage($"Now playing: {playManager.CurrentPlayData.SourceLink}");
-					
-				//}
+
 			}
 			catch (Exception ex)
 			{
@@ -154,9 +152,6 @@ namespace whatIsPlaying
 [b][color=red]!listmp3[/color][/b] To list all MP3's on the Server.
 [b][color=red]!datei [/color][color=blue]'filename'[/color][/b] To play an MP3.
 [b][color=red]!randommp3[/color][/b] To play a random MP3.
-
-[b][color=green]WatchParty:[/color][/b]
-[b][color=red]!watch[/color][/b] Generate a watchparty link.
 
 [b][color=red]!help[/color][/b] or https://north-industries.com/teamspeak-help/#musicbots for detailed help." + msgFoot;
 			try

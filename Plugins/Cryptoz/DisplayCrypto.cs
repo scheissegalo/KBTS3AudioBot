@@ -55,29 +55,29 @@ namespace Cryptoz
 
 		private ulong CryptoChannel = 232;
 		//private readonly int GoldUpdateInterval = 480; //min
-		ServerGroupInfo groupA = new ServerGroupInfo
-		{
-			VotesCount = 1,
-			ServerGroup = (ServerGroupId)132 // 133 local | 132 Remote Group A
-		};
+		//ServerGroupInfo groupA = new ServerGroupInfo
+		//{
+		//	VotesCount = 1,
+		//	ServerGroup = (ServerGroupId)132 // 133 local | 132 Remote Group A
+		//};
 
-		ServerGroupInfo groupB = new ServerGroupInfo
-		{
-			VotesCount = 5,
-			ServerGroup = (ServerGroupId)133 // Group A
-		};
+		//ServerGroupInfo groupB = new ServerGroupInfo
+		//{
+		//	VotesCount = 5,
+		//	ServerGroup = (ServerGroupId)133 // Group A
+		//};
 
-		ServerGroupInfo groupC = new ServerGroupInfo
-		{
-			VotesCount = 10,
-			ServerGroup = (ServerGroupId)134 // Group A
-		};
+		//ServerGroupInfo groupC = new ServerGroupInfo
+		//{
+		//	VotesCount = 10,
+		//	ServerGroup = (ServerGroupId)134 // Group A
+		//};
 
-		ServerGroupInfo groupD = new ServerGroupInfo
-		{
-			VotesCount = 20,
-			ServerGroup = (ServerGroupId)135 // Group A
-		};
+		//ServerGroupInfo groupD = new ServerGroupInfo
+		//{
+		//	VotesCount = 20,
+		//	ServerGroup = (ServerGroupId)135 // Group A
+		//};
 
 		private static readonly HttpClient httpClient = new HttpClient();
 
@@ -140,22 +140,22 @@ namespace Cryptoz
 		public async void Initialize()
 		{
 			looping = true;
-			string fileName = ".local.txt";
+			//string fileName = ".local.txt";
 
-			if (System.IO.File.Exists(fileName))
-			{
-				// Develop version running, changing variables
-				ServerVotesChannel = 449;
-				groupA.ServerGroup = (ServerGroupId)133;
-				groupB.ServerGroup = (ServerGroupId)134;
-				groupC.ServerGroup = (ServerGroupId)135;
-				groupD.ServerGroup = (ServerGroupId)136;
-			}
+			//if (System.IO.File.Exists(fileName))
+			//{
+			//	// Develop version running, changing variables
+			//	ServerVotesChannel = 449;
+			//	groupA.ServerGroup = (ServerGroupId)133;
+			//	groupB.ServerGroup = (ServerGroupId)134;
+			//	groupC.ServerGroup = (ServerGroupId)135;
+			//	groupD.ServerGroup = (ServerGroupId)136;
+			//}
 
 			await SetCryptoChannelInfo();
 			Log.Info("Display Crypto - Initialized!");
 			await StartLoop();
-			await GetVotesAndGroups();
+			//await GetVotesAndGroups();
 
 		}
 
@@ -176,8 +176,8 @@ namespace Cryptoz
 						await GetETH();
 						await GetGold();
 						await GetSilver();
-						await GetVotes();
-						await GetVotesAndGroups();
+						//await GetVotes();
+						//await GetVotesAndGroups();
 						await SetCryptoChannelInfo();
 						update = UpdateInterval;
 					}
@@ -272,7 +272,7 @@ namespace Cryptoz
 									int votes = int.Parse(voter.votes);
 
 									ClientDbId udbid = await ts3Client.GetClientDbIdByUid(uid);
-									await SetServerGroupBasedOnVotes(teamspeakId, votes, udbid, groupA, groupB, groupC, groupD);
+									//await SetServerGroupBasedOnVotes(teamspeakId, votes, udbid, groupA, groupB, groupC, groupD);
 								}
 								else
 								{
@@ -297,7 +297,7 @@ namespace Cryptoz
 
 		private async Task RemoveVotesFromUsersNotInList(List<String> UsersInList)
 		{
-			ServerGroupId[] groupIdsToCheck = { groupA.ServerGroup, groupB.ServerGroup, groupC.ServerGroup, groupD.ServerGroup };
+			//ServerGroupId[] groupIdsToCheck = { groupA.ServerGroup, groupB.ServerGroup, groupC.ServerGroup, groupD.ServerGroup };
 			await SendSteamMessage("Removing users not in list");
 			foreach (var usr in serverView.Clients)
 			{
@@ -309,20 +309,20 @@ namespace Cryptoz
 				}
 
 				var userGroups = await tsFullClient.ServerGroupsByClientDbId(usr.Value.DatabaseId);
-				bool hasAnyGroup = userGroups.Value.Any(g => groupIdsToCheck.Contains(g.ServerGroupId));
+				//bool hasAnyGroup = userGroups.Value.Any(g => groupIdsToCheck.Contains(g.ServerGroupId));
 
-				if (hasAnyGroup) // If already has any other vote group - remove then
-				{
-					foreach (var group in userGroups.Value)
-					{
-						if (groupIdsToCheck.Contains(group.ServerGroupId))
-						{
-							// If the user has any of the specified groups, remove it.
-							await SendSteamMessage("remove group with id: " + group.ServerGroupId);
-							await tsFullClient.ServerGroupDelClient(group.ServerGroupId, usr.Value.DatabaseId);
-						}
-					}
-				}
+				//if (hasAnyGroup) // If already has any other vote group - remove then
+				//{
+				//	foreach (var group in userGroups.Value)
+				//	{
+				//		if (groupIdsToCheck.Contains(group.ServerGroupId))
+				//		{
+				//			// If the user has any of the specified groups, remove it.
+				//			await SendSteamMessage("remove group with id: " + group.ServerGroupId);
+				//			await tsFullClient.ServerGroupDelClient(group.ServerGroupId, usr.Value.DatabaseId);
+				//		}
+				//	}
+				//}
 			}
 		}
 

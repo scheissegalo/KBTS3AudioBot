@@ -58,6 +58,11 @@ namespace RankingSystem
 			try
 			{
 				var allConnectedClients = serverView.Clients;
+				if (allConnectedClients == null)
+				{
+					Log.Warn("Client list was empty, skipping iteration!");
+					return;
+				}
 				foreach (var client in allConnectedClients)
 				{
 					//Check if user is in excludet group

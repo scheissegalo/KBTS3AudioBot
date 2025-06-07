@@ -19,6 +19,7 @@ using System.Linq;
 using Newtonsoft.Json;
 //using System.Threading;
 using static RankingSystem.RankingModule;
+using System.Threading;
 
 namespace RankingSystem
 {
@@ -29,7 +30,10 @@ namespace RankingSystem
 		private Connection serverView;
 		private Constants constants = new Constants();
 		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
-		//private Timer resetTimer;
+
+		// fix to avoid null when 2 user diconnect at the same time
+		private readonly SemaphoreSlim _semaphore = new(1, 1);
+		private DateTime _lastExecutionTime = DateTime.MinValue;
 
 		public bool isChecking = false;
 		public uint count = 0;
@@ -124,63 +128,85 @@ namespace RankingSystem
 			userNames.Clear();
 
 			await CheckOnlineUsers(true);
-			await ts3Client.SendServerMessage("[b][color=red]Online Counter Reset! everyday at 6:00 PM CET[/color][/b]");
+			//await ts3Client.SendServerMessage("[b][color=red]Online Counter Reset! everyday at 6:00 PM CET[/color][/b]");
 
 			//Console.WriteLine("User data reset at 6 AM.");
 		}
 
 		public async Task CheckOnlineUsers(bool connected)
 		{
-			if (isChecking) { return; }
-			isChecking = true;
+			if ((DateTime.UtcNow - _lastExecutionTime).TotalSeconds < 1)
+				return;
 
-			//await Task.Delay(500); // Add a 500ms delay before starting the method
+			await _semaphore.WaitAsync();
 
-			count = 0;
-			var allUsers = await tsFullClient.ClientList();
-			if (allUsers.Value == null) return;
-
-			foreach (var oneuser in allUsers.Value)
+			try
 			{
-				//Console.WriteLine($"Checking {oneuser.Name}");
-				// Check if is full user
-				if (oneuser.ClientType == ClientType.Full)
+				//if (isChecking) { return; }
+				//isChecking = true;
+
+				//await Task.Delay(500); // Add a 500ms delay before starting the method
+
+				count = 0;
+				var allUsers = await tsFullClient.ClientList();
+				if (allUsers.Value == null) return;
+
+				foreach (var oneuser in allUsers.Value)
 				{
-					//Check if user is in excludet group
-					bool skipCurrentClient = false;
-					var fulluser = await tsFullClient.ClientInfo(oneuser.ClientId);
-					foreach (var sg in constants.BotGroupsE)
+					if (oneuser == null) continue;
+					//Console.WriteLine($"Checking {oneuser.Name}");
+					// Check if is full user
+					if (oneuser.ClientType == ClientType.Full)
 					{
-						
-						ServerGroupId newSG = sg;
-						if (fulluser.Value.ServerGroups != null && fulluser.Value.ServerGroups.Contains(newSG))
+						//Check if user is in excludet group
+						bool skipCurrentClient = false;
+						var fulluser = await tsFullClient.ClientInfo(oneuser.ClientId);
+						if (fulluser.Value == null)
 						{
-							//Console.WriteLine("Skipping Bot");
-							skipCurrentClient = true;
-							break;
+							Log.Warn("Single client was empty, skipping iteration!");
+							continue;
+						}
+						foreach (var sg in constants.BotGroupsE)
+						{
+
+							ServerGroupId newSG = sg;
+							if (fulluser.Value.ServerGroups != null && fulluser.Value.ServerGroups.Contains(newSG))
+							{
+								//Console.WriteLine("Skipping Bot");
+								skipCurrentClient = true;
+								break;
+							}
+						}
+						// Skip processing this user and move to the next iteration
+						if (skipCurrentClient)
+							continue;
+						// User is Fulluser and is not a Bot go on
+						//Console.WriteLine($"Not a bot {fulluser.Value.Name}");
+						// User is Fulluser and is not a Bot, go on
+						bool containsUserID = userIDS.Any(item => item == fulluser.Value.Uid.Value.ToString());
+						count++;
+						if (connected && !containsUserID)
+						{
+							//Console.WriteLine($"Adding {oneuser.Name} to the list");
+							countToday++;
+							userNames.Add(fulluser.Value.Name);
+							userIDS.Add(fulluser.Value.Uid.Value.ToString());
 						}
 					}
-					// Skip processing this user and move to the next iteration
-					if (skipCurrentClient)
-						continue;
-					// User is Fulluser and is not a Bot go on
-					//Console.WriteLine($"Not a bot {fulluser.Value.Name}");
-					// User is Fulluser and is not a Bot, go on
-					bool containsUserID = userIDS.Any(item => item == fulluser.Value.Uid.Value.ToString());
-					count++;
-					if (connected && !containsUserID)
-					{
-						//Console.WriteLine($"Adding {oneuser.Name} to the list");
-						countToday++;
-						userNames.Add(fulluser.Value.Name);
-						userIDS.Add(fulluser.Value.Uid.Value.ToString());
-					}
 				}
+				await UpdateChannelName();
+				SaveUserData();
+				//isChecking = false;
+				//Console.WriteLine($"Total online: {countToday}");
 			}
-			await UpdateChannelName();
-			SaveUserData();
-			isChecking = false;
-			//Console.WriteLine($"Total online: {countToday}");
+			catch (Exception ex)
+			{			
+				Log.Error(ex.Message);
+			}
+			finally
+			{
+				_semaphore.Release();
+			}
 		}
 
 		// Method to save user data to a file

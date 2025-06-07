@@ -32,6 +32,10 @@ namespace TS3AudioBot.ResourceFactories
 		private const string ParamGetPlaylist = "--no-warnings --yes-playlist --flat-playlist --dump-single-json --id --";
 		private const string ParamGetSearch = "--no-warnings --flat-playlist --dump-single-json -- ytsearch10:";
 
+		//private const string ParamGetSingleVideo = " --no-warnings --dump-json --id --prefer-free-formats --audio-format best --extractor-args \"youtube:player_client=web\" --";
+		//private const string ParamGetPlaylist = "--no-warnings --yes-playlist --flat-playlist --dump-single-json --id --prefer-free-formats --extractor-args \"youtube:player_client=web\" --";
+		//private const string ParamGetSearch = "--no-warnings --flat-playlist --dump-single-json --prefer-free-formats --extractor-args \"youtube:player_client=web\" -- ytsearch10:";
+
 		public static async Task<JsonYtdlDump> GetSingleVideo(string id)
 		{
 			var ytdlPath = FindYoutubeDl();
@@ -191,16 +195,50 @@ namespace TS3AudioBot.ResourceFactories
 				return null;
 
 			JsonYtdlFormat? best = null;
+
+			//bool IsOriginal(JsonYtdlFormat fmt) =>
+			//	fmt.format?.Contains("original") == true || fmt.format?.Contains("default") == true;
+
+
 			foreach (var format in formats)
 			{
 				if (format.acodec == "none")
 					continue;
-				if (best == null
+
+				//File.WriteAllLines("testinglog.log", System.Text.Json.JsonSerializer.Serialize(formats);
+
+				//File.AppendAllText("testinglog.log", format.format + "\n");
+
+				// Prefer English formats
+				//if (IsOriginal(format))
+				//{
+				//	//format.format
+				//	if (best == null || format.abr > best.abr)
+				//		best = format;
+				//}
+				//else if (best == null)
+				//{
+				//	// Fallback if no English found default format.format?.Contains("default")
+				//	best = format;
+				//}
+				if (format.format.Contains("original") || format.format.Contains("default"))
+				{
+					//File.AppendAllText("testinglog.log", format.format + "\n");
+					if (best == null
 					|| format.abr > best.abr
 					|| (format.vcodec == "none" && format.abr >= best.abr))
-				{
-					best = format;
+					{
+						best = format;
+					}
 				}
+
+				//if (best == null
+				//	|| format.abr > best.abr
+				//	|| (format.vcodec == "none" && format.abr >= best.abr))
+				//{
+				//	best = format;
+				//}
+
 			}
 
 			Log.Debug("Picked: {@format}", best);

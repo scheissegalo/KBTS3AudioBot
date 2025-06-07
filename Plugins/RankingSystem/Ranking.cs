@@ -20,6 +20,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using RankingSystem.Services;
 using RankingSystem.Interfaces;
+using RankingSystem.Models;
 using System.Linq;
 //using NLog.Fluent;
 //using NLog;
@@ -64,18 +65,19 @@ namespace RankingSystem
 
 		public async void Initialize()
 		{
+			ExportLiteDBToJson("ts_users_neu.db", "exported_users.json");
 			// Build Modules
 			//ranking = new RankingModule(ts3Client, tsFullClient, serverView);
 			//configManagerService.LoadConfig();
-			onlineCounter = new OnlineCounterModule(ts3Client, tsFullClient, serverView);
-			afk = new AfkModule(ts3Client, tsFullClient, serverView, mockRepo);
-			admin = new AdminModule(ts3Client, tsFullClient, serverView);
+			//onlineCounter = new OnlineCounterModule(ts3Client, tsFullClient, serverView);
+			//afk = new AfkModule(ts3Client, tsFullClient, serverView, mockRepo);
+			//admin = new AdminModule(ts3Client, tsFullClient, serverView);
 
-			channelManager = new ChannelManager(tsFullClient);
-			serverGroupManager = new ServerGroupManager(tsFullClient);
-			userStatusUpdater = new UserStatusUpdater(mockRepo, serverGroupManager, channelManager, localizationManager, tsFullClient);
-			_onboardingModule = new OnboardingModule(mockRepo, commandManager, channelManager, serverGroupManager, localizationManager, userStatusUpdater, onlineCounter, tsFullClient);
-			statistics = new StatisticsModule(onlineCounter, _onboardingModule);
+			//channelManager = new ChannelManager(tsFullClient);
+			//serverGroupManager = new ServerGroupManager(tsFullClient);
+			//userStatusUpdater = new UserStatusUpdater(mockRepo, serverGroupManager, channelManager, localizationManager, tsFullClient);
+			//_onboardingModule = new OnboardingModule(mockRepo, commandManager, channelManager, serverGroupManager, localizationManager, userStatusUpdater, onlineCounter, tsFullClient);
+			//statistics = new StatisticsModule(onlineCounter, _onboardingModule);
 
 			//NLog.LogManager.Configuration = NLog.LogManager.Configuration ?? new NLog.Config.XmlLoggingConfiguration("NLog.config");
 
@@ -84,16 +86,16 @@ namespace RankingSystem
 
 			// Start Modules
 			//await ranking.StartRankingModule();
-			onlineCounter.StartOnlineCounterModule();
-			afk.StartAfkModule();
-			admin.StartAdminModule();
-			_onboardingModule.StartOnboardingModule();
-			//await _onboardingModule.CheckUser();
-			await userStatusUpdater.CheckUser();
-			//await userStatusUpdater.UpdateUsers();
+			//onlineCounter.StartOnlineCounterModule();
+			//afk.StartAfkModule();
+			//admin.StartAdminModule();
+			//_onboardingModule.StartOnboardingModule();
+			////await _onboardingModule.CheckUser();
+			//await userStatusUpdater.CheckUser();
+			////await userStatusUpdater.UpdateUsers();
 
-			statistics.StartStatisticsModule();
-			await onlineCounter.CheckOnlineUsers(true);
+			//statistics.StartStatisticsModule();
+			//await onlineCounter.CheckOnlineUsers(true);
 			//Console.WriteLine("All Modules Initialized!");
 			//Console.WriteLine($"NLog conf loded: {NLog.LogManager.Configuration}!");
 			//Console.WriteLine($"LogManager.Configuration: {NLog.LogManager.Configuration != null}");
@@ -102,10 +104,38 @@ namespace RankingSystem
 			//Log.Info($"Logger name: {Log.Name}");
 			//Console.WriteLine($"Logger name: {Log.Name}");
 			//Console.WriteLine("-- Ranking System Fully up and running! --");
-			Log.Info("-- Ranking System Fully up and running! --");
+			//Log.Info("-- Ranking System Fully up and running! --");
 
-			//Start main loop BLOCKS (await to infinity)!!!!!dfd
-			await StartLoop();
+			////Start main loop BLOCKS (await to infinity)!!!!!dfd
+			//await StartLoop();
+		}
+
+		static void ExportLiteDBToJson(string dbPath, string outputFile)
+		{
+			try
+			{
+				Console.WriteLine($"Export started!");
+
+				using (var db = new LiteDatabase($"Filename={dbPath};Upgrade=true;"))
+				{
+					var usersCollection = db.GetCollection<TSUser>("tsusers");
+
+					// Fetch all users
+					var users = usersCollection.FindAll();
+
+					// Convert to JSON
+					string json = JsonConvert.SerializeObject(users, Formatting.Indented);
+
+					// Save to file
+					System.IO.File.WriteAllText(outputFile, json);
+
+					Console.WriteLine($"Export successful! Data saved to {outputFile}");
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error exporting data: {ex.Message}");
+			}
 		}
 
 		private async Task StartLoop()
@@ -253,8 +283,8 @@ namespace RankingSystem
 
 		public void Dispose()
 		{
-			admin.Dispose();
-			_onboardingModule.StopOnboardingModule();
+			//admin.Dispose();
+			//_onboardingModule.StopOnboardingModule();
 			looping = false;
 		}
 	}

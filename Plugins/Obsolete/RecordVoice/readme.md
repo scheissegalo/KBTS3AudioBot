@@ -1,0 +1,1 @@
+This plugin needs NAudio NuGet Package

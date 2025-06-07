@@ -60,6 +60,8 @@ namespace ChannelChecker
 
 		public void Initialize()
 		{
+			const string filePath = "lastExecutionDate.txt";
+
 			// Check if the file 'local.txt' exists in the working directory
 			if (System.IO.File.Exists("local.txt"))
 			{
@@ -76,6 +78,20 @@ namespace ChannelChecker
 			tsFullClient.OnClientMoved += TsFullClient_OnChannelChanged;
 			LoadVisitData(); // Load existing data on startup.
 			LoadIgnoredChannels();
+
+			DateTime lastExecutionDate = LoadLastExecutionDate(filePath);
+
+			if (HasOneMonthPassed(lastExecutionDate))
+			{
+				RunMonthlyTask();
+				SaveLastExecutionDate(filePath, DateTime.Now);
+			}
+			else
+			{
+				Console.WriteLine("Monthly task not yet due.");
+			}
+
+
 			Log.Info("Delete Old Channels - Initialized!");
 		}
 
@@ -128,6 +144,47 @@ namespace ChannelChecker
 			string report = Instance.GenerateVisitReport();
 			await Instance.SendPaginatedReport(invoker, report);
 			return "Channel visit report sent.";
+		}
+
+		static void RunMonthlyTask()
+		{
+			if (Instance == null)
+				return;
+
+			Instance.CheckAndMarkChannelsForDeletion();
+			//Console.WriteLine($"Monthly task executed at: {DateTime.Now}");
+			// Your monthly task logic here
+		}
+
+		static DateTime LoadLastExecutionDate(string filePath)
+		{
+			if (System.IO.File.Exists(filePath))
+			{
+				string content = System.IO.File.ReadAllText(filePath);
+				if (DateTime.TryParse(content, out DateTime lastDate))
+				{
+					return lastDate;
+				}
+			}
+
+			// If no valid date is stored, assume the task has never run
+			return DateTime.MinValue;
+		}
+
+		static void SaveLastExecutionDate(string filePath, DateTime date)
+		{
+			System.IO.File.WriteAllText(filePath, date.ToString("o")); // ISO 8601 format
+		}
+
+		static bool HasOneMonthPassed(DateTime lastExecutionDate)
+		{
+			if (lastExecutionDate == DateTime.MinValue)
+			{
+				return true; // First run
+			}
+
+			DateTime oneMonthLater = lastExecutionDate.AddMonths(1);
+			return DateTime.Now >= oneMonthLater;
 		}
 
 		private async Task SendPaginatedReport(ClientCall invoker, string report)
@@ -198,9 +255,21 @@ namespace ChannelChecker
 				//ChannelInfoResponse[] channelInfo = tsFullClient.ChannelInfo(channel.Id).Result.Value;
 				int visits = channelVisits.TryGetValue(channelId, out var count) ? count : 0;
 				bool isIgnored = false;
+				bool isparentparent = false;
+
+				var parentChannel = channels.FirstOrDefault(c => c.Id == channel.Parent);
+				//channel.Parent
+
+				if (parentChannel != null)
+				{
+					if (parentChannel.Parent == parentChannelId)
+					{
+						isparentparent = true;
+					}					
+				}
 
 				//check if is a dynamic channel or parent
-				if (channel.Parent != parentChannelId && channel.Id != parentChannelId)
+				if (channel.Parent != parentChannelId && channel.Id != parentChannelId && !isparentparent)
 				{
 					isIgnored = ignoredChannelIds.Contains(channelId);
 				}
@@ -239,21 +308,46 @@ namespace ChannelChecker
 		// Add " - delete" to channels with zero visits.
 		public void CheckAndMarkChannelsForDeletion()
 		{
+			Console.WriteLine($"Starting Channel Check");
 			var channels = serverView.Channels.Values;
-
+			Console.WriteLine($"Channels to check: {channels.Count}");
 			foreach (var channel in channels)
 			{
 				ulong channelId = channel.Id.Value;
 
-				if (ignoredChannelIds.Contains(channelId) || channel.Parent == parentChannelId)
+				bool isIgnored = false;
+				bool isparentparent = false;
+
+				var parentChannel = channels.FirstOrDefault(c => c.Id == channel.Parent);
+				//channel.Parent
+
+				if (parentChannel != null)
 				{
-					//Console.WriteLine($"Skipping ignored channel: {channel.Name}");
+					if (parentChannel.Parent == parentChannelId)
+					{
+						isparentparent = true;
+					}
+				}
+
+				//check if is a dynamic channel or parent
+				if (channel.Parent != parentChannelId && channel.Id != parentChannelId && !isparentparent)
+				{
+					if (ignoredChannelIds.Contains(channelId))
+					{
+						Console.WriteLine($"Skipping ignored channel: {channel.Name}");
+						continue;
+					}
+				}
+				else
+				{
+					Console.WriteLine($"Channel {channel.Name} is parent and ignored!");
 					continue;
+					
 				}
 
 				if (!channelVisits.ContainsKey(channelId) || channelVisits[channelId] == 0)
 				{
-					
+					Console.WriteLine($"Renaming: {channel.Name}");
 					string newName = GenerateChannelName(channel.Name);
 					//Console.WriteLine($"Renaming channel {channel.Name} to {newName}");
 					string originalChannelDescription =
@@ -266,19 +360,18 @@ namespace ChannelChecker
 					{
 						originalChannelDescription += channel.OptionalData.Description;
 					}
-					
-					// Perform the channel edit
-					//string deletionDate = DateTime.Now.AddMonths(1).ToString("dd-MM-yyyy");
+
 					tsFullClient.ChannelEdit(
 						channel.Id,
 						name: newName,
 						description: originalChannelDescription,
 						topic: $"This channel is marked for deletion!"
-					);
-					
-					//Console.WriteLine("Current Channel: " + currentChannel.ToString());
-					//tsFullClient.ChannelEdit(channel.Id, name: newName, description: originalChannelDescription, topic: $"This Channel is marked for deletion!");
+					);					
 				}
+			}
+			if (System.IO.File.Exists("ChannelVisits.json"))
+			{
+				System.IO.File.Delete("ChannelVisits.json");
 			}
 		}
 
