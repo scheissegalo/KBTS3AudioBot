@@ -24,7 +24,7 @@ using TSLib.Helper;
 
 namespace TS3AudioBot.ResourceFactories.Youtube
 {
-	public sealed class YoutubeResolver : IResourceResolver, IPlaylistResolver, IThumbnailResolver, ISearchResolver
+	public sealed class YoutubeResolver : IResourceResolver, IPlaylistResolver, IThumbnailResolver, ISearchResolver, IDisposable
 	{
 		private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 		private static readonly Regex IdMatch = new Regex(@"(?:(?:&|\?)v=|youtu\.be\/)([\w\-_]{11})", Util.DefaultRegexConfig);
@@ -35,10 +35,21 @@ namespace TS3AudioBot.ResourceFactories.Youtube
 		private static readonly Regex StreamBitrateMatch = new Regex(@"BANDWIDTH=(\d+)", Util.DefaultRegexConfig);
 		private string YoutubeProjectId => conf.ApiKey.Value;
 		private readonly ConfResolverYoutube conf;
+		private readonly string tempDownloadDir;
 
 		public YoutubeResolver(ConfResolverYoutube conf)
 		{
 			this.conf = conf;
+			// Configure YoutubeDlHelper with cookie and extractor-args settings
+			YoutubeDlHelper.CookieFile = conf.CookieFile;
+			YoutubeDlHelper.ExtractorArgs = conf.ExtractorArgs;
+			
+			// Configure FfmpegProducer with HLS options
+			Audio.FfmpegProducer.HlsOptions = conf.HlsOptions;
+			
+			// Set up temp download directory
+			tempDownloadDir = Path.Combine(Path.GetTempPath(), "ts3audiobot_ytdl");
+			Log.Debug("Temp download directory configured: {0}", tempDownloadDir);
 		}
 
 		public string ResolverFor => "youtube";
@@ -69,20 +80,18 @@ namespace TS3AudioBot.ResourceFactories.Youtube
 		public async Task<PlayResource> GetResourceById(ResolveContext? _, AudioResource resource)
 		{
 			var priority = conf.ResolverPriority.Value;
-			switch (priority)
+			
+			// Deprecate internal scraper - always use yt-dlp
+			if (priority == LoaderPriority.Internal)
 			{
-			case LoaderPriority.Internal:
-				try { return await ResolveResourceInternal(resource); }
-				catch (AudioBotException) { goto case LoaderPriority.YoutubeDl; }
-
-			case LoaderPriority.YoutubeDl:
-				return await YoutubeDlWrapped(resource);
-
-			default:
-				throw Tools.UnhandledDefault(priority);
+				Log.Warn("Internal YouTube scraper is deprecated and has been removed. Using yt-dlp instead.");
 			}
+			
+			// Always use yt-dlp regardless of priority setting
+			return await YoutubeDlWrapped(resource);
 		}
 
+		[Obsolete("Internal YouTube scraper is deprecated. Use yt-dlp instead.")]
 		private async Task<PlayResource> ResolveResourceInternal(AudioResource resource)
 		{
 			var resulthtml = await WebWrapper.Request($"https://www.youtube.com/get_video_info?video_id={resource.ResourceId}").AsString();
@@ -135,6 +144,7 @@ namespace TS3AudioBot.ResourceFactories.Youtube
 			return new PlayResource(videoTypes[codec].Link, resource);
 		}
 
+		[Obsolete("Internal YouTube scraper is deprecated. Use yt-dlp instead.")]
 		private static async Task<PlayResource> ParseLiveData(AudioResource resource, string requestUrl)
 		{
 			List<M3uEntry>? webList = null;
@@ -163,11 +173,13 @@ namespace TS3AudioBot.ResourceFactories.Youtube
 			return new PlayResource(streamSelect.TrackUrl, resource);
 		}
 
+		[Obsolete("Internal YouTube scraper is deprecated. Use yt-dlp instead.")]
 		private static void ParsePlayerData(JsonPlayerResponse data, List<VideoData> videoTypes)
 		{
 			// TODO
 		}
 
+		[Obsolete("Internal YouTube scraper is deprecated. Use yt-dlp instead.")]
 		private static void ParseEncodedFmt(List<string> videoDataUnsplit, List<VideoData> videoTypes)
 		{
 			if (videoDataUnsplit.Count == 0)
@@ -192,6 +204,7 @@ namespace TS3AudioBot.ResourceFactories.Youtube
 			}
 		}
 
+		[Obsolete("Internal YouTube scraper is deprecated. Use yt-dlp instead.")]
 		private static void ParseAdaptiveFmt(List<string> videoDataUnsplit, List<VideoData> videoTypes)
 		{
 			if (videoDataUnsplit.Count == 0)
@@ -223,6 +236,7 @@ namespace TS3AudioBot.ResourceFactories.Youtube
 
 		public string RestoreLink(ResolveContext _, AudioResource resource) => "https://youtu.be/" + resource.ResourceId;
 
+		[Obsolete("Internal YouTube scraper is deprecated. Use yt-dlp instead.")]
 		private static int SelectStream(List<VideoData> list)
 		{
 			if (Log.IsTraceEnabled)
@@ -242,8 +256,10 @@ namespace TS3AudioBot.ResourceFactories.Youtube
 			return autoselectIndex;
 		}
 
+		[Obsolete("Internal YouTube scraper is deprecated. Use yt-dlp instead.")]
 		private static Task ValidateMedia(VideoData media) => WebWrapper.Request(media.Link).Send();
 
+		[Obsolete("Internal YouTube scraper is deprecated. Use yt-dlp instead.")]
 		private static VideoCodec GetCodec(string type)
 		{
 			string lowtype = type.ToLowerInvariant();
@@ -344,20 +360,88 @@ namespace TS3AudioBot.ResourceFactories.Youtube
 			return plist;
 		}
 
-		private static async Task<PlayResource> YoutubeDlWrapped(AudioResource resource)
+		private async Task<PlayResource> YoutubeDlWrapped(AudioResource resource)
 		{
-			Log.Debug("Falling back to youtube-dl!");
+			Log.Debug("Using yt-dlp for video: {0}", resource.ResourceId);
 
+			// Read playback mode configuration
+			var playbackMode = conf.PlaybackMode?.Value ?? PlaybackMode.HlsStreaming;
+			Log.Info("Playback mode for video {0}: {1}", resource.ResourceId, playbackMode);
+
+			// Try direct download if configured
+			if (playbackMode == PlaybackMode.DirectDownload || playbackMode == PlaybackMode.Auto)
+			{
+				Log.Info("Attempting direct download for video {0}", resource.ResourceId);
+				var downloadResult = await YoutubeDlHelper.DownloadVideo(resource.ResourceId, tempDownloadDir);
+
+				if (downloadResult.Ok)
+				{
+					Log.Info("Direct download succeeded for video {0}: {1}", 
+						resource.ResourceId, downloadResult.Value);
+
+					// Get metadata for the downloaded file
+					var downloadResponse = await YoutubeDlHelper.GetSingleVideo(resource.ResourceId);
+					resource.ResourceTitle = downloadResponse.AutoTitle ?? $"Youtube-{resource.ResourceId}";
+					var downloadSongInfo = YoutubeDlHelper.MapToSongInfo(downloadResponse);
+
+					// Return PlayResource with local file path
+					return new PlayResource(downloadResult.Value, resource, songInfo: downloadSongInfo)
+					{
+						IsTemporaryFile = true,
+						TemporaryFilePath = downloadResult.Value
+					};
+				}
+				else
+				{
+					Log.Warn("Direct download failed for video {0}: {1}", 
+						resource.ResourceId, downloadResult.Error);
+
+					// If DirectDownload mode, fail immediately without fallback
+					if (playbackMode == PlaybackMode.DirectDownload)
+					{
+						Log.Error("DirectDownload mode enabled but download failed. Not falling back to streaming.");
+						throw Error.LocalStr("Direct download failed: " + downloadResult.Error);
+					}
+
+					// Auto mode: fall back to streaming
+					Log.Info("Auto mode: Falling back to HLS streaming for video {0}", resource.ResourceId);
+				}
+			}
+
+			// Use streaming mode (HLS or direct URL)
+			Log.Debug("Using streaming mode for video {0}", resource.ResourceId);
 			var response = await YoutubeDlHelper.GetSingleVideo(resource.ResourceId);
 			resource.ResourceTitle = response.AutoTitle ?? $"Youtube-{resource.ResourceId}";
 			var songInfo = YoutubeDlHelper.MapToSongInfo(response);
-			var format = YoutubeDlHelper.FilterBest(response.formats);
+
+			// Use enhanced format selection (prioritizes direct URLs)
+			var format = YoutubeDlHelper.FilterBestEnhanced(response.formats);
 			var url = format?.url;
 
 			if (string.IsNullOrEmpty(url))
+			{
+				Log.Error("No suitable format found for video {0}. Available formats: {@formats}", 
+					resource.ResourceId, response.formats);
 				throw Error.LocalStr(strings.error_ytdl_empty_response);
+			}
+
+			// Check if the URL is an HLS manifest and log accordingly
+			bool isHls = YoutubeDlHelper.IsHlsManifest(url);
+			var formatType = isHls ? "HLS manifest" : "direct URL";
+
+			Log.Info("Selected {0} for video {1}: format_id={2}, codec={3}, audio-only={4}, resolution={5}x{6}, bitrate={7}",
+				formatType,
+				resource.ResourceId,
+				format.format_id,
+				format.acodec,
+				format.vcodec == "none",
+				format.width ?? 0,
+				format.height ?? 0,
+				format.abr?.ToString() ?? "null");
 
 			Log.Debug("youtube-dl succeeded!");
+
+			// PlayResource constructor does not modify the URL - it's passed through as-is
 			return new PlayResource(url, resource, songInfo: songInfo);
 		}
 
@@ -430,6 +514,33 @@ namespace TS3AudioBot.ResourceFactories.Youtube
 				)).ToArray();
 		}
 
-		public void Dispose() { }
+		public void Dispose()
+		{
+			// Clean up temp download directory
+			try
+			{
+				if (Directory.Exists(tempDownloadDir))
+				{
+					Log.Debug("Cleaning up temp download directory: {0}", tempDownloadDir);
+					var files = Directory.GetFiles(tempDownloadDir);
+					foreach (var file in files)
+					{
+						try
+						{
+							File.Delete(file);
+							Log.Debug("Cleaned up temp file: {0}", file);
+						}
+						catch (Exception ex)
+						{
+							Log.Warn(ex, "Failed to delete temp file: {0}", file);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.Warn(ex, "Failed to clean up temp download directory");
+			}
+		}
 	}
 }

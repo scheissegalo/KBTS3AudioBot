@@ -67,6 +67,25 @@ namespace TS3AudioBot.Config
 		public ConfigValue<string> ApiKey { get; } = new ConfigValue<string>("youtube_api_key", "",
 			"Set your own youtube api key to keep using the old youtube factory loader.\n" +
 			"This feature is unsupported and may break at any time");
+		public ConfigValue<string> CookieFile { get; } = new ConfigValue<string>("cookie_file", "",
+			"Path to a Netscape-format cookie file for yt-dlp authentication.\n" +
+			"This is required for age-restricted videos and some region-locked content.\n" +
+			"You can export cookies from your browser using extensions like 'Get cookies.txt'.\n" +
+			"Leave empty to run without cookies.");
+		public ConfigValue<string> ExtractorArgs { get; } = new ConfigValue<string>("extractor_args", "",
+			"Additional arguments to pass to yt-dlp extractors.\n" +
+			"Example: 'youtube:player_client=android' to use Android client for extraction.\n" +
+			"Leave empty for default behavior.");
+		public ConfigValue<PlaybackMode> PlaybackMode { get; } = new ConfigValue<PlaybackMode>("playback_mode", ResourceFactories.Youtube.PlaybackMode.HlsStreaming,
+			"Configures how YouTube videos should be played:\n" +
+			" - HlsStreaming : Stream HLS chunks with sequential ordering (default, fastest startup)\n" +
+			" - DirectDownload : Download complete file before playback (more reliable, slower startup)\n" +
+			" - Auto : Try direct download first, fall back to streaming on failure");
+		public ConfigValue<string> HlsOptions { get; } = new ConfigValue<string>("hls_options", "",
+			"Additional FFmpeg options for HLS playback (advanced users only).\n" +
+			"These options are passed to FFmpeg when playing HLS streams.\n" +
+			"Example: '-hls_time 10 -hls_list_size 0' for custom segment duration.\n" +
+			"Leave empty to use default sequential playback settings.");
 	}
 
 	public class ConfTools : ConfigTable

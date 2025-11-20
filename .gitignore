@@ -12,6 +12,7 @@
 .vs/
 .vscode/
 .idea/
+.kiro/
 [Pp]roperties/
 
 # Build results
@@ -252,3 +253,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+publish-linux/
+yt-dlp
+cookies.txt
+ytdlp.sh

@@ -35,6 +35,9 @@ namespace TS3AudioBot.Audio
 		private static readonly TimeSpan retryOnDropBeforeEnd = TimeSpan.FromSeconds(10);
 
 		private readonly ConfToolsFfmpeg config;
+		
+		// Static property to hold HLS options from configuration
+		public static Config.ConfigValue<string>? HlsOptions { private get; set; }
 
 		public event EventHandler? OnSongEnd;
 		public event EventHandler<SongInfoChanged>? OnSongUpdated;
@@ -105,6 +108,20 @@ namespace TS3AudioBot.Audio
 				if (instance.FfmpegProcess.HasExitedSafe())
 				{
 					Log.Trace("Ffmpeg has exited");
+					
+					// Log playback completion status for HLS streams
+					if (instance.IsHlsPlayback)
+					{
+						if (instance.HasDetectedPositionJump)
+						{
+							Log.Warn("HLS playback ended with detected position jumps. Chunks may have played out of order.");
+						}
+						else
+						{
+							Log.Info("HLS playback ended successfully with no detected position jumps.");
+						}
+					}
+					
 					AudioStop();
 					triggerEndSafe = true;
 				}
@@ -118,6 +135,30 @@ namespace TS3AudioBot.Audio
 
 			instance.HasTriedToReconnect = false;
 			instance.AudioTimer.PushBytes(read);
+
+			// Track position for HLS playback to detect unexpected jumps
+			if (instance.IsHlsPlayback)
+			{
+				var currentPosition = instance.AudioTimer.SongPosition;
+				
+				// Check for backward position jumps (chunk ordering issues)
+				// Allow small variations due to timing precision, but flag significant jumps
+				if (currentPosition < instance.LastReportedPosition - TimeSpan.FromMilliseconds(500))
+				{
+					Log.Warn("HLS playback position jumped backward! Previous: {0}, Current: {1}, Jump: {2}ms",
+						instance.LastReportedPosition,
+						currentPosition,
+						(instance.LastReportedPosition - currentPosition).TotalMilliseconds);
+					instance.HasDetectedPositionJump = true;
+				}
+				
+				// Update last reported position periodically (every ~1 second of playback)
+				if (currentPosition - instance.LastReportedPosition > TimeSpan.FromSeconds(1))
+				{
+					instance.LastReportedPosition = currentPosition;
+				}
+			}
+
 			return read;
 		}
 
@@ -131,7 +172,16 @@ namespace TS3AudioBot.Audio
 				{
 					var actualStopPosition = instance.AudioTimer.SongPosition;
 					Log.Trace("Actual song position {0}", actualStopPosition);
-					if (actualStopPosition + retryOnDropBeforeEnd < expectedStopLength)
+					
+					// For HLS streams with sequential processing flags, disable automatic reconnection
+					// The sequential flags should ensure complete playback without drops
+					// Reconnecting can cause the ending to play twice
+					if (instance.IsHlsPlayback)
+					{
+						Log.Debug("HLS stream ended at position {0} (expected: {1}). Not retrying due to sequential processing.", 
+							actualStopPosition, expectedStopLength);
+					}
+					else if (actualStopPosition + retryOnDropBeforeEnd < expectedStopLength)
 					{
 						Log.Debug("Connection to song lost, retrying at {0}", actualStopPosition);
 						instance.HasTriedToReconnect = true;
@@ -146,6 +196,19 @@ namespace TS3AudioBot.Audio
 							Log.Debug("Retry failed {0}", newInstance.Error);
 							return (false, true);
 						}
+					}
+				}
+
+				// Log playback completion with ordering status for HLS streams
+				if (instance.IsHlsPlayback)
+				{
+					if (instance.HasDetectedPositionJump)
+					{
+						Log.Warn("HLS playback completed with detected position jumps. Chunks may have played out of order.");
+					}
+					else
+					{
+						Log.Info("HLS playback completed successfully with no detected position jumps.");
 					}
 				}
 			}
@@ -197,14 +260,27 @@ namespace TS3AudioBot.Audio
 
 			string arguments;
 			var offset = offsetOpt ?? TimeSpan.Zero;
-			if (offset > TimeSpan.Zero)
+			
+			// Check if this is an HLS URL and use appropriate argument building
+			bool isHls = IsHlsUrl(url);
+			
+			if (isHls)
 			{
-				var seek = string.Format(CultureInfo.InvariantCulture, @"-ss {0:hh\:mm\:ss\.fff}", offset);
-				arguments = string.Concat(seek, " ", PreLinkConf, url, PostLinkConf, " ", seek);
+				Log.Info("HLS URL detected, using sequential processing flags");
+				arguments = BuildHlsArguments(url, offset);
 			}
 			else
 			{
-				arguments = string.Concat(PreLinkConf, url, PostLinkConf);
+				Log.Debug("Non-HLS URL, using standard arguments");
+				if (offset > TimeSpan.Zero)
+				{
+					var seek = string.Format(CultureInfo.InvariantCulture, @"-ss {0:hh\:mm\:ss\.fff}", offset);
+					arguments = string.Concat(seek, " ", PreLinkConf, url, PostLinkConf, " ", seek);
+				}
+				else
+				{
+					arguments = string.Concat(PreLinkConf, url, PostLinkConf);
+				}
 			}
 
 			var newInstance = new FfmpegInstance(
@@ -212,7 +288,10 @@ namespace TS3AudioBot.Audio
 				new PreciseAudioTimer(this)
 				{
 					SongPositionOffset = offset,
-				});
+				})
+			{
+				IsHlsPlayback = isHls
+			};
 
 			return StartFfmpegProcessInternal(newInstance, arguments);
 		}
@@ -318,6 +397,199 @@ namespace TS3AudioBot.Audio
 				throw new Exception("Cannot read on own scheduler. Throwing to prevent deadlock");
 		}
 
+		private static bool IsHlsUrl(string url)
+		{
+			if (string.IsNullOrEmpty(url))
+			{
+				Log.Trace("IsHlsUrl: URL is null or empty");
+				return false;
+			}
+
+			bool isHls = url.Contains("manifest.googlevideo.com")
+				|| url.Contains(".m3u8")
+				|| url.Contains("hls_playlist");
+
+			Log.Debug("IsHlsUrl: URL '{0}' is {1}HLS", url, isHls ? "" : "not ");
+
+			return isHls;
+		}
+
+		private static string BuildHlsArguments(string url, TimeSpan offset)
+		{
+			var sb = new System.Text.StringBuilder();
+
+			Log.Debug("Building HLS arguments for URL: {0}, offset: {1}", url, offset);
+
+			// Add seek if needed (before input for faster seeking)
+			if (offset > TimeSpan.Zero)
+			{
+				var seek = string.Format(CultureInfo.InvariantCulture, @"-ss {0:hh\:mm\:ss\.fff}", offset);
+				sb.Append(seek).Append(" ");
+				Log.Debug("Adding seek offset: {0}", seek);
+			}
+
+			// Base FFmpeg options
+			sb.Append("-hide_banner -nostats -threads 1 ");
+
+			// HLS-specific options for sequential playback
+			// These flags enforce sequential chunk processing to prevent out-of-order playback
+			sb.Append("-http_persistent 0 ");       // Disable persistent connections (forces sequential)
+			sb.Append("-multiple_requests 0 ");     // Disable parallel requests
+			sb.Append("-fflags +discardcorrupt ");  // Discard corrupt packets
+
+			Log.Debug("Added HLS sequential processing flags: -http_persistent 0 -multiple_requests 0 -fflags +discardcorrupt");
+
+			// Custom HLS options from configuration
+			var customHlsOptions = GetCustomHlsOptions();
+			if (!string.IsNullOrEmpty(customHlsOptions))
+			{
+				sb.Append(customHlsOptions).Append(" ");
+				Log.Info("Added custom HLS options from configuration: {0}", customHlsOptions);
+			}
+
+			// Input URL
+			sb.Append("-i \"").Append(url).Append("\" ");
+
+			// Output format
+			sb.Append("-ac 2 -ar 48000 -f s16le -acodec pcm_s16le pipe:1");
+
+			// Add seek again after input for more accurate seeking
+			if (offset > TimeSpan.Zero)
+			{
+				var seek = string.Format(CultureInfo.InvariantCulture, @" -ss {0:hh\:mm\:ss\.fff}", offset);
+				sb.Append(seek);
+				Log.Debug("Adding post-input seek offset: {0}", seek);
+			}
+
+			var arguments = sb.ToString();
+			Log.Info("Built FFmpeg HLS command: ffmpeg {0}", arguments);
+
+			return arguments;
+		}
+
+		private static string GetCustomHlsOptions()
+		{
+			// Get custom HLS options from configuration
+			var options = HlsOptions?.Value ?? string.Empty;
+			
+			if (string.IsNullOrEmpty(options))
+			{
+				return string.Empty;
+			}
+			
+			try
+			{
+				// Validate HLS options
+				var validatedOptions = ValidateHlsOptions(options);
+				
+				if (!string.IsNullOrEmpty(validatedOptions))
+				{
+					Log.Debug("Retrieved custom HLS options from configuration: {0}", validatedOptions);
+					return validatedOptions;
+				}
+				else
+				{
+					Log.Warn("Invalid HLS options provided: '{0}'. Using default options.", options);
+					return string.Empty;
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.Warn(ex, "Error parsing HLS options: '{0}'. Using default options.", options);
+				return string.Empty;
+			}
+		}
+		
+		private static string ValidateHlsOptions(string options)
+		{
+			if (string.IsNullOrWhiteSpace(options))
+			{
+				return string.Empty;
+			}
+			
+			// Trim the options
+			options = options.Trim();
+			
+			// Basic validation: check for potentially dangerous characters or patterns
+			// that could cause command injection or FFmpeg errors
+			
+			// Check for null bytes (command injection attempt)
+			if (options.Contains('\0'))
+			{
+				Log.Warn("HLS options contain null bytes, rejecting: '{0}'", options);
+				return string.Empty;
+			}
+			
+			// Check for newline characters (could break command parsing)
+			if (options.Contains('\n') || options.Contains('\r'))
+			{
+				Log.Warn("HLS options contain newline characters, rejecting: '{0}'", options);
+				return string.Empty;
+			}
+			
+			// Check for pipe characters (could be used for command chaining)
+			if (options.Contains('|'))
+			{
+				Log.Warn("HLS options contain pipe characters, rejecting: '{0}'", options);
+				return string.Empty;
+			}
+			
+			// Check for semicolons (could be used for command chaining)
+			if (options.Contains(';'))
+			{
+				Log.Warn("HLS options contain semicolons, rejecting: '{0}'", options);
+				return string.Empty;
+			}
+			
+			// Check for backticks (command substitution)
+			if (options.Contains('`'))
+			{
+				Log.Warn("HLS options contain backticks, rejecting: '{0}'", options);
+				return string.Empty;
+			}
+			
+			// Check for dollar signs followed by parentheses (command substitution)
+			if (options.Contains("$(") || options.Contains("${"))
+			{
+				Log.Warn("HLS options contain command substitution patterns, rejecting: '{0}'", options);
+				return string.Empty;
+			}
+			
+			// Check for ampersands (background execution or command chaining)
+			if (options.Contains("&&") || options.Contains("&"))
+			{
+				Log.Warn("HLS options contain ampersands, rejecting: '{0}'", options);
+				return string.Empty;
+			}
+			
+			// Validate that options start with a dash (FFmpeg options should start with -)
+			// Split by spaces and check each token
+			var tokens = options.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			
+			foreach (var token in tokens)
+			{
+				// Skip empty tokens
+				if (string.IsNullOrWhiteSpace(token))
+					continue;
+					
+				// If token starts with a dash, it's likely a valid FFmpeg option
+				// If it doesn't start with a dash and isn't a value (previous token was an option),
+				// it might be valid (e.g., "-option value")
+				// We'll allow tokens that don't start with dash as they could be option values
+				
+				// Check for obviously invalid patterns in individual tokens
+				if (token.Contains(".."))
+				{
+					Log.Warn("HLS options contain suspicious path traversal pattern, rejecting: '{0}'", options);
+					return string.Empty;
+				}
+			}
+			
+			// If all validation passes, return the options
+			Log.Debug("HLS options validated successfully: '{0}'", options);
+			return options;
+		}
+
 		public void Dispose()
 		{
 			StopFfmpegProcess();
@@ -338,6 +610,11 @@ namespace TS3AudioBot.Audio
 			public bool Closed { get; set; }
 
 			public Action<SongInfoChanged>? OnMetaUpdated;
+
+			// Position tracking for chunk ordering diagnostics
+			public TimeSpan LastReportedPosition { get; set; } = TimeSpan.Zero;
+			public bool IsHlsPlayback { get; set; }
+			public bool HasDetectedPositionJump { get; set; }
 
 			public FfmpegInstance(string url, PreciseAudioTimer timer) : this(url, timer, null!, 0) { }
 			public FfmpegInstance(string url, PreciseAudioTimer timer, Stream icyStream, int icyMetaInt)
