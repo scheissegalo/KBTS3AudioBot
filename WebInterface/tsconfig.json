@@ -4,21 +4,20 @@
         "module": "es2015",
         "moduleResolution": "node",
         "sourceMap": true,
-        "watch": false,
         "rootDir": "src/ts",
 
         "removeComments": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true,
+        "noImplicitAny": false,
+        "strictNullChecks": false,
         "alwaysStrict": true,
         "noFallthroughCasesInSwitch": true,
-        "noImplicitReturns": true,
-        "noImplicitThis": true,
+        "noImplicitReturns": false,
+        "noImplicitThis": false,
         //"noUnusedLocals": true,
         //,"noUnusedParameters": true
-        "strictPropertyInitialization": true,
-        "strictFunctionTypes": true,
-        "strict": true,
+        "strictPropertyInitialization": false,
+        "strictFunctionTypes": false,
+        "strict": false,
 
         "jsx": "react",
         "jsxFactory": "createElement"

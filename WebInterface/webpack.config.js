@@ -41,27 +41,24 @@ module.exports = {
 				],
 			},
 			{
-				test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/i,
-				use: [
-					{
-						loader: 'file-loader',
-						options: {
-							name: "[path][name].[ext]"
-						}
-					}
-				]
+				test: /\.(jpe?g|png|gif|eot|woff|ttf|woff2)$/i,
+				type: 'asset/resource',
+				generator: {
+					filename: '[path][name][ext]'
+				}
 			}
 		]
 	},
 	resolve: {
 		extensions: ['.tsx', '.ts', '.js', '.vue'],
 		alias: {
-			'vue$': 'vue/dist/vue.esm.js'
+			'vue': 'vue/dist/vue.esm.js'
 		}
 	},
 	output: {
 		filename: 'bundle.js',
-		path: path.resolve(__dirname, 'dist')
+		path: path.resolve(__dirname, 'dist'),
+		clean: true
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
@@ -70,13 +67,19 @@ module.exports = {
 		}),
 		new CopyPlugin({
 			patterns: [
-				{ from: 'src/html', to: '.' },
+				{ 
+					from: 'src/html', 
+					to: '.',
+					globOptions: {
+						ignore: ['**/index.html']
+					}
+				},
 			]
 		}),
 		new VueLoaderPlugin()
 	],
 	devServer: {
-		disableHostCheck: true,
+		allowedHosts: 'all',
 		headers: {
 			"Access-Control-Allow-Origin": "*",
 			"Access-Control-Allow-Methods": "GET",
