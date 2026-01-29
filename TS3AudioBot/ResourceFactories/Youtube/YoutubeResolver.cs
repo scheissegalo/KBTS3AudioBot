@@ -44,8 +44,9 @@ namespace TS3AudioBot.ResourceFactories.Youtube
 			YoutubeDlHelper.CookieFile = conf.CookieFile;
 			YoutubeDlHelper.ExtractorArgs = conf.ExtractorArgs;
 			
-			// Configure FfmpegProducer with HLS options
+			// Configure FfmpegProducer with HLS options and cookies
 			Audio.FfmpegProducer.HlsOptions = conf.HlsOptions;
+			Audio.FfmpegProducer.CookieFile = conf.CookieFile;
 			
 			// Set up temp download directory
 			tempDownloadDir = Path.Combine(Path.GetTempPath(), "ts3audiobot_ytdl");
@@ -410,7 +411,55 @@ namespace TS3AudioBot.ResourceFactories.Youtube
 
 			// Use streaming mode (HLS or direct URL)
 			Log.Debug("Using streaming mode for video {0}", resource.ResourceId);
-			var response = await YoutubeDlHelper.GetSingleVideo(resource.ResourceId);
+			
+			JsonYtdlDump response;
+			try
+			{
+				response = await YoutubeDlHelper.GetSingleVideo(resource.ResourceId);
+			}
+			catch (Exception ex)
+			{
+				// If format extraction fails (e.g., signature solving failed), try direct download as fallback
+				Log.Warn("Format extraction failed for video {0}: {1}. Attempting direct download fallback.", 
+					resource.ResourceId, ex.Message);
+				
+				var downloadResult = await YoutubeDlHelper.DownloadVideo(resource.ResourceId, tempDownloadDir);
+				if (downloadResult.Ok)
+				{
+					Log.Info("Direct download fallback succeeded for video {0}: {1}", 
+						resource.ResourceId, downloadResult.Value);
+					
+					// Try to get metadata (may fail, but that's okay)
+					try
+					{
+						var downloadResponse = await YoutubeDlHelper.GetSingleVideo(resource.ResourceId);
+						resource.ResourceTitle = downloadResponse.AutoTitle ?? $"Youtube-{resource.ResourceId}";
+						var downloadSongInfo = YoutubeDlHelper.MapToSongInfo(downloadResponse);
+						return new PlayResource(downloadResult.Value, resource, songInfo: downloadSongInfo)
+						{
+							IsTemporaryFile = true,
+							TemporaryFilePath = downloadResult.Value
+						};
+					}
+					catch
+					{
+						// If metadata extraction also fails, just use the downloaded file
+						resource.ResourceTitle = $"Youtube-{resource.ResourceId}";
+						return new PlayResource(downloadResult.Value, resource)
+						{
+							IsTemporaryFile = true,
+							TemporaryFilePath = downloadResult.Value
+						};
+					}
+				}
+				else
+				{
+					Log.Error("Both format extraction and direct download failed for video {0}. Format error: {1}, Download error: {2}", 
+						resource.ResourceId, ex.Message, downloadResult.Error);
+					throw Error.LocalStr($"Failed to extract video formats: {ex.Message}. Direct download also failed: {downloadResult.Error}");
+				}
+			}
+			
 			resource.ResourceTitle = response.AutoTitle ?? $"Youtube-{resource.ResourceId}";
 			var songInfo = YoutubeDlHelper.MapToSongInfo(response);
 
@@ -420,9 +469,27 @@ namespace TS3AudioBot.ResourceFactories.Youtube
 
 			if (string.IsNullOrEmpty(url))
 			{
-				Log.Error("No suitable format found for video {0}. Available formats: {@formats}", 
+				Log.Warn("No suitable format found in streaming mode for video {0}. Available formats: {@formats}. Attempting direct download fallback.", 
 					resource.ResourceId, response.formats);
-				throw Error.LocalStr(strings.error_ytdl_empty_response);
+				
+				// Fallback to direct download if no formats available
+				var downloadResult = await YoutubeDlHelper.DownloadVideo(resource.ResourceId, tempDownloadDir);
+				if (downloadResult.Ok)
+				{
+					Log.Info("Direct download fallback succeeded for video {0}: {1}", 
+						resource.ResourceId, downloadResult.Value);
+					return new PlayResource(downloadResult.Value, resource, songInfo: songInfo)
+					{
+						IsTemporaryFile = true,
+						TemporaryFilePath = downloadResult.Value
+					};
+				}
+				else
+				{
+					Log.Error("No suitable format found for video {0} and direct download also failed. Available formats: {@formats}, Download error: {1}", 
+						resource.ResourceId, response.formats, downloadResult.Error);
+					throw Error.LocalStr(strings.error_ytdl_empty_response);
+				}
 			}
 
 			// Check if the URL is an HLS manifest and log accordingly

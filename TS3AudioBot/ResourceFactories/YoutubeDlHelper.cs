@@ -36,6 +36,266 @@ namespace TS3AudioBot.ResourceFactories
 		private const string ParamGetSingleVideo = " --no-warnings --dump-json --id --";
 		private const string ParamGetPlaylist = "--no-warnings --yes-playlist --flat-playlist --dump-single-json --id --";
 		private const string ParamGetSearch = "--no-warnings --flat-playlist --dump-single-json -- ytsearch10:";
+		
+		/// <summary>
+		/// Detects available JavaScript runtime for yt-dlp (required for YouTube's JS challenges).
+		/// Checks for Deno, Node.js, QuickJS, or Bun in order of preference.
+		/// Prioritizes PATH checks over current directory checks.
+		/// Returns the full path to the runtime if found, otherwise just the runtime name.
+		/// </summary>
+		/// <returns>JS runtime name or "runtime:/path/to/runtime" if found, null otherwise</returns>
+		private static string? DetectJsRuntime()
+		{
+			// Check PATH first (more reliable), then current directory
+			// Check for Deno (preferred by yt-dlp)
+			var denoPath = FindCommandPath("deno");
+			if (!string.IsNullOrEmpty(denoPath))
+			{
+				Log.Info("Detected Deno JS runtime for yt-dlp at: {0}", denoPath);
+				return denoPath != "deno" ? $"deno:{denoPath}" : "deno";
+			}
+			
+			// Check for Node.js - yt-dlp requires Node.js v20+ for JS challenge solving
+			// v18 and below are marked as "unsupported" by yt-dlp
+			var nodePath = FindCommandPath("node");
+			if (!string.IsNullOrEmpty(nodePath))
+			{
+				// Try to check Node.js version to warn if it's too old
+				var nodeVersion = GetNodeVersion(nodePath);
+				if (!string.IsNullOrEmpty(nodeVersion))
+				{
+					Log.Info("Detected Node.js runtime for yt-dlp (version: {0}, path: {1})", nodeVersion, nodePath);
+					// Note: yt-dlp may still mark Node.js v18 as unsupported, but we'll try it anyway
+					if (nodeVersion.StartsWith("v18") || nodeVersion.StartsWith("v16") || nodeVersion.StartsWith("v14"))
+					{
+						Log.Warn("Node.js version {0} may be unsupported by yt-dlp. yt-dlp requires Node.js v20+ for JS challenge solving. Consider updating to Node.js v20 or later, or install Deno.", nodeVersion);
+					}
+				}
+				else
+				{
+					Log.Info("Detected Node.js runtime for yt-dlp at: {0} (version check failed)", nodePath);
+				}
+				// Always return just "node" - we'll set PATH for the yt-dlp process instead
+				// This is simpler and more reliable than passing full paths
+				return "node";
+			}
+			
+			// Check for QuickJS
+			var qjsPath = FindCommandPath("qjs");
+			if (!string.IsNullOrEmpty(qjsPath))
+			{
+				Log.Info("Detected QuickJS runtime for yt-dlp at: {0}", qjsPath);
+				return qjsPath != "qjs" ? $"quickjs:{qjsPath}" : "quickjs";
+			}
+			
+			// Check for Bun
+			var bunPath = FindCommandPath("bun");
+			if (!string.IsNullOrEmpty(bunPath))
+			{
+				Log.Info("Detected Bun JS runtime for yt-dlp at: {0}", bunPath);
+				return bunPath != "bun" ? $"bun:{bunPath}" : "bun";
+			}
+			
+			Log.Warn("No JavaScript runtime detected in PATH or current directory. YouTube may require JS runtime for format extraction. Install Deno or Node.js v20+.");
+			return null;
+		}
+		
+		/// <summary>
+		/// Finds the full path to a command by checking PATH and common locations.
+		/// Also checks common nvm locations for Node.js.
+		/// </summary>
+		/// <param name="command">The command to find (e.g., "node", "deno")</param>
+		/// <returns>Full path to the command if found, or just the command name if found in PATH, or null if not found</returns>
+		private static string? FindCommandPath(string command)
+		{
+			// Special handling for Node.js: check nvm locations FIRST
+			// This is important because the bot process might not have nvm's PATH modifications
+			if (command == "node")
+			{
+				var homeDir = System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
+				if (!string.IsNullOrEmpty(homeDir))
+				{
+					// Check nvm default location: ~/.nvm/versions/node/*/bin/node
+					var nvmPath = Path.Combine(homeDir, ".nvm", "versions", "node");
+					if (Directory.Exists(nvmPath))
+					{
+						// Find the latest version directory (sort by directory name descending)
+						// This will naturally put v24.13.0 before v18.20.8
+						var versionDirs = Directory.GetDirectories(nvmPath)
+							.OrderByDescending(d => Path.GetFileName(d))
+							.ToList();
+						
+						foreach (var versionDir in versionDirs)
+						{
+							var nodePath = Path.Combine(versionDir, "bin", "node");
+							if (File.Exists(nodePath))
+							{
+								Log.Info("Found Node.js in nvm directory: {0}", nodePath);
+								return nodePath;
+							}
+						}
+					}
+					
+					// Also check for nvm's current symlink
+					var nvmCurrentPath = Path.Combine(homeDir, ".nvm", "current", "bin", "node");
+					if (File.Exists(nvmCurrentPath))
+					{
+						Log.Info("Found Node.js via nvm current symlink: {0}", nvmCurrentPath);
+						return nvmCurrentPath;
+					}
+				}
+			}
+			
+			// Check if command exists in PATH
+			if (CheckCommandInPath(command))
+			{
+				// Try to get the actual path using 'which' (Linux) or 'where' (Windows)
+				var actualPath = GetCommandPathFromSystem(command);
+				if (!string.IsNullOrEmpty(actualPath) && File.Exists(actualPath))
+				{
+					return actualPath;
+				}
+				// If we can't get the path but command works, return command name
+				// yt-dlp will try to find it in PATH
+				return command;
+			}
+			
+			// Check current directory
+			if (File.Exists(command) || File.Exists(command + ".exe"))
+			{
+				return Path.GetFullPath(command);
+			}
+			
+			return null;
+		}
+		
+		/// <summary>
+		/// Gets the full path to a command using system commands (which/where).
+		/// </summary>
+		/// <param name="command">The command to find</param>
+		/// <returns>Full path if found, null otherwise</returns>
+		private static string? GetCommandPathFromSystem(string command)
+		{
+			try
+			{
+				using var process = new Process();
+				if (System.Environment.OSVersion.Platform == PlatformID.Unix || 
+				    System.Environment.OSVersion.Platform == PlatformID.MacOSX)
+				{
+					// Linux/Mac: use 'which'
+					process.StartInfo.FileName = "which";
+					process.StartInfo.Arguments = command;
+				}
+				else
+				{
+					// Windows: use 'where'
+					process.StartInfo.FileName = "where";
+					process.StartInfo.Arguments = command;
+				}
+				
+				process.StartInfo.UseShellExecute = false;
+				process.StartInfo.CreateNoWindow = true;
+				process.StartInfo.RedirectStandardOutput = true;
+				process.StartInfo.RedirectStandardError = true;
+				process.Start();
+				
+				var output = process.StandardOutput.ReadToEnd();
+				process.WaitForExit(2000);
+				
+				if (process.ExitCode == 0 && !string.IsNullOrEmpty(output))
+				{
+					var path = output.Trim().Split('\n', '\r').FirstOrDefault()?.Trim();
+					if (!string.IsNullOrEmpty(path) && File.Exists(path))
+					{
+						return path;
+					}
+				}
+			}
+			catch
+			{
+				// Ignore errors
+			}
+			return null;
+		}
+		
+		/// <summary>
+		/// Gets the Node.js version string by running 'node --version'.
+		/// </summary>
+		/// <param name="nodePath">Path to node executable, or "node" to use PATH</param>
+		/// <returns>Version string (e.g., "v22.17.0") or null if unable to determine</returns>
+		private static string? GetNodeVersion(string nodePath)
+		{
+			try
+			{
+				using var process = new Process();
+				process.StartInfo.FileName = nodePath;
+				process.StartInfo.Arguments = "--version";
+				process.StartInfo.UseShellExecute = false;
+				process.StartInfo.CreateNoWindow = true;
+				process.StartInfo.RedirectStandardOutput = true;
+				process.StartInfo.RedirectStandardError = true;
+				process.Start();
+				
+				var output = process.StandardOutput.ReadToEnd();
+				process.WaitForExit(2000);
+				
+				if (process.ExitCode == 0 && !string.IsNullOrEmpty(output))
+				{
+					return output.Trim();
+				}
+			}
+			catch
+			{
+				// Ignore errors
+			}
+			return null;
+		}
+		
+		/// <summary>
+		/// Checks if a command exists in PATH by trying to run it.
+		/// Works on both Linux (which) and Windows (where).
+		/// </summary>
+		/// <param name="command">The command to check (e.g., "node", "deno")</param>
+		/// <returns>True if the command exists in PATH, false otherwise</returns>
+		private static bool CheckCommandInPath(string command)
+		{
+			try
+			{
+				// Try to run the command with --version to see if it exists
+				// This is more reliable than using 'which' or 'where'
+				using var process = new Process();
+				process.StartInfo.FileName = command;
+				process.StartInfo.Arguments = "--version";
+				process.StartInfo.UseShellExecute = false;
+				process.StartInfo.CreateNoWindow = true;
+				process.StartInfo.RedirectStandardOutput = true;
+				process.StartInfo.RedirectStandardError = true;
+				process.Start();
+				
+				// Wait up to 2 seconds for the command to complete
+				if (process.WaitForExit(2000))
+				{
+					// Exit code 0 means the command exists and ran successfully
+					return process.ExitCode == 0;
+				}
+				else
+				{
+					// Timeout - command might exist but is slow, assume it exists
+					try { process.Kill(); } catch { }
+					return true;
+				}
+			}
+			catch (Win32Exception)
+			{
+				// Command not found - this is expected if command doesn't exist
+				return false;
+			}
+			catch
+			{
+				// Other exceptions - assume command doesn't exist
+				return false;
+			}
+		}
 
 		/// <summary>
 		/// Builds yt-dlp command arguments with optional cookie file and extractor-args support.
@@ -79,6 +339,19 @@ namespace TS3AudioBot.ResourceFactories
 					sb.Append($" --extractor-args \"{extractorArgs}\"");
 				}
 				
+				// Add JS runtime if available (required for YouTube's JS challenges)
+				// This helps avoid 403 errors on HLS segments
+				var jsRuntime = DetectJsRuntime();
+				if (!string.IsNullOrEmpty(jsRuntime))
+				{
+					sb.Append($" --js-runtime {jsRuntime}");
+					Log.Debug("Added JS runtime '{0}' to yt-dlp command for YouTube JS challenge support", jsRuntime);
+				}
+				else
+				{
+					Log.Warn("No JavaScript runtime detected. YouTube may return 403 errors. Consider installing Deno or Node.js.");
+				}
+				
 				// Add the rest of baseParams (including the "--" separator)
 				sb.Append(baseParams.Substring(separatorIndex));
 			}
@@ -106,6 +379,14 @@ namespace TS3AudioBot.ResourceFactories
 				if (!string.IsNullOrEmpty(extractorArgs))
 				{
 					sb.Append($" --extractor-args \"{extractorArgs}\"");
+				}
+				
+				// Add JS runtime if available (required for YouTube's JS challenges)
+				var jsRuntime = DetectJsRuntime();
+				if (!string.IsNullOrEmpty(jsRuntime))
+				{
+					sb.Append($" --js-runtime {jsRuntime}");
+					Log.Debug("Added JS runtime '{0}' to yt-dlp command for YouTube JS challenge support", jsRuntime);
 				}
 			}
 
@@ -201,6 +482,14 @@ namespace TS3AudioBot.ResourceFactories
 					args.Append($" --extractor-args \"{extractorArgs}\"");
 					Log.Debug("Using extractor args: {0}", extractorArgs);
 				}
+				
+				// Add JS runtime if available (required for YouTube's JS challenges)
+				var jsRuntime = DetectJsRuntime();
+				if (!string.IsNullOrEmpty(jsRuntime))
+				{
+					args.Append($" --js-runtime {jsRuntime}");
+					Log.Debug("Using JS runtime '{0}' for YouTube download", jsRuntime);
+				}
 
 				// Download best audio format
 				args.Append(" -f bestaudio");
@@ -218,6 +507,22 @@ namespace TS3AudioBot.ResourceFactories
 				process.StartInfo.CreateNoWindow = true;
 				process.StartInfo.RedirectStandardOutput = true;
 				process.StartInfo.RedirectStandardError = true;
+				
+				// Ensure Node.js is in PATH for yt-dlp to find it
+				// This is important when the bot process doesn't have nvm's PATH modifications
+				var nodePath = FindCommandPath("node");
+				if (!string.IsNullOrEmpty(nodePath) && nodePath != "node" && File.Exists(nodePath))
+				{
+					// Get the directory containing Node.js
+					var nodeDir = Path.GetDirectoryName(nodePath);
+					if (!string.IsNullOrEmpty(nodeDir))
+					{
+						var currentPath = System.Environment.GetEnvironmentVariable("PATH") ?? "";
+						var newPath = $"{nodeDir}:{currentPath}";
+						process.StartInfo.EnvironmentVariables["PATH"] = newPath;
+						Log.Debug("Added Node.js directory to PATH for yt-dlp download: {0}", nodeDir);
+					}
+				}
 
 				var stdOut = new StringBuilder();
 				var stdErr = new StringBuilder();
@@ -341,6 +646,23 @@ namespace TS3AudioBot.ResourceFactories
 				tmproc.StartInfo.RedirectStandardOutput = true;
 				tmproc.StartInfo.RedirectStandardError = true;
 				tmproc.EnableRaisingEvents = true;
+				
+				// Ensure Node.js is in PATH for yt-dlp to find it
+				// This is important when the bot process doesn't have nvm's PATH modifications
+				var nodePath = FindCommandPath("node");
+				if (!string.IsNullOrEmpty(nodePath) && nodePath != "node" && File.Exists(nodePath))
+				{
+					// Get the directory containing Node.js
+					var nodeDir = Path.GetDirectoryName(nodePath);
+					if (!string.IsNullOrEmpty(nodeDir))
+					{
+						var currentPath = System.Environment.GetEnvironmentVariable("PATH") ?? "";
+						var newPath = $"{nodeDir}:{currentPath}";
+						tmproc.StartInfo.EnvironmentVariables["PATH"] = newPath;
+						Log.Debug("Added Node.js directory to PATH for yt-dlp: {0}", nodeDir);
+					}
+				}
+				
 				tmproc.Start();
 				tmproc.OutputDataReceived += (s, e) =>
 				{
@@ -474,15 +796,48 @@ namespace TS3AudioBot.ResourceFactories
 			Log.Debug("FilterBestEnhanced: Categorized formats - {0} direct URLs, {1} HLS manifests",
 				directFormats.Count, hlsFormats.Count);
 
-			// Prioritize direct URLs over HLS manifests for reliability
+			// Log available direct formats for debugging
+			if (directFormats.Any())
+			{
+				Log.Info("FilterBestEnhanced: Found {0} direct URL formats. Format IDs: {1}",
+					directFormats.Count,
+					string.Join(", ", directFormats.Select(f => f.format_id ?? "unknown")));
+			}
+			else
+			{
+				Log.Warn("FilterBestEnhanced: No direct URL formats available! Only HLS manifests found. This may cause playback issues.");
+				if (hlsFormats.Any())
+				{
+					Log.Info("FilterBestEnhanced: Available HLS format IDs: {0}",
+						string.Join(", ", hlsFormats.Select(f => f.format_id ?? "unknown")));
+				}
+			}
+
+			// STRICTLY prioritize direct URLs over HLS manifests for reliability
+			// Only fall back to HLS if absolutely no direct URLs are available
 			var preferredFormats = directFormats.Any() ? directFormats : hlsFormats;
-			var formatType = directFormats.Any() ? "direct URL" : "HLS manifest";
+			var formatType = directFormats.Any() ? "direct URL" : "HLS manifest (fallback - no direct URLs available)";
 
 			Log.Info("FilterBestEnhanced: Prioritizing {0} formats for selection", formatType);
 
+			// Within direct URLs, prefer audio-only formats as they're more reliable
+			// and less likely to have streaming issues
+			if (directFormats.Any())
+			{
+				var audioOnlyDirect = directFormats.Where(f => IsAudioOnly(f)).ToList();
+				var combinedDirect = directFormats.Where(f => !IsAudioOnly(f)).ToList();
+				
+				if (audioOnlyDirect.Any())
+				{
+					Log.Debug("FilterBestEnhanced: Found {0} audio-only direct formats, preferring those over {1} combined formats",
+						audioOnlyDirect.Count, combinedDirect.Count);
+					preferredFormats = audioOnlyDirect;
+				}
+			}
+
 			// Sort by quality criteria within the preferred category:
 			// 1. Codec quality (descending) - prefer AAC-LC and Opus
-			// 2. Audio-only preference (descending) - prefer audio-only over combined
+			// 2. Audio-only preference (descending) - prefer audio-only over combined (already handled above for direct)
 			// 3. Video resolution (ascending) - prefer lower resolution for combined streams
 			// 4. Bitrate if available (descending) - prefer higher bitrate
 			var sorted = preferredFormats

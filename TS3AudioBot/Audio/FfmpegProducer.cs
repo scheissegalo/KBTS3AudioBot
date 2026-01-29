@@ -38,6 +38,9 @@ namespace TS3AudioBot.Audio
 		
 		// Static property to hold HLS options from configuration
 		public static Config.ConfigValue<string>? HlsOptions { private get; set; }
+		
+		// Static property to hold cookie file path for YouTube HLS access
+		public static Config.ConfigValue<string>? CookieFile { private get; set; }
 
 		public event EventHandler? OnSongEnd;
 		public event EventHandler<SongInfoChanged>? OnSongUpdated;
@@ -420,13 +423,9 @@ namespace TS3AudioBot.Audio
 
 			Log.Debug("Building HLS arguments for URL: {0}, offset: {1}", url, offset);
 
-			// Add seek if needed (before input for faster seeking)
-			if (offset > TimeSpan.Zero)
-			{
-				var seek = string.Format(CultureInfo.InvariantCulture, @"-ss {0:hh\:mm\:ss\.fff}", offset);
-				sb.Append(seek).Append(" ");
-				Log.Debug("Adding seek offset: {0}", seek);
-			}
+			// For HLS streams, do NOT use -ss before input as it can cause FFmpeg to start from a middle segment
+			// Instead, we'll use -ss after input if seeking is needed, and use -live_start_index to ensure
+			// we start from the beginning when offset is zero
 
 			// Base FFmpeg options
 			sb.Append("-hide_banner -nostats -threads 1 ");
@@ -436,6 +435,50 @@ namespace TS3AudioBot.Audio
 			sb.Append("-http_persistent 0 ");       // Disable persistent connections (forces sequential)
 			sb.Append("-multiple_requests 0 ");     // Disable parallel requests
 			sb.Append("-fflags +discardcorrupt ");  // Discard corrupt packets
+			
+			// Add HTTP headers to prevent 403 Forbidden errors from YouTube
+			// YouTube requires proper User-Agent and Referer headers to access HLS segments
+			// These headers mimic a browser request to avoid bot detection
+			// FFmpeg expects headers in format: "Header1: value1\r\nHeader2: value2\r\n"
+			// We need to escape quotes in the header value for the command line
+			var userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+			var referer = "https://www.youtube.com/";
+			// Build header string with \r\n line breaks
+			var headerValue = $"User-Agent: {userAgent}\r\nReferer: {referer}\r\n";
+			// Escape quotes for command line (FFmpeg needs the header value in quotes)
+			var escapedHeaderValue = headerValue.Replace("\"", "\\\"");
+			sb.Append("-headers \"").Append(escapedHeaderValue).Append("\" ");
+			Log.Debug("Added HTTP headers for YouTube HLS access (User-Agent and Referer)");
+			
+			// Add cookies if configured - YouTube requires cookies for HLS segment access
+			// FFmpeg uses Netscape cookie file format (same as yt-dlp)
+			var cookieFilePath = CookieFile?.Value;
+			if (!string.IsNullOrEmpty(cookieFilePath))
+			{
+				if (File.Exists(cookieFilePath))
+				{
+					sb.Append("-cookies \"").Append(cookieFilePath).Append("\" ");
+					Log.Debug("Added cookie file for YouTube HLS access: {0}", cookieFilePath);
+				}
+				else
+				{
+					Log.Warn("Cookie file specified but not found: {0}. HLS playback may fail with 403 errors.", cookieFilePath);
+				}
+			}
+			else
+			{
+				Log.Debug("No cookie file configured. YouTube HLS playback may require cookies for some videos.");
+			}
+			
+			// Force FFmpeg to start from the beginning of the HLS stream
+			// -live_start_index 0 forces starting from the first segment (segment 0)
+			// This prevents playback from starting in the middle of the stream
+			// Note: This works for both live and VOD HLS streams
+			if (offset <= TimeSpan.Zero)
+			{
+				sb.Append("-live_start_index 0 ");     // Start from segment 0 (first segment)
+				Log.Debug("Added -live_start_index 0 to start from beginning of HLS stream");
+			}
 
 			Log.Debug("Added HLS sequential processing flags: -http_persistent 0 -multiple_requests 0 -fflags +discardcorrupt");
 
@@ -450,16 +493,17 @@ namespace TS3AudioBot.Audio
 			// Input URL
 			sb.Append("-i \"").Append(url).Append("\" ");
 
+			// Always add -ss after input (but before output) for HLS streams to ensure we start from the correct position
+			// For offset zero, explicitly seek to 0 to force starting from the beginning
+			// For non-zero offset, seek to the specified time
+			// IMPORTANT: -ss must come after -i but before the output format specification
+			var seekTime = offset > TimeSpan.Zero ? offset : TimeSpan.Zero;
+			var seek = string.Format(CultureInfo.InvariantCulture, @"-ss {0:hh\:mm\:ss\.fff} ", seekTime);
+			sb.Append(seek);
+			Log.Debug("Adding post-input seek to: {0}", seekTime);
+
 			// Output format
 			sb.Append("-ac 2 -ar 48000 -f s16le -acodec pcm_s16le pipe:1");
-
-			// Add seek again after input for more accurate seeking
-			if (offset > TimeSpan.Zero)
-			{
-				var seek = string.Format(CultureInfo.InvariantCulture, @" -ss {0:hh\:mm\:ss\.fff}", offset);
-				sb.Append(seek);
-				Log.Debug("Adding post-input seek offset: {0}", seek);
-			}
 
 			var arguments = sb.ToString();
 			Log.Info("Built FFmpeg HLS command: ffmpeg {0}", arguments);
